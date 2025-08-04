@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的项目作品集</title>
+    <title>YCC Projects Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -66,6 +66,7 @@
             display: flex;
             justify-content: center;
             margin-bottom: 1rem;
+            position: relative;
         }
         
         .logo-circle {
@@ -101,6 +102,29 @@
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
+        }
+        
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        .language-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
         
         .filters {
@@ -143,6 +167,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            position: relative;
         }
         
         .project-card:hover {
@@ -232,6 +257,7 @@
             transition: var(--transition);
             flex-grow: 1;
             justify-content: center;
+            text-align: center;
         }
         
         .project-link:hover {
@@ -248,6 +274,14 @@
         .project-link.outline:hover {
             background: var(--primary);
             color: white;
+        }
+        
+        .project-link.detail {
+            background: var(--accent);
+        }
+        
+        .project-link.detail:hover {
+            background: #3a7bd5;
         }
         
         footer {
@@ -277,6 +311,131 @@
             transform: translateY(-3px);
         }
         
+        /* Detail Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow: auto;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalOpen 0.4s ease;
+        }
+        
+        @keyframes modalOpen {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: var(--gray);
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .detail-header {
+            padding: 3rem 3rem 2rem;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 16px 16px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .detail-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+        
+        .detail-content {
+            padding: 2rem 3rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .detail-col {
+            flex: 1;
+        }
+        
+        .detail-col img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .detail-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .detail-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-tag-lg {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.2rem;
@@ -293,41 +452,56 @@
             .project-links {
                 flex-direction: column;
             }
+            
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-header, .detail-content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .detail-features {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <header>
+        <button class="language-toggle" id="languageToggle">
+            <i class="fas fa-globe"></i> EN
+        </button>
         <div class="header-content">
             <div class="logo">
                 <div class="logo-circle">
                     <i class="fas fa-code"></i>
                 </div>
             </div>
-            <h1>我的项目作品集</h1>
-            <p class="subtitle">这里展示了我精心设计和开发的各种项目，每个项目都凝聚了创意与技术的结晶</p>
+            <h1 id="mainTitle">My Projects Portfolio</h1>
+            <p class="subtitle" id="subtitle">Here showcases a collection of my carefully designed and developed projects, each embodying creativity and technical excellence</p>
         </div>
     </header>
 
     <div class="container">
         <div class="filters">
-            <button class="filter-btn active">全部项目</button>
-            <button class="filter-btn">网页应用</button>
-            <button class="filter-btn">移动应用</button>
-            <button class="filter-btn">设计作品</button>
-            <button class="filter-btn">开源项目</button>
+            <button class="filter-btn active" data-i18n="all">All Projects</button>
+            <button class="filter-btn" data-i18n="web">Web Applications</button>
+            <button class="filter-btn" data-i18n="mobile">Mobile Applications</button>
+            <button class="filter-btn" data-i18n="design">Design Works</button>
+            <button class="filter-btn" data-i18n="open">Open Source</button>
         </div>
 
         <div class="projects-grid">
-            <!-- 项目 1 -->
+            <!-- Project 1 -->
             <div class="project-card">
                 <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="智能任务管理系统">
-                    <span class="project-badge">网页应用</span>
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Smart Task Management System">
+                    <span class="project-badge" data-i18n="web">Web Application</span>
                 </div>
                 <div class="project-content">
-                    <h3 class="project-title">智能任务管理系统</h3>
-                    <p class="project-description">一款功能强大的任务管理工具，支持团队协作、进度跟踪和智能提醒。采用React前端和Node.js后端，提供流畅的用户体验。</p>
+                    <h3 class="project-title">Smart Task Management System</h3>
+                    <p class="project-description">A powerful task management tool that supports team collaboration, progress tracking, and smart reminders. Built with React frontend and Node.js backend for a seamless user experience.</p>
                     <div class="project-tech">
                         <span class="tech-tag">React</span>
                         <span class="tech-tag">Node.js</span>
@@ -335,21 +509,22 @@
                         <span class="tech-tag">Redux</span>
                     </div>
                     <div class="project-links">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 查看演示</a>
-                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> 源代码</a>
+                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> <span data-i18n="demo">View Demo</span></a>
+                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> <span data-i18n="source">Source Code</span></a>
+                        <a href="#" class="project-link detail" data-project="1"><i class="fas fa-info-circle"></i> <span data-i18n="details">Details</span></a>
                     </div>
                 </div>
             </div>
 
-            <!-- 项目 2 -->
+            <!-- Project 2 -->
             <div class="project-card">
                 <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="健康追踪应用">
-                    <span class="project-badge">移动应用</span>
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Health Tracking App">
+                    <span class="project-badge" data-i18n="mobile">Mobile Application</span>
                 </div>
                 <div class="project-content">
-                    <h3 class="project-title">健康追踪应用</h3>
-                    <p class="project-description">一款健康管理应用，帮助用户追踪运动、饮食和睡眠数据。包含数据可视化图表和个性化健康建议。</p>
+                    <h3 class="project-title">Health Tracking App</h3>
+                    <p class="project-description">A health management application that helps users track exercise, diet, and sleep data. Features data visualization charts and personalized health recommendations.</p>
                     <div class="project-tech">
                         <span class="tech-tag">Flutter</span>
                         <span class="tech-tag">Firebase</span>
@@ -357,21 +532,22 @@
                         <span class="tech-tag">REST API</span>
                     </div>
                     <div class="project-links">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 查看演示</a>
-                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> 源代码</a>
+                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> <span data-i18n="demo">View Demo</span></a>
+                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> <span data-i18n="source">Source Code</span></a>
+                        <a href="#" class="project-link detail" data-project="2"><i class="fas fa-info-circle"></i> <span data-i18n="details">Details</span></a>
                     </div>
                 </div>
             </div>
 
-            <!-- 项目 3 -->
+            <!-- Project 3 -->
             <div class="project-card">
                 <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80" alt="电商数据分析平台">
-                    <span class="project-badge">网页应用</span>
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80" alt="E-commerce Analytics Platform">
+                    <span class="project-badge" data-i18n="web">Web Application</span>
                 </div>
                 <div class="project-content">
-                    <h3 class="project-title">电商数据分析平台</h3>
-                    <p class="project-description">为电商企业提供的数据分析解决方案，实时监控销售数据、用户行为和库存情况，帮助企业做出数据驱动的决策。</p>
+                    <h3 class="project-title">E-commerce Analytics Platform</h3>
+                    <p class="project-description">A data analytics solution for e-commerce businesses, providing real-time monitoring of sales data, user behavior, and inventory to enable data-driven decision making.</p>
                     <div class="project-tech">
                         <span class="tech-tag">Vue.js</span>
                         <span class="tech-tag">Python</span>
@@ -379,42 +555,44 @@
                         <span class="tech-tag">Chart.js</span>
                     </div>
                     <div class="project-links">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 查看演示</a>
-                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> 源代码</a>
+                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> <span data-i18n="demo">View Demo</span></a>
+                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> <span data-i18n="source">Source Code</span></a>
+                        <a href="#" class="project-link detail" data-project="3"><i class="fas fa-info-circle"></i> <span data-i18n="details">Details</span></a>
                     </div>
                 </div>
             </div>
 
-            <!-- 项目 4 -->
+            <!-- Project 4 -->
             <div class="project-card">
                 <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80" alt="智能家居控制界面">
-                    <span class="project-badge">设计作品</span>
+                    <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80" alt="Smart Home Control Interface">
+                    <span class="project-badge" data-i18n="design">Design Work</span>
                 </div>
                 <div class="project-content">
-                    <h3 class="project-title">智能家居控制界面</h3>
-                    <p class="project-description">为智能家居系统设计的用户界面，提供直观的设备控制和场景管理功能。注重用户体验和视觉美感。</p>
+                    <h3 class="project-title">Smart Home Control Interface</h3>
+                    <p class="project-description">A user interface designed for smart home systems, providing intuitive device control and scene management with a focus on user experience and visual aesthetics.</p>
                     <div class="project-tech">
                         <span class="tech-tag">Figma</span>
-                        <span class="tech-tag">UI/UX设计</span>
-                        <span class="tech-tag">原型设计</span>
+                        <span class="tech-tag">UI/UX Design</span>
+                        <span class="tech-tag">Prototyping</span>
                     </div>
                     <div class="project-links">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 查看设计</a>
-                        <a href="#" class="project-link outline"><i class="fas fa-download"></i> 下载原型</a>
+                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> <span data-i18n="design">View Design</span></a>
+                        <a href="#" class="project-link outline"><i class="fas fa-download"></i> <span data-i18n="prototype">Download Prototype</span></a>
+                        <a href="#" class="project-link detail" data-project="4"><i class="fas fa-info-circle"></i> <span data-i18n="details">Details</span></a>
                     </div>
                 </div>
             </div>
 
-            <!-- 项目 5 -->
+            <!-- Project 5 -->
             <div class="project-card">
                 <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="开源UI组件库">
-                    <span class="project-badge">开源项目</span>
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Open Source UI Component Library">
+                    <span class="project-badge" data-i18n="open">Open Source</span>
                 </div>
                 <div class="project-content">
-                    <h3 class="project-title">开源UI组件库</h3>
-                    <p class="project-description">一套现代化的UI组件库，包含按钮、表单、卡片等常用组件，支持主题定制和响应式设计。</p>
+                    <h3 class="project-title">Open Source UI Component Library</h3>
+                    <p class="project-description">A modern UI component library featuring buttons, forms, cards and other common components with theme customization and responsive design support.</p>
                     <div class="project-tech">
                         <span class="tech-tag">TypeScript</span>
                         <span class="tech-tag">React</span>
@@ -422,21 +600,22 @@
                         <span class="tech-tag">SASS</span>
                     </div>
                     <div class="project-links">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 查看文档</a>
-                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> 源代码</a>
+                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> <span data-i18n="docs">View Docs</span></a>
+                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> <span data-i18n="source">Source Code</span></a>
+                        <a href="#" class="project-link detail" data-project="5"><i class="fas fa-info-circle"></i> <span data-i18n="details">Details</span></a>
                     </div>
                 </div>
             </div>
 
-            <!-- 项目 6 -->
+            <!-- Project 6 -->
             <div class="project-card">
                 <div class="project-image">
-                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="在线教育平台">
-                    <span class="project-badge">网页应用</span>
+                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Online Education Platform">
+                    <span class="project-badge" data-i18n="web">Web Application</span>
                 </div>
                 <div class="project-content">
-                    <h3 class="project-title">在线教育平台</h3>
-                    <p class="project-description">功能完整的在线学习平台，支持视频课程、测验评估和进度跟踪。包含教师管理后台和学生学习空间。</p>
+                    <h3 class="project-title">Online Education Platform</h3>
+                    <p class="project-description">A full-featured online learning platform supporting video courses, quizzes, and progress tracking. Includes teacher management dashboard and student learning space.</p>
                     <div class="project-tech">
                         <span class="tech-tag">Angular</span>
                         <span class="tech-tag">Express.js</span>
@@ -444,8 +623,9 @@
                         <span class="tech-tag">WebRTC</span>
                     </div>
                     <div class="project-links">
-                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 查看演示</a>
-                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> 源代码</a>
+                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> <span data-i18n="demo">View Demo</span></a>
+                        <a href="#" class="project-link outline"><i class="fab fa-github"></i> <span data-i18n="source">Source Code</span></a>
+                        <a href="#" class="project-link detail" data-project="6"><i class="fas fa-info-circle"></i> <span data-i18n="details">Details</span></a>
                     </div>
                 </div>
             </div>
@@ -453,34 +633,252 @@
     </div>
 
     <footer>
-        <p>感谢您访问我的项目作品集！如果您对我的作品感兴趣或希望合作，请随时联系我。</p>
+        <p id="footerText">Thank you for visiting my project portfolio! If you're interested in my work or would like to collaborate, please feel free to contact me.</p>
         <div class="contact-links">
             <a href="#" class="contact-link"><i class="fab fa-github"></i></a>
             <a href="#" class="contact-link"><i class="fab fa-linkedin-in"></i></a>
             <a href="#" class="contact-link"><i class="fab fa-twitter"></i></a>
             <a href="#" class="contact-link"><i class="fas fa-envelope"></i></a>
         </div>
-        <p style="margin-top: 1.5rem;">© 2023 我的项目作品集 | 保留所有权利</p>
+        <p style="margin-top: 1.5rem;" id="copyright">© 2023 My Project Portfolio | All Rights Reserved</p>
     </footer>
 
+    <!-- Project Detail Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="detail-header">
+                <h2 id="detailTitle">Project Title</h2>
+                <p id="detailSubtitle">Project category and description</p>
+            </div>
+            <div class="detail-content">
+                <div class="detail-row">
+                    <div class="detail-col">
+                        <h3 data-i18n="overview">Project Overview</h3>
+                        <p id="detailOverview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor.</p>
+                        <p>Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere.</p>
+                    </div>
+                    <div class="detail-col">
+                        <img id="detailImage" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Project Detail">
+                    </div>
+                </div>
+                
+                <h3 data-i18n="features">Key Features</h3>
+                <div class="detail-features">
+                    <div class="feature-card">
+                        <i class="fas fa-rocket"></i>
+                        <h4>High Performance</h4>
+                        <p>Optimized for speed and efficiency with minimal resource consumption.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h4>Responsive Design</h4>
+                        <p>Works seamlessly across all devices from mobile to desktop.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Secure Architecture</h4>
+                        <p>Built with security best practices and regular vulnerability scans.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-sync-alt"></i>
+                        <h4>Real-time Updates</h4>
+                        <p>Live data synchronization across all connected devices.</p>
+                    </div>
+                </div>
+                
+                <h3 data-i18n="technologies">Technologies Used</h3>
+                <div class="detail-tech">
+                    <span class="tech-tag-lg">React</span>
+                    <span class="tech-tag-lg">Node.js</span>
+                    <span class="tech-tag-lg">MongoDB</span>
+                    <span class="tech-tag-lg">Express</span>
+                    <span class="tech-tag-lg">Redux</span>
+                    <span class="tech-tag-lg">SASS</span>
+                </div>
+                
+                <div class="project-links" style="margin-top: 2rem;">
+                    <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> <span data-i18n="demo">View Demo</span></a>
+                    <a href="#" class="project-link outline"><i class="fab fa-github"></i> <span data-i18n="source">Source Code</span></a>
+                    <a href="#" class="project-link detail"><i class="fas fa-download"></i> <span data-i18n="case">Case Study</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // 筛选按钮交互
-        document.querySelectorAll('.filter-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                // 移除所有按钮的active类
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
+        // Language toggle functionality
+        const languageToggle = document.getElementById('languageToggle');
+        let currentLanguage = 'en'; // Default to English
+        
+        const translations = {
+            en: {
+                mainTitle: "My Projects Portfolio",
+                subtitle: "Here showcases a collection of my carefully designed and developed projects, each embodying creativity and technical excellence",
+                all: "All Projects",
+                web: "Web Applications",
+                mobile: "Mobile Applications",
+                design: "Design Works",
+                open: "Open Source",
+                demo: "View Demo",
+                source: "Source Code",
+                details: "Details",
+                designText: "View Design",
+                prototype: "Download Prototype",
+                docs: "View Docs",
+                footerText: "Thank you for visiting my project portfolio! If you're interested in my work or would like to collaborate, please feel free to contact me.",
+                copyright: "© 2023 My Project Portfolio | All Rights Reserved",
+                overview: "Project Overview",
+                features: "Key Features",
+                technologies: "Technologies Used",
+                case: "Case Study"
+            },
+            zh: {
+                mainTitle: "我的项目作品集",
+                subtitle: "这里展示了我精心设计和开发的各种项目，每个项目都凝聚了创意与技术的结晶",
+                all: "全部项目",
+                web: "网页应用",
+                mobile: "移动应用",
+                design: "设计作品",
+                open: "开源项目",
+                demo: "查看演示",
+                source: "源代码",
+                details: "详情",
+                designText: "查看设计",
+                prototype: "下载原型",
+                docs: "查看文档",
+                footerText: "感谢您访问我的项目作品集！如果您对我的作品感兴趣或希望合作，请随时联系我。",
+                copyright: "© 2023 我的项目作品集 | 保留所有权利",
+                overview: "项目概述",
+                features: "主要功能",
+                technologies: "使用技术",
+                case: "案例分析"
+            }
+        };
+        
+        function updateLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update UI elements
+            document.getElementById('mainTitle').textContent = translations[lang].mainTitle;
+            document.getElementById('subtitle').textContent = translations[lang].subtitle;
+            document.getElementById('footerText').textContent = translations[lang].footerText;
+            document.getElementById('copyright').textContent = translations[lang].copyright;
+            
+            // Update button text
+            languageToggle.innerHTML = lang === 'en' ? 
+                '<i class="fas fa-globe"></i> ZH' : 
+                '<i class="fas fa-globe"></i> EN';
+            
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+        
+        languageToggle.addEventListener('click', () => {
+            const newLang = currentLanguage === 'en' ? 'zh' : 'en';
+            updateLanguage(newLang);
+        });
+        
+        // Initialize with English
+        updateLanguage('en');
+        
+        // Modal functionality for project details
+        const projectModal = document.getElementById('projectModal');
+        const closeModal = document.getElementById('closeModal');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailSubtitle = document.getElementById('detailSubtitle');
+        const detailImage = document.getElementById('detailImage');
+        const detailOverview = document.getElementById('detailOverview');
+        
+        const projectDetails = {
+            1: {
+                title: "Smart Task Management System",
+                category: "Web Application",
+                image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                overview: "A comprehensive task management solution designed to streamline team workflows and boost productivity. The application features a clean, intuitive interface that allows users to create projects, assign tasks, set deadlines, and track progress in real-time. Advanced features include automated reminders, priority tagging, and comprehensive reporting dashboards. Built with a modern tech stack including React for the frontend and Node.js with Express for the backend, the system uses MongoDB for flexible data storage and Redux for state management. The responsive design ensures a consistent experience across all devices."
+            },
+            2: {
+                title: "Health Tracking App",
+                category: "Mobile Application",
+                image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+                overview: "A health and wellness companion that empowers users to take control of their fitness journey. The app seamlessly integrates with wearable devices to track steps, heart rate, and sleep patterns. Users can log meals, water intake, and workouts while receiving personalized recommendations based on their goals. The application features beautiful data visualizations that transform raw health metrics into actionable insights. Developed with Flutter for cross-platform compatibility, the app uses Firebase for real-time data synchronization and cloud storage. The clean, minimalist design focuses on usability and motivation."
+            },
+            3: {
+                title: "E-commerce Analytics Platform",
+                category: "Web Application",
+                image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80",
+                overview: "An enterprise-level analytics platform that transforms e-commerce data into strategic business intelligence. The solution aggregates data from multiple sources including sales platforms, marketing channels, and inventory systems to provide a 360-degree view of business performance. Key features include customer segmentation, sales forecasting, inventory optimization, and marketing ROI analysis. The interactive dashboards feature drag-and-drop customization and real-time data updates. Built with Vue.js for the frontend and Python with Django for the backend, the platform uses Chart.js for data visualization and integrates with major e-commerce APIs."
+            },
+            4: {
+                title: "Smart Home Control Interface",
+                category: "Design Work",
+                image: "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
+                overview: "A user-centered interface design for next-generation smart home systems. The design focuses on simplifying the complex ecosystem of smart devices into an intuitive, unified control experience. Key features include: customizable dashboards for different family members, scene-based automation (Good Morning, Good Night, Away Mode), and energy consumption monitoring. The design system includes a comprehensive component library with dark/light mode support. Created with Figma, the design underwent multiple rounds of user testing and iteration to ensure accessibility and ease of use for all age groups. The final prototype includes micro-interactions and animations that enhance usability and provide system feedback."
+            },
+            5: {
+                title: "Open Source UI Component Library",
+                category: "Open Source",
+                image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                overview: "A comprehensive design system and component library built for modern web applications. The library includes over 50 customizable components following accessibility best practices (WCAG 2.1 AA). Each component is built with React and TypeScript, with comprehensive documentation in Storybook. Key features include: theme customization with CSS variables, responsive design patterns, and dark mode support. The library has been adopted by several organizations and has an active community of contributors. The project emphasizes developer experience with detailed documentation, code examples, and playground environments for testing components."
+            },
+            6: {
+                title: "Online Education Platform",
+                category: "Web Application",
+                image: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                overview: "A full-featured learning management system designed for modern educational needs. The platform supports live virtual classrooms with real-time collaboration tools, course management with multimedia content, and comprehensive assessment systems. Teachers can create structured learning paths, while students benefit from personalized dashboards tracking their progress. The platform includes AI-powered recommendations for supplementary materials based on individual learning patterns. Built with Angular for the frontend and Express.js for the backend, the system uses PostgreSQL for relational data and integrates WebRTC for real-time video communication. The responsive design ensures accessibility on all devices."
+            }
+        };
+        
+        // Open modal with project details
+        document.querySelectorAll('.project-link.detail').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const projectId = this.getAttribute('data-project');
+                const project = projectDetails[projectId];
                 
-                // 为当前点击的按钮添加active类
-                this.classList.add('active');
-                
-                // 这里可以添加实际的项目筛选逻辑
-                // 例如：根据按钮的文本内容筛选项目
+                if (project) {
+                    detailTitle.textContent = project.title;
+                    detailSubtitle.textContent = project.category;
+                    detailImage.src = project.image;
+                    detailImage.alt = project.title;
+                    detailOverview.textContent = project.overview;
+                    
+                    projectModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
             });
         });
         
-        // 项目卡片悬停效果增强
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            projectModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close modal when clicking outside content
+        window.addEventListener('click', (e) => {
+            if (e.target === projectModal) {
+                projectModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Filter button interaction
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+        
+        // Project card hover effect enhancement
         document.querySelectorAll('.project-card').forEach(card => {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-10px)';
