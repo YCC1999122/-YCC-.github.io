@@ -1034,4 +1034,233 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // ==========================================
+  // 17. 音乐播放器 + 网格可视化
+  // ==========================================
+  const musicPlayer = document.getElementById('musicPlayer');
+  const musicToggle = document.getElementById('musicToggle');
+  const musicPanel = document.getElementById('musicPanel');
+  const musicPlayBtn = document.getElementById('musicPlayBtn');
+  const bgMusic = document.getElementById('bgMusic');
+  const musicProgress = document.getElementById('musicProgress');
+  const musicProgressBar = document.getElementById('musicProgressBar');
+  const musicProgressThumb = document.getElementById('musicProgressThumb');
+  const musicCurrent = document.getElementById('musicCurrent');
+  const musicDuration = document.getElementById('musicDuration');
+  const volumeSlider = document.getElementById('volumeSlider');
+  const volumeBar = document.getElementById('volumeBar');
+
+  let audioCtx = null;
+  let analyser = null;
+  let sourceNode = null;
+  let dataArray = null;
+  let bufferLength = 0;
+  let musicVisualActive = false;
+
+  // 切换面板展开/收起
+  if (musicToggle) {
+    musicToggle.addEventListener('click', () => {
+      musicPlayer.classList.toggle('open');
+    });
+  }
+
+  // 初始化音频分析
+  function initAudioAnalyser() {
+    if (audioCtx) return;
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      bufferLength = analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength);
+      sourceNode = audioCtx.createMediaElementSource(bgMusic);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+    } catch (e) {
+      console.warn('Audio context not supported');
+    }
+  }
+
+  // 播放/暂停
+  if (musicPlayBtn) {
+    musicPlayBtn.addEventListener('click', () => {
+      if (!audioCtx) initAudioAnalyser();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      if (bgMusic.paused) {
+        bgMusic.play().then(() => {
+          musicPlayer.classList.add('playing');
+          musicToggle.classList.add('playing');
+          musicVisualActive = true;
+        }).catch(err => {
+          console.warn('播放失败:', err);
+        });
+      } else {
+        bgMusic.pause();
+        musicPlayer.classList.remove('playing');
+        musicToggle.classList.remove('playing');
+        musicVisualActive = false;
+      }
+    });
+  }
+
+  // 格式化时间
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return m + ':' + (s < 10 ? '0' + s : s);
+  }
+
+  // 元数据加载完成
+  if (bgMusic) {
+    bgMusic.addEventListener('loadedmetadata', () => {
+      if (musicDuration) musicDuration.textContent = formatTime(bgMusic.duration);
+    });
+
+    // 进度更新
+    bgMusic.addEventListener('timeupdate', () => {
+      const pct = (bgMusic.currentTime / bgMusic.duration) * 100;
+      if (musicProgressBar) musicProgressBar.style.width = pct + '%';
+      if (musicProgressThumb) musicProgressThumb.style.left = pct + '%';
+      if (musicCurrent) musicCurrent.textContent = formatTime(bgMusic.currentTime);
+    });
+
+    // 结束时重置
+    bgMusic.addEventListener('ended', () => {
+      musicPlayer.classList.remove('playing');
+      musicToggle.classList.remove('playing');
+      musicVisualActive = false;
+    });
+  }
+
+  // 进度条点击跳转
+  if (musicProgress) {
+    musicProgress.addEventListener('click', (e) => {
+      const rect = musicProgress.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      if (bgMusic.duration) {
+        bgMusic.currentTime = pct * bgMusic.duration;
+      }
+    });
+  }
+
+  // 音量控制
+  if (bgMusic) bgMusic.volume = 0.7;
+
+  if (volumeSlider) {
+    volumeSlider.addEventListener('click', (e) => {
+      const rect = volumeSlider.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      if (bgMusic) bgMusic.volume = pct;
+      if (volumeBar) volumeBar.style.width = (pct * 100) + '%';
+    });
+  }
+
+  // 获取音乐频率数据，返回低频到中频的平均能量 (0-1)
+  function getMusicEnergy() {
+    if (!musicVisualActive || !analyser || !dataArray) return 0;
+    analyser.getByteFrequencyData(dataArray);
+    // 取低频到中低频（前 1/3）作为节拍能量
+    let sum = 0;
+    const bassEnd = Math.floor(bufferLength * 0.35);
+    for (let i = 0; i < bassEnd; i++) {
+      sum += dataArray[i];
+    }
+    return sum / bassEnd / 255; // 0-1
+  }
+
+  // 让网格随音乐跳动：修改 drawGrid 中每块砖的翻转/缩放
+  // 在 drawGrid 里调用：如果 musicVisualActive，根据频率给 tile 增加跳动效果
+  const originalDrawGrid = drawGrid;
+  function enhancedDrawGrid() {
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    gridCtx.clearRect(0, 0, W, H);
+
+    const fromColor = themeColors[currentThemeIdx]?.grid || 'rgba(109, 40, 217, 0.07)';
+    const toColor = themeColors[nextThemeIdx]?.grid || 'rgba(109, 40, 217, 0.07)';
+
+    // 获取音乐能量
+    const energy = getMusicEnergy();
+    const bassBoost = energy * 1.5; // 音乐越响，跳动越强
+
+    for (let r = 0; r < gridRows; r++) {
+      for (let c = 0; c < gridCols; c++) {
+        const x = c * TILE_SIZE;
+        const y = r * TILE_SIZE;
+        const tile = tiles[r][c];
+        const p = tile.flipProgress;
+
+        // 音乐跳动：根据每块砖的位置和当前频率，计算额外的"弹跳"幅度
+        // 越靠近底部的砖，对低频越敏感
+        const rowFactor = 1 - (r / gridRows); // 底部=1，顶部=0
+        let musicPulse = 0;
+
+        if (musicVisualActive && dataArray) {
+          // 不同列对应不同频率带
+          const freqIndex = Math.floor((c / gridCols) * bufferLength * 0.6);
+          const freqValue = dataArray[Math.min(freqIndex, bufferLength - 1)] / 255;
+          // 底部行对低频更敏感
+          musicPulse = freqValue * rowFactor * bassBoost * 0.6;
+        }
+
+        // 合并翻砖进度和音乐跳动
+        const totalP = Math.min(1, p + musicPulse * 0.4);
+        let scaleX = 1;
+        let scaleY = 1;
+        let color;
+
+        if (totalP < 0.5) {
+          scaleX = 1 - totalP * 1.2;
+          scaleY = 1 + musicPulse * 0.3;
+          color = fromColor;
+        } else {
+          scaleX = (totalP - 0.5) * 1.2 + 0.4;
+          scaleY = 1 + musicPulse * 0.3;
+          color = toColor;
+        }
+
+        scaleX = Math.max(0.05, Math.min(1.1, scaleX));
+        scaleY = Math.max(0.9, Math.min(1.4, scaleY));
+
+        const drawW = TILE_SIZE * scaleX;
+        const drawH = TILE_SIZE * scaleY;
+        const drawX = x + (TILE_SIZE - drawW) / 2;
+        const drawY = y + (TILE_SIZE - drawH) / 2;
+
+        // 音乐模式下增加发光效果
+        if (musicVisualActive && musicPulse > 0.1) {
+          gridCtx.shadowColor = themeColors[currentThemeIdx]?.accent || '#8b5cf6';
+          gridCtx.shadowBlur = musicPulse * 12;
+        } else {
+          gridCtx.shadowBlur = 0;
+        }
+
+        if (totalP > 0 && totalP < 1) {
+          const alphaMatch = color.match(/[\d.]+\)$/);
+          const baseAlpha = parseFloat(alphaMatch?.[0] || 0.07);
+          const fillAlpha = Math.min(0.25, baseAlpha * 2 + musicPulse * 0.15);
+          gridCtx.fillStyle = color.replace(/[\d.]+\)$/, fillAlpha.toFixed(3) + ')');
+          gridCtx.fillRect(drawX + 1, drawY + 1, drawW - 2, drawH - 2);
+        }
+
+        gridCtx.strokeStyle = color;
+        gridCtx.lineWidth = 1;
+        gridCtx.strokeRect(drawX + 0.5, drawY + 0.5, drawW - 1, drawH - 1);
+      }
+    }
+
+    gridCtx.shadowBlur = 0;
+    requestAnimationFrame(enhancedDrawGrid);
+  }
+
+  // 替换 drawGrid
+  if (typeof drawGrid === 'function') {
+    // 取消原有的 requestAnimationFrame
+    // 用新的增强版替代
+    window.drawGrid = enhancedDrawGrid;
+    requestAnimationFrame(enhancedDrawGrid);
+  }
+
 });

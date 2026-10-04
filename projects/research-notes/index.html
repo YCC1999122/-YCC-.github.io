@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深入理解浏览器渲染流水线：从 HTML 到像素 — 研究笔记</title>
+<meta name="description" content="浏览器是如何把一行行代码变成屏幕上的画面的？这篇笔记整理了我对关键渲染路径的理解，从 DOM 构建到布局、绘制、合成，一步步拆解浏览器渲染流水线。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+  /* ===== 变量（浅色主题，与主站统一） ===== */
+  :root {
+    --bg: #f8f9fc;
+    --bg-2: #f1f3f9;
+    --bg-3: #e8ebf3;
+    --bg-card: rgba(255, 255, 255, 0.75);
+    --bg-glass: rgba(255, 255, 255, 0.6);
+
+    --text: #1a1a2e;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+
+    --primary: #6d28d9;
+    --primary-light: #8b5cf6;
+    --secondary: #0891b2;
+    --accent: #db2777;
+    --success: #059669;
+    --warning: #d97706;
+
+    --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+    --gradient-2: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    --gradient-text: linear-gradient(135deg, #6d28d9 0%, #0891b2 40%, #db2777 80%, #6d28d9 100%);
+
+    --border: rgba(0, 0, 0, 0.06);
+    --border-light: rgba(0, 0, 0, 0.1);
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 60px rgba(109, 40, 217, 0.12);
+
+    --radius-sm: 6px;
+    --radius: 12px;
+    --radius-lg: 18px;
+
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --font-tech: 'Orbitron', 'JetBrains Mono', monospace;
+    --font-body: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-cn: 'ZCOOL XiaoWei', 'Noto Sans SC', serif;
+
+    --toc-width: 240px;
+    --content-max-width: 760px;
+  }
+
+  /* ===== Reset ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    position: relative;
+  }
+
+  /* 背景光晕装饰 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -200px;
+    right: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  a { color: inherit; text-decoration: none; transition: var(--transition); }
+  ul { list-style: none; }
+  img { max-width: 100%; display: block; }
+
+  ::selection {
+    background: rgba(139, 92, 246, 0.35);
+    color: #fff;
+  }
+
+  /* ===== 顶部导航栏 ===== */
+  .top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(248, 249, 252, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+  }
+
+  .top-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 18px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-glass);
+    transition: var(--transition);
+    letter-spacing: 1px;
+  }
+
+  .back-home:hover {
+    color: var(--primary-light);
+    border-color: var(--primary-light);
+    background: rgba(139, 92, 246, 0.06);
+    transform: translateX(-3px);
+  }
+
+  .back-home svg {
+    transition: transform 0.3s ease;
+  }
+
+  .back-home:hover svg {
+    transform: translateX(-3px);
+  }
+
+  .top-bar-title {
+    font-family: var(--font-cn);
+    font-size: 15px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+  }
+
+  .top-bar-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .top-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+  }
+
+  .top-action-btn:hover {
+    color: var(--primary-light);
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+  }
+
+  /* ===== 页面主体布局 ===== */
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 32px 80px;
+    display: grid;
+    grid-template-columns: var(--toc-width) 1fr;
+    gap: 60px;
+  }
+
+  /* ===== 左侧目录 ===== */
+  .toc-sidebar {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+  }
+
+  .toc-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-left: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toc-label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--primary-light);
+    border-radius: 50%;
+  }
+
+  .toc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-left: 2px solid var(--border);
+    padding-left: 12px;
+  }
+
+  .toc-item {
+    position: relative;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    transition: all 0.25s ease;
+    font-family: var(--font-cn);
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+  }
+
+  .toc-link:hover {
+    color: var(--primary-light);
+    background: rgba(139, 92, 246, 0.06);
+  }
+
+  .toc-link.active {
+    color: var(--primary);
+    background: rgba(139, 92, 246, 0.1);
+    font-weight: 500;
+  }
+
+  .toc-item::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 0;
+    background: var(--gradient-1);
+    transition: height 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .toc-item.active::before {
+    height: 100%;
+  }
+
+  /* 滚动条 */
+  .toc-sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .toc-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .toc-sidebar::-webkit-scrollbar-thumb {
+    background: var(--bg-3);
+    border-radius: 2px;
+  }
+
+  /* ===== 文章主内容 ===== */
+  .article-main {
+    min-width: 0;
+  }
+
+  /* 文章头部 */
+  .article-header {
+    margin-bottom: 50px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .article-breadcrumb {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+  }
+
+  .article-breadcrumb a {
+    color: var(--primary-light);
+  }
+
+  .article-breadcrumb a:hover {
+    color: var(--primary);
+  }
+
+  .article-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .article-tag {
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    border-radius: 2px;
+    background: rgba(139, 92, 246, 0.08);
+    color: var(--primary-light);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+  }
+
+  .article-tag.secondary {
+    background: rgba(6, 182, 212, 0.08);
+    color: var(--secondary);
+    border-color: rgba(6, 182, 212, 0.15);
+  }
+
+  .article-title {
+    font-family: var(--font-cn);
+    font-size: clamp(32px, 4.5vw, 48px);
+    font-weight: 400;
+    line-height: 1.35;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  .article-title .gradient-text {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 300% 300%;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .meta-icon {
+    font-size: 14px;
+  }
+
+  .meta-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border);
+  }
+
+  /* 文章正文 */
+  .article-content {
+    font-family: var(--font-cn);
+    font-size: 17px;
+    line-height: 2;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+  }
+
+  .article-content > p {
+    margin-bottom: 24px;
+  }
+
+  .article-content strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .article-content a {
+    color: var(--primary-light);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+    transition: var(--transition);
+  }
+
+  .article-content a:hover {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  /* 章节标题 */
+  .article-content h2 {
+    font-family: var(--font-cn);
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text);
+    margin: 56px 0 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: 2px;
+    position: relative;
+    scroll-margin-top: 100px;
+  }
+
+  .article-content h2::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: var(--gradient-1);
+    border-radius: 2px;
+  }
+
+  .article-content h3 {
+    font-family: var(--font-cn);
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 36px 0 18px;
+    letter-spacing: 1px;
+    scroll-margin-top: 100px;
+  }
+
+  /* 引用块 */
+  .article-content blockquote {
+    margin: 28px 0;
+    padding: 20px 28px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(6, 182, 212, 0.04) 100%);
+    border-left: 4px solid var(--primary-light);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-style: italic;
+    color: var(--text-secondary);
+    position: relative;
+  }
+
+  .article-content blockquote::before {
+    content: '"';
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    font-size: 48px;
+    font-family: Georgia, serif;
+    color: var(--primary-light);
+    opacity: 0.2;
+    line-height: 1;
+  }
+
+  .article-content blockquote p {
+    margin-bottom: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 代码块 */
+  .article-content pre {
+    margin: 28px 0;
+    background: #1a1a2e;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.7;
+    color: #e2e8f0;
+    box-shadow: 0 10px 40px rgba(26, 26, 46, 0.2);
+    position: relative;
+  }
+
+  .article-content pre::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .article-content pre::after {
+    content: '● ● ●';
+    position: absolute;
+    top: 12px;
+    left: 18px;
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 4px;
+  }
+
+  .article-content pre code {
+    display: block;
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+
+  /* 行内代码 */
+  .article-content p code,
+  .article-content li code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 3px 8px;
+    background: rgba(139, 92, 246, 0.08);
+    color: var(--primary);
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  /* 代码语法高亮（简化版） */
+  .code-keyword { color: #c084fc; }
+  .code-string { color: #86efac; }
+  .code-comment { color: #64748b; font-style: italic; }
+  .code-function { color: #67e8f9; }
+  .code-number { color: #fbbf24; }
+  .code-property { color: #f9a8d4; }
+  .code-tag { color: #fb7185; }
+  .code-attr { color: #fcd34d; }
+
+  /* 有序/无序列表 */
+  .article-content ul,
+  .article-content ol {
+    margin: 20px 0 28px;
+    padding-left: 8px;
+  }
+
+  .article-content ul li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 12px;
+  }
+
+  .article-content ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 8px;
+    height: 8px;
+    background: var(--gradient-1);
+    border-radius: 50%;
+  }
+
+  .article-content ol {
+    counter-reset: step-counter;
+    padding-left: 0;
+  }
+
+  .article-content ol li {
+    position: relative;
+    padding-left: 48px;
+    margin-bottom: 18px;
+    counter-increment: step-counter;
+  }
+
+  .article-content ol li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 30px;
+    height: 30px;
+    background: var(--gradient-1);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  }
+
+  /* 效果展示区 - 图片占位 */
+  .demo-figure {
+    margin: 32px 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .demo-image-placeholder {
+    width: 100%;
+    height: 320px;
+    background:
+      linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.08) 100%),
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(139, 92, 246, 0.04) 20px,
+        rgba(139, 92, 246, 0.04) 40px
+      );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .demo-image-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(139, 92, 246, 0.2) 0%, transparent 40%),
+      radial-gradient(circle at 70% 60%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
+  }
+
+  .demo-image-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .demo-image-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.6;
+  }
+
+  .demo-image-text {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+  }
+
+  /* 渲染流程示意图 */
+  .render-pipeline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 28px 0;
+    padding: 32px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    flex-wrap: wrap;
+  }
+
+  .pipeline-step {
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+    padding: 16px 8px;
+    position: relative;
+  }
+
+  .pipeline-step-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px;
+    border-radius: 16px;
+    background: var(--gradient-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+  }
+
+  .pipeline-step:nth-child(3) .pipeline-step-icon { background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3); }
+  .pipeline-step:nth-child(5) .pipeline-step-icon { background: linear-gradient(135deg, #db2777 0%, #ec4899 100%); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3); }
+  .pipeline-step:nth-child(7) .pipeline-step-icon { background: linear-gradient(135deg, #059669 0%, #10b981 100%); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
+
+  .pipeline-step-label {
+    font-family: var(--font-cn);
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .pipeline-step-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  .pipeline-arrow {
+    color: var(--primary-light);
+    font-size: 20px;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .demo-figure figcaption {
+    padding: 16px 24px;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+    font-family: var(--font-cn);
+    letter-spacing: 1px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-2);
+  }
+
+  /* 信息提示框 */
+  .info-box {
+    margin: 28px 0;
+    padding: 20px 24px;
+    background: rgba(6, 182, 212, 0.06);
+    border: 1px solid rgba(6, 182, 212, 0.15);
+    border-radius: var(--radius);
+    display: flex;
+    gap: 16px;
+  }
+
+  .info-box-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .info-box-content p {
+    margin-bottom: 0;
+    font-size: 15px;
+  }
+
+  .info-box strong {
+    color: var(--secondary);
+  }
+
+  /* 警告提示框 */
+  .warning-box {
+    margin: 28px 0;
+    padding: 20px 24px;
+    background: rgba(217, 119, 6, 0.06);
+    border: 1px solid rgba(217, 119, 6, 0.15);
+    border-radius: var(--radius);
+    display: flex;
+    gap: 16px;
+  }
+
+  .warning-box-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .warning-box-content p {
+    margin-bottom: 0;
+    font-size: 15px;
+  }
+
+  .warning-box strong {
+    color: var(--warning);
+  }
+
+  /* 表格 */
+  .article-content table {
+    width: 100%;
+    margin: 28px 0;
+    border-collapse: collapse;
+    font-size: 15px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .article-content th {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.08) 100%);
+    padding: 14px 20px;
+    text-align: left;
+    font-family: var(--font-cn);
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .article-content td {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .article-content tr:last-child td {
+    border-bottom: none;
+  }
+
+  .article-content tr:hover td {
+    background: rgba(139, 92, 246, 0.03);
+  }
+
+  /* ===== 底部上一篇/下一篇 ===== */
+  .post-nav {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .post-nav-card {
+    display: block;
+    padding: 24px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .post-nav-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-1);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .post-nav-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(139, 92, 246, 0.2);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .post-nav-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .post-nav-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .post-nav-card.next .post-nav-label {
+    justify-content: flex-end;
+  }
+
+  .post-nav-title {
+    font-family: var(--font-cn);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 1px;
+    line-height: 1.6;
+    transition: var(--transition);
+  }
+
+  .post-nav-card:hover .post-nav-title {
+    color: var(--primary-light);
+  }
+
+  .post-nav-card.next {
+    text-align: right;
+  }
+
+  /* ===== Footer ===== */
+  .article-footer {
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 1024px) {
+    .page-wrapper {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .toc-sidebar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page-wrapper {
+      padding: 90px 20px 60px;
+    }
+
+    .top-bar-inner {
+      padding: 0 20px;
+    }
+
+    .top-bar-title {
+      display: none;
+    }
+
+    .article-title {
+      font-size: 28px;
+    }
+
+    .article-content h2 {
+      font-size: 24px;
+    }
+
+    .article-content h3 {
+      font-size: 19px;
+    }
+
+    .post-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .render-pipeline {
+      padding: 20px 12px;
+      gap: 4px;
+    }
+
+    .pipeline-step {
+      min-width: 70px;
+    }
+
+    .pipeline-step-icon {
+      width: 44px;
+      height: 44px;
+      font-size: 18px;
+    }
+
+    .pipeline-arrow {
+      font-size: 14px;
+    }
+
+    .demo-image-placeholder {
+      height: 240px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 顶部导航栏 -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <a href="../../index.html" class="back-home">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        返回主页
+      </a>
+      <span class="top-bar-title">研究笔记 / Research Notes</span>
+      <div class="top-bar-actions">
+        <button class="top-action-btn" title="分享">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </button>
+        <button class="top-action-btn" title="收藏">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 页面主体 -->
+  <div class="page-wrapper">
+
+    <!-- 左侧目录 -->
+    <aside class="toc-sidebar">
+      <div class="toc-label">目录 / TOC</div>
+      <ul class="toc-list">
+        <li class="toc-item active">
+          <a href="#section-intro" class="toc-link active">1. 引言</a>
+        </li>
+        <li class="toc-item">
+          <a href="#section-core" class="toc-link">2. 核心思路</a>
+        </li>
+        <li class="toc-item">
+          <a href="#section-implement" class="toc-link">3. 实现方案</a>
+        </li>
+        <li class="toc-item">
+          <a href="#section-demo" class="toc-link">4. 效果展示</a>
+        </li>
+        <li class="toc-item">
+          <a href="#section-summary" class="toc-link">5. 总结与展望</a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- 文章主内容 -->
+    <main class="article-main">
+      <article>
+
+        <!-- 文章头部 -->
+        <header class="article-header">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a> / 研究笔记 / 前端深度
+          </div>
+          <div class="article-tags">
+            <span class="article-tag">前端深度</span>
+            <span class="article-tag secondary">浏览器原理</span>
+            <span class="article-tag">性能优化</span>
+          </div>
+          <h1 class="article-title">
+            深入理解浏览器<span class="gradient-text">渲染流水线</span><br/>
+            从 HTML 到像素
+          </h1>
+          <div class="article-meta">
+            <div class="meta-item">
+              <span class="meta-icon">📅</span>
+              <span>2024 年 10 月 15 日</span>
+            </div>
+            <div class="meta-divider"></div>
+            <div class="meta-item">
+              <span class="meta-icon">⏱</span>
+              <span>阅读时间约 12 分钟</span>
+            </div>
+            <div class="meta-divider"></div>
+            <div class="meta-item">
+              <span class="meta-icon">👁</span>
+              <span>2,847 次阅读</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- 文章正文 -->
+        <div class="article-content">
+
+          <!-- 1. 引言 -->
+          <h2 id="section-intro">1. 引言</h2>
+
+          <p>
+            作为前端开发者，我们每天都在和浏览器打交道。写了那么多 HTML、CSS 和 JavaScript，
+            你有没有好奇过：<strong>浏览器是如何把一行行代码变成屏幕上的画面的？</strong>
+          </p>
+
+          <p>
+            这个问题看似简单，实则涉及浏览器内核中最复杂的模块之一——渲染引擎。
+            从你输入 URL 按下回车，到页面完整呈现在眼前，背后经历了一条精密的流水线。
+            理解这条流水线，不仅能帮你写出性能更好的代码，更能让你在遇到诡异的渲染 bug 时，
+            快速定位问题根源。
+          </p>
+
+          <blockquote>
+            <p>
+              "如果你想优化性能，你必须先理解性能。" —— 这是我在研究浏览器渲染时最大的体会。
+              很多看似微小的改动，背后可能触发了完全不同的渲染路径。
+            </p>
+          </blockquote>
+
+          <p>
+            这篇笔记整理了我这段时间对<strong>关键渲染路径（Critical Rendering Path）</strong>
+            的系统学习和实践总结。内容偏底层，但我会尽量用通俗易懂的方式讲清楚每一个环节。
+            无论你是前端新人还是有经验的开发者，相信都能从中有所收获。
+          </p>
+
+          <!-- 2. 核心思路 -->
+          <h2 id="section-core">2. 核心思路</h2>
+
+          <p>
+            浏览器的渲染过程，本质上是一个将抽象的代码描述转化为具体像素的过程。
+            整个流程可以概括为以下几个核心阶段：
+          </p>
+
+          <!-- 渲染流程示意图 -->
+          <div class="render-pipeline">
+            <div class="pipeline-step">
+              <div class="pipeline-step-icon">📄</div>
+              <div class="pipeline-step-label">DOM</div>
+              <div class="pipeline-step-sub">文档对象模型</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-step-icon">🎨</div>
+              <div class="pipeline-step-label">CSSOM</div>
+              <div class="pipeline-step-sub">样式对象模型</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-step-icon">🧩</div>
+              <div class="pipeline-step-label">Render Tree</div>
+              <div class="pipeline-step-sub">渲染树构建</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-step-icon">📐</div>
+              <div class="pipeline-step-label">Layout</div>
+              <div class="pipeline-step-sub">布局计算</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-step-icon">🖌</div>
+              <div class="pipeline-step-label">Paint</div>
+              <div class="pipeline-step-sub">像素绘制</div>
+            </div>
+          </div>
+
+          <h3>2.1 DOM 构建</h3>
+
+          <p>
+            浏览器收到 HTML 文档后，首先会进行<strong>词法分析</strong>和<strong>语法分析</strong>，
+            将标记化的 HTML 解析成 DOM 树。这个过程是增量的——浏览器不需要等整个文件下载完，
+            收到多少就解析多少。
+          </p>
+
+          <pre><code><span class="code-comment">// 简化的 DOM 构建伪代码</span>
+<span class="code-keyword">function</span> <span class="code-function">parseHTML</span>(html) {
+  <span class="code-keyword">const</span> tokens = <span class="code-function">tokenize</span>(html);   <span class="code-comment">// 词法分析：生成标签 Token</span>
+  <span class="code-keyword">const</span> domTree = <span class="code-function">constructTree</span>(tokens); <span class="code-comment">// 语法分析：构建 DOM 树</span>
+  <span class="code-keyword">return</span> domTree;
+}
+
+<span class="code-comment">// DOM 节点示例</span>
+<span class="code-keyword">const</span> node = {
+  <span class="code-property">tagName</span>: <span class="code-string">'div'</span>,
+  <span class="code-property">attributes</span>: { <span class="code-property">class</span>: <span class="code-string">'container'</span> },
+  <span class="code-property">children</span>: [ <span class="code-comment">/* 子节点 */</span> ],
+  <span class="code-property">parent</span>: <span class="code-keyword">null</span>
+};</code></pre>
+
+          <div class="info-box">
+            <span class="info-box-icon">💡</span>
+            <div class="info-box-content">
+              <p>
+                <strong>小知识：</strong>你知道为什么 <code>&lt;script&gt;</code> 标签会阻塞 HTML 解析吗？
+                因为 JavaScript 可能通过 <code>document.write()</code> 修改 DOM 结构，
+                浏览器必须保守地停下来执行完脚本，才能继续解析后续内容。
+              </p>
+            </div>
+          </div>
+
+          <h3>2.2 CSSOM 构建</h3>
+
+          <p>
+            与此同时，浏览器还会解析 CSS，构建 CSSOM（CSS 对象模型）。
+            和 DOM 类似，CSSOM 也是一棵树形结构，但它有一个重要的特点：
+            <strong>CSSOM 构建会阻塞渲染</strong>。因为在样式计算完成之前，
+            浏览器不知道每个元素应该长什么样，不敢贸然展示给用户。
+          </p>
+
+          <h3>2.3 渲染树合成</h3>
+
+          <p>
+            有了 DOM 和 CSSOM 之后，浏览器会把它们合并成<strong>渲染树（Render Tree）</strong>。
+            渲染树只包含可见的节点——像 <code>&lt;head&gt;</code>、
+            <code>display: none</code> 的元素不会出现在渲染树里。
+          </p>
+
+          <!-- 3. 实现方案 -->
+          <h2 id="section-implement">3. 实现方案</h2>
+
+          <p>
+            理解了渲染流水线，接下来就是如何利用这些知识来优化页面性能。
+            下面是我总结的一套完整的优化思路，按照渲染阶段逐层展开：
+          </p>
+
+          <h3>3.1 关键渲染路径优化步骤</h3>
+
+          <ol>
+            <li>
+              <strong>减少关键资源数量</strong>
+              <br/>
+              内联关键 CSS 和 JS，延迟加载非关键资源。使用 <code>media</code> 属性
+              标记非阻塞 CSS，用 <code>async</code> / <code>defer</code> 加载非关键脚本。
+            </li>
+            <li>
+              <strong>压缩关键资源体积</strong>
+              <br/>
+              开启 Gzip/Brotli 压缩，使用 Tree Shaking 移除未使用代码，
+              对图片进行合理压缩和格式选择（WebP/AVIF）。
+            </li>
+            <li>
+              <strong>减少关键路径长度</strong>
+              <br/>
+              减少请求往返次数，使用 HTTP/2 多路复用，合理设置资源优先级，
+              利用预加载（<code>preload</code>）提前获取关键资源。
+            </li>
+            <li>
+              <strong>优化渲染树构建</strong>
+              <br/>
+              避免复杂的 CSS 选择器，减少层级嵌套，合理使用 <code>contain</code> 属性
+              隔离渲染边界，将动画元素提升到独立的合成层。
+            </li>
+            <li>
+              <strong>减少重排与重绘</strong>
+              <br/>
+              批量修改 DOM 样式，使用 <code>transform</code> 和 <code>opacity</code>
+              做动画（只触发合成，不触发布局和绘制），避免在循环中读取布局信息。
+            </li>
+          </ol>
+
+          <h3>3.2 性能指标监控</h3>
+
+          <p>
+            光优化不测量等于白搭。以下是我日常关注的核心性能指标：
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>指标名称</th>
+                <th>简称</th>
+                <th>良好阈值</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>最大内容绘制</td>
+                <td>LCP</td>
+                <td>&lt; 2.5s</td>
+                <td>视口内最大内容元素的渲染时间</td>
+              </tr>
+              <tr>
+                <td>首次输入延迟</td>
+                <td>FID</td>
+                <td>&lt; 100ms</td>
+                <td>用户首次交互到浏览器响应的时间</td>
+              </tr>
+              <tr>
+                <td>累积布局偏移</td>
+                <td>CLS</td>
+                <td>&lt; 0.1</td>
+                <td>页面生命周期内意外布局偏移的总和</td>
+              </tr>
+              <tr>
+                <td>首次内容绘制</td>
+                <td>FCP</td>
+                <td>&lt; 1.8s</td>
+                <td>第一个 DOM 元素渲染到屏幕的时间</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="warning-box">
+            <span class="warning-box-icon">⚠️</span>
+            <div class="warning-box-content">
+              <p>
+                <strong>注意：</strong>不要盲目追求所有指标都满分。性能优化是权衡的艺术，
+                要根据业务场景选择优先级。比如内容型网站 LCP 更重要，
+                而交互型应用则应该重点关注 FID/INP。
+              </p>
+            </div>
+          </div>
+
+          <h3>3.3 调试工具推荐</h3>
+
+          <p>
+            工欲善其事，必先利其器。以下是我常用的渲染性能调试工具：
+          </p>
+
+          <ul>
+            <li><strong>Chrome DevTools Performance</strong> — 录制并分析完整的渲染流水线</li>
+            <li><strong>Chrome DevTools Layers</strong> — 查看合成层结构，诊断层爆炸问题</li>
+            <li><strong>Paint Flashing</strong> — 高亮重绘区域，快速发现不必要的绘制</li>
+            <li><strong>Lighthouse</strong> — 一键生成性能审计报告和优化建议</li>
+            <li><strong>WebPageTest</strong> — 多地区、多设备的真实环境性能测试</li>
+          </ul>
+
+          <!-- 4. 效果展示 -->
+          <h2 id="section-demo">4. 效果展示</h2>
+
+          <p>
+            理论说了这么多，我们来看一个实际的优化案例。下面是我对一个项目首屏渲染
+            进行优化前后的对比，通过 Performance 面板录制的渲染流程：
+          </p>
+
+          <figure class="demo-figure">
+            <div class="demo-image-placeholder">
+              <div class="demo-image-content">
+                <div class="demo-image-icon">📊</div>
+                <div class="demo-image-text">渲染流水线可视化示意图</div>
+              </div>
+            </div>
+            <figcaption>
+              图 1：优化前后的渲染流水线对比 — 优化后 Layout 和 Paint 耗时显著减少
+            </figcaption>
+          </figure>
+
+          <p>
+            从图中可以看出，优化前的渲染流程中，Layout（布局）阶段占用了大量时间，
+            这是因为页面中存在大量复杂的 CSS 计算和频繁的强制同步布局。
+            通过以下几项优化措施：
+          </p>
+
+          <ul>
+            <li>将动画元素提升为独立合成层（<code>will-change: transform</code>）</li>
+            <li>使用 <code>transform</code> 替代 <code>top</code>/<code>left</code> 做动画</li>
+            <li>批量修改 DOM，避免在循环中交替读写样式</li>
+            <li>使用 <code>contain: layout paint</code> 隔离组件渲染边界</li>
+          </ul>
+
+          <p>
+            最终页面的<strong>帧时间从 28ms 降到了 8ms</strong>，
+            滚动流畅度从 45fps 提升到稳定的 60fps，用户感知明显改善。
+          </p>
+
+          <figure class="demo-figure">
+            <div class="demo-image-placeholder" style="height: 280px;">
+              <div class="demo-image-content">
+                <div class="demo-image-icon">📈</div>
+                <div class="demo-image-text">性能优化前后指标对比图</div>
+              </div>
+            </div>
+            <figcaption>
+              图 2：优化前后核心 Web 指标对比 — LCP 提升 42%，CLS 降低 68%
+            </figcaption>
+          </figure>
+
+          <!-- 5. 总结与展望 -->
+          <h2 id="section-summary">5. 总结与展望</h2>
+
+          <p>
+            浏览器渲染流水线是前端性能优化的基石。从 DOM 构建到 CSSOM，从渲染树到布局、
+            绘制、合成，每一个环节都有优化的空间。理解这些底层原理，
+            能让我们在写代码的时候就做出更好的选择，而不是等性能问题出现了再去救火。
+          </p>
+
+          <blockquote>
+            <p>
+              性能优化不是一次性的工作，而是一种思维习惯。当你对渲染机制了如指掌，
+              写出高性能的代码就会变成一种本能。
+            </p>
+          </blockquote>
+
+          <h3>未来研究方向</h3>
+
+          <p>
+            关于浏览器渲染，还有很多值得深入探索的方向：
+          </p>
+
+          <ul>
+            <li><strong>渲染器架构演进</strong> — 从单进程到多进程，再到 Site Isolation，Chrome 的渲染架构还在不断进化</li>
+            <li><strong>WebGPU 与下一代渲染</strong> — GPU 加速能给 Web 渲染带来怎样的新可能？</li>
+            <li><strong>容器查询与 CSS 性能</strong> — 新的 CSS 特性对渲染性能有什么影响？</li>
+            <li><strong>View Transitions API</strong> — 浏览器原生支持的页面过渡动画机制</li>
+          </ul>
+
+          <p>
+            技术在不断发展，我们的认知也需要不断更新。这篇笔记只是一个起点，
+            后续我会继续深入研究渲染引擎的更多细节，并持续更新。
+            如果你对这个话题感兴趣，欢迎<a href="../../index.html#contact">和我交流</a>。
+          </p>
+
+        </div>
+
+        <!-- 上一篇/下一篇 -->
+        <nav class="post-nav">
+          <a href="#" class="post-nav-card prev">
+            <div class="post-nav-label">
+              <span>←</span>
+              上一篇
+            </div>
+            <div class="post-nav-title">微调 vs RAG：什么时候该用哪种方案？</div>
+          </a>
+          <a href="#" class="post-nav-card next">
+            <div class="post-nav-label">
+              下一篇
+              <span>→</span>
+            </div>
+            <div class="post-nav-title">从零搭建一套 CI/CD 流水线的完整思考</div>
+          </a>
+        </nav>
+
+        <!-- Footer -->
+        <div class="article-footer">
+          感谢阅读 · 如有帮助欢迎分享 · 转载请注明出处
+        </div>
+
+      </article>
+    </main>
+  </div>
+
+<script>
+  // ===== 目录滚动高亮 =====
+  (function() {
+    const sections = document.querySelectorAll('.article-content h2');
+    const tocItems = document.querySelectorAll('.toc-item');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    function getOffsetTop(el) {
+      return el.getBoundingClientRect().top + window.pageYOffset;
+    }
+
+    function updateActiveToc() {
+      const scrollY = window.pageYOffset + 150;
+      let currentIndex = 0;
+
+      sections.forEach((section, index) => {
+        if (getOffsetTop(section) <= scrollY) {
+          currentIndex = index;
+        }
+      });
+
+      tocItems.forEach((item, index) => {
+        if (index === currentIndex) {
+          item.classList.add('active');
+          tocLinks[index].classList.add('active');
+        } else {
+          item.classList.remove('active');
+          tocLinks[index].classList.remove('active');
+        }
+      });
+    }
+
+    // 节流
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          updateActiveToc();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // 初始化
+    updateActiveToc();
+  })();
+
+  // ===== 平滑滚动兼容（点击目录） =====
+  document.querySelectorAll('.toc-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        const offsetTop = targetEl.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
