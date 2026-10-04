@@ -6,16 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YCC's Lab — 创意·代码·探索</title>
   <meta name="description" content="一个开发者的创意实验室：项目实验、技术笔记、AI 探索、设计想法与生活记录。" />
-  <link rel="stylesheet" href="css/style.css?v=2.0" />
+  <link rel="stylesheet" href="css/style.css?v=3.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-  <!-- 自定义光标 -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-follower" id="cursorFollower"></div>
+  <!-- 百叶窗滚动遮罩 -->
+  <div class="shutter-overlay" id="shutterOverlay">
+    <div class="shutter-slats">
+      <div class="slat"></div><div class="slat"></div><div class="slat"></div>
+      <div class="slat"></div><div class="slat"></div><div class="slat"></div>
+      <div class="slat"></div><div class="slat"></div><div class="slat"></div>
+      <div class="slat"></div><div class="slat"></div><div class="slat"></div>
+    </div>
+  </div>
+
+  <!-- 鼠标尾迹画布 -->
+  <canvas id="trailCanvas"></canvas>
 
   <!-- 粒子背景 -->
   <canvas id="particleCanvas"></canvas>
@@ -69,13 +78,14 @@
         </p>
         <div class="hero-actions">
           <a href="#projects" class="btn btn-primary">
-            <span class="btn-icon">⚡</span>
+            <span class="btn-text-deco">[</span>
             查看实验项目
             <span class="btn-arrow">→</span>
+            <span class="btn-text-deco">]</span>
           </a>
           <a href="#ideas" class="btn btn-ghost">
-            <span class="btn-icon">💡</span>
-            看看我的想法
+            <span class="btn-glitch">IDEAS</span>
+            <span class="btn-glitch-sub">创意想法</span>
           </a>
         </div>
         <div class="hero-stats-row">
@@ -112,19 +122,19 @@
         </div>
         <div class="float-tag tag-1">
           <span class="tag-dot"></span>
-          Currently Building
+          <span class="tag-label">BUILDING</span>
         </div>
         <div class="float-tag tag-2">
-          <span class="tag-icon">🧠</span>
-          Exploring AI
+          <span class="tag-num">01</span>
+          <span class="tag-label">AI RESEARCH</span>
         </div>
         <div class="float-tag tag-3">
-          <span class="tag-icon">🎨</span>
-          Design × Code
+          <span class="tag-num">02</span>
+          <span class="tag-label">DESIGN × CODE</span>
         </div>
         <div class="float-tag tag-4">
-          <span class="tag-icon">🔬</span>
-          Experimenting
+          <span class="tag-num">03</span>
+          <span class="tag-label">EXPERIMENTING</span>
         </div>
       </div>
     </div>
@@ -166,14 +176,14 @@
           </div>
 
           <div class="about-tags">
-            <span class="chip">🧩 全栈开发</span>
-            <span class="chip">🤖 AI 探索</span>
-            <span class="chip">📊 数据可视化</span>
-            <span class="chip">🎨 交互设计</span>
-            <span class="chip">⚙️ 工具控</span>
-            <span class="chip">📚 终身学习</span>
-            <span class="chip">🎮 游戏爱好者</span>
-            <span class="chip">📷 摄影</span>
+            <span class="chip">#全栈开发</span>
+            <span class="chip">#AI探索</span>
+            <span class="chip">#数据可视化</span>
+            <span class="chip">#交互设计</span>
+            <span class="chip">#工具控</span>
+            <span class="chip">#终身学习</span>
+            <span class="chip">#独立游戏</span>
+            <span class="chip">#胶片摄影</span>
           </div>
         </div>
 
@@ -217,8 +227,8 @@
       <div class="skills-bento">
         <!-- 前端 -->
         <div class="bento-card bento-large tilt-card">
-          <div class="bento-icon">🎨</div>
-          <h3>前端开发</h3>
+          <div class="bento-num">/ 01</div>
+          <h3 class="bento-title">FRONT-END<br/><span class="bento-title-cn">前端开发</span></h3>
           <p class="bento-desc">追求像素级还原与丝滑交互体验</p>
           <div class="bento-tags">
             <span>React</span><span>Vue</span><span>TypeScript</span>
@@ -232,8 +242,8 @@
 
         <!-- 后端 -->
         <div class="bento-card tilt-card">
-          <div class="bento-icon">⚙️</div>
-          <h3>后端服务</h3>
+          <div class="bento-num">/ 02</div>
+          <h3>BACK-END<br/><span class="bento-sub">后端服务</span></h3>
           <div class="bento-tags small">
             <span>Node.js</span><span>Python</span><span>Go</span>
             <span>Django</span><span>Express</span>
@@ -242,8 +252,8 @@
 
         <!-- AI / 算法 -->
         <div class="bento-card tilt-card">
-          <div class="bento-icon">🧠</div>
-          <h3>AI & 算法</h3>
+          <div class="bento-num">/ 03</div>
+          <h3>AI & ML<br/><span class="bento-sub">算法智能</span></h3>
           <div class="bento-tags small">
             <span>PyTorch</span><span>TensorFlow</span>
             <span>LLM</span><span>CV</span><span>NLP</span>
@@ -252,8 +262,8 @@
 
         <!-- 数据库 -->
         <div class="bento-card tilt-card">
-          <div class="bento-icon">🗄️</div>
-          <h3>数据库</h3>
+          <div class="bento-num">/ 04</div>
+          <h3>DATABASE<br/><span class="bento-sub">数据存储</span></h3>
           <div class="bento-tags small">
             <span>MySQL</span><span>MongoDB</span>
             <span>Redis</span><span>PostgreSQL</span>
@@ -262,8 +272,8 @@
 
         <!-- 工具 & 运维 -->
         <div class="bento-card tilt-card">
-          <div class="bento-icon">🛠️</div>
-          <h3>工具 & 运维</h3>
+          <div class="bento-num">/ 05</div>
+          <h3>DEVOPS<br/><span class="bento-sub">工具运维</span></h3>
           <div class="bento-tags small">
             <span>Docker</span><span>Git</span><span>CI/CD</span>
             <span>Linux</span><span>AWS</span>
@@ -272,11 +282,11 @@
 
         <!-- 设计 -->
         <div class="bento-card tilt-card">
-          <div class="bento-icon">✨</div>
-          <h3>设计能力</h3>
+          <div class="bento-num">/ 06</div>
+          <h3>DESIGN<br/><span class="bento-sub">设计能力</span></h3>
           <div class="bento-tags small">
             <span>Figma</span><span>UI/UX</span>
-            <span>动效设计</span><span>品牌</span>
+            <span>Motion</span><span>Brand</span>
           </div>
         </div>
       </div>
@@ -774,9 +784,10 @@
               <textarea name="message" rows="5" placeholder="随便说点什么..." required></textarea>
             </div>
             <button type="submit" class="btn btn-primary btn-full">
-              <span class="btn-icon">🚀</span>
+              <span class="btn-text-deco">[</span>
               发送消息
               <span class="btn-arrow">→</span>
+              <span class="btn-text-deco">]</span>
             </button>
           </form>
         </div>
@@ -826,6 +837,6 @@
     <span>↑</span>
   </button>
 
-  <script src="js/main.js?v=2.0"></script>
+  <script src="js/main.js?v=3.0"></script>
 </body>
 </html>
