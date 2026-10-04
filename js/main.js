@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     { bg: '#f8f9fc', grid: 'rgba(109, 40, 217, 0.07)', accent: '#8b5cf6' }  // Contact - 紫
   ];
 
-  const TILE_SIZE = 12; // 网格块大小（更细密）
+  const TILE_SIZE = 6; // 网格块大小（更细密）
   let gridCols = 0, gridRows = 0;
   let tiles = []; // 每个方块的状态
   let currentThemeIdx = 0;
@@ -365,8 +365,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 网格线（四边）— 细线更细腻
         gridCtx.strokeStyle = color;
-        gridCtx.lineWidth = 0.5;
-        gridCtx.strokeRect(x + 0.25, drawY + 0.25, TILE_SIZE - 0.5, drawH - 0.5);
+        gridCtx.lineWidth = 0.3;
+        gridCtx.strokeRect(x + 0.15, drawY + 0.15, TILE_SIZE - 0.3, drawH - 0.3);
       }
     }
 
@@ -1249,8 +1249,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         gridCtx.strokeStyle = color;
-        gridCtx.lineWidth = 0.5;
-        gridCtx.strokeRect(drawX + 0.25, drawY + 0.25, drawW - 0.5, drawH - 0.5);
+        gridCtx.lineWidth = 0.3;
+        gridCtx.strokeRect(drawX + 0.15, drawY + 0.15, drawW - 0.3, drawH - 0.3);
       }
     }
 
