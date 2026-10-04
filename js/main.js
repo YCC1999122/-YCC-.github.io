@@ -124,25 +124,46 @@ document.addEventListener('DOMContentLoaded', function () {
   animateTrail();
 
   // ==========================================
-  // 2. 百叶窗滚动过渡效果
+  // 2. 百叶窗滚动过渡效果（3D翻转）
   // ==========================================
   const shutterOverlay = document.getElementById('shutterOverlay');
-  const sections = document.querySelectorAll('.section');
+  const slatFronts = document.querySelectorAll('.slat-front');
+  const slatBacks = document.querySelectorAll('.slat-back');
+  const sections2 = document.querySelectorAll('.section');
   let currentSectionIndex = 0;
   let isShuttering = false;
   let lastScrollY = 0;
-  let scrollDirection = 'down';
+
+  // 每个 section 对应的百叶窗颜色（主题色）
+  const sectionThemes = [
+    { front: 'rgba(139, 92, 246, 0.35)', back: 'rgba(6, 182, 212, 0.3)' },   // Hero - 紫青
+    { front: 'rgba(6, 182, 212, 0.3)', back: 'rgba(244, 114, 182, 0.25)' },  // About - 青粉
+    { front: 'rgba(244, 114, 182, 0.25)', back: 'rgba(59, 130, 246, 0.28)' }, // Skills - 粉蓝
+    { front: 'rgba(59, 130, 246, 0.28)', back: 'rgba(245, 158, 11, 0.22)' }, // Projects - 蓝橙
+    { front: 'rgba(245, 158, 11, 0.22)', back: 'rgba(16, 185, 129, 0.22)' }, // Ideas - 橙绿
+    { front: 'rgba(16, 185, 129, 0.22)', back: 'rgba(139, 92, 246, 0.35)' }, // Notes - 绿紫
+    { front: 'rgba(139, 92, 246, 0.35)', back: 'rgba(6, 182, 212, 0.3)' }    // Contact - 紫青
+  ];
+
+  function setShutterColors(frontColor, backColor) {
+    slatFronts.forEach(face => {
+      face.style.background = frontColor;
+    });
+    slatBacks.forEach(face => {
+      face.style.background = backColor;
+    });
+  }
 
   function handleShutterScroll() {
     const scrollY = window.scrollY;
-    scrollDirection = scrollY > lastScrollY ? 'down' : 'up';
+    const scrollDir = scrollY > lastScrollY ? 'down' : 'up';
     lastScrollY = scrollY;
 
     // 检测当前进入的 section
-    const viewportMid = scrollY + window.innerHeight * 0.4;
+    const viewportMid = scrollY + window.innerHeight * 0.5;
 
     let newSectionIndex = -1;
-    sections.forEach((section, index) => {
+    sections2.forEach((section, index) => {
       const top = section.offsetTop;
       const bottom = top + section.offsetHeight;
       if (viewportMid >= top && viewportMid < bottom) {
@@ -151,24 +172,34 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (newSectionIndex !== -1 && newSectionIndex !== currentSectionIndex && !isShuttering) {
+      const oldIndex = currentSectionIndex;
       currentSectionIndex = newSectionIndex;
-      triggerShutter();
+      triggerShutter(oldIndex, newSectionIndex, scrollDir);
     }
   }
 
-  function triggerShutter() {
+  function triggerShutter(fromIndex, toIndex, direction) {
     if (isShuttering) return;
     isShuttering = true;
 
+    const theme = sectionThemes[toIndex] || sectionThemes[0];
+    // 正面显示"来的方向"的颜色，背面显示"要去的方向"的颜色
+    setShutterColors(theme.front, theme.back);
+
+    // 触发翻转动画
     shutterOverlay.classList.add('active');
 
-    // 百叶窗打开后延迟关闭
+    // 动画中途（翻转到90度左右时）更新背景已经不需要了，
+    // 因为 section 本身有背景色，百叶窗只是过渡遮罩
+
+    // 动画结束后移除
     setTimeout(() => {
       shutterOverlay.classList.remove('active');
+      // 等过渡完全结束后解锁
       setTimeout(() => {
         isShuttering = false;
-      }, 700);
-    }, 350);
+      }, 900);
+    }, 1000);
   }
 
   // 节流滚动监听
@@ -304,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const scrollPos = window.scrollY + 120;
     let currentSection = '';
 
-    sections.forEach(section => {
+    sections2.forEach(section => {
       const top = section.offsetTop;
       const height = section.offsetHeight;
       if (scrollPos >= top && scrollPos < top + height) {
