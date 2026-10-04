@@ -4,27 +4,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YCC | 个人作品集</title>
-  <meta name="description" content="YCC 的个人作品集网站，展示项目经历、技术栈与联系方式。" />
+  <title>YCC's Lab — 创意·代码·探索</title>
+  <meta name="description" content="一个开发者的创意实验室：项目实验、技术笔记、AI 探索、设计想法与生活记录。" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
+
+  <!-- 自定义光标 -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
+
+  <!-- 粒子背景 -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- 滚动进度条 -->
+  <div class="scroll-progress" id="scrollProgress"></div>
 
   <!-- ========== 导航栏 ========== -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
       <a href="#hero" class="nav-logo">
-        <span class="logo-bracket">&lt;</span>YCC<span class="logo-bracket">/&gt;</span>
+        <span class="logo-mark">◉</span>
+        <span class="logo-text">YCC's <em>Lab</em></span>
       </a>
       <ul class="nav-menu" id="navMenu">
-        <li><a href="#hero" class="nav-link">首页</a></li>
-        <li><a href="#about" class="nav-link">关于我</a></li>
-        <li><a href="#skills" class="nav-link">技能</a></li>
-        <li><a href="#projects" class="nav-link">项目</a></li>
-        <li><a href="#contact" class="nav-link">联系</a></li>
+        <li><a href="#about" class="nav-link"><span class="nav-num">01</span>关于</a></li>
+        <li><a href="#skills" class="nav-link"><span class="nav-num">02</span>技术栈</a></li>
+        <li><a href="#projects" class="nav-link"><span class="nav-num">03</span>项目实验</a></li>
+        <li><a href="#ideas" class="nav-link"><span class="nav-num">04</span>想法</a></li>
+        <li><a href="#notes" class="nav-link"><span class="nav-num">05</span>笔记</a></li>
+        <li><a href="#contact" class="nav-link"><span class="nav-num">06</span>联系</a></li>
       </ul>
       <button class="nav-toggle" id="navToggle" aria-label="菜单">
         <span></span><span></span><span></span>
@@ -34,601 +46,737 @@
 
   <!-- ========== Hero 首屏 ========== -->
   <section class="hero" id="hero">
-    <div class="hero-bg">
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-    </div>
+    <div class="hero-grid-bg"></div>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+
     <div class="container hero-content">
-      <div class="hero-text">
-        <p class="hero-greeting">👋 你好，我是</p>
-        <h1 class="hero-name">
-          <span class="gradient-text">YCC</span>
+      <div class="hero-left">
+        <div class="hero-tag">
+          <span class="pulse-dot"></span>
+          CREATIVE DEVELOPER LAB / 创意开发实验室
+        </div>
+        <h1 class="hero-title">
+          <span class="line"><span class="line-inner">用代码</span></span>
+          <span class="line"><span class="line-inner gradient-text">建造想法</span></span>
+          <span class="line"><span class="line-inner">的实验场</span></span>
         </h1>
-        <h2 class="hero-title">全栈开发工程师 / 前端爱好者</h2>
         <p class="hero-desc">
-          专注于 Web 应用开发，热爱用代码解决实际问题。
-          擅长 React、Vue 等前端框架，熟悉 Node.js、Python 后端开发。
-          持续学习新技术，追求高质量的代码与优秀的用户体验。
+          这里是我的数字花园 —— 记录代码实验、技术探索、AI 研究、
+          设计思考与一切有趣的创意碰撞。<br/>
+          从前端交互到后端架构，从算法优化到产品设计，
+          持续折腾，永不停歇。
         </p>
         <div class="hero-actions">
           <a href="#projects" class="btn btn-primary">
-            查看项目 <span class="arrow">→</span>
+            <span class="btn-icon">⚡</span>
+            查看实验项目
+            <span class="btn-arrow">→</span>
           </a>
-          <a href="#contact" class="btn btn-outline">
-            联系我
-          </a>
-        </div>
-        <div class="hero-social">
-          <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="social-link" title="GitHub">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          </a>
-          <a href="mailto:your@email.com" class="social-link" title="Email">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-          </a>
-          <a href="#" target="_blank" rel="noopener" class="social-link" title="博客">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          <a href="#ideas" class="btn btn-ghost">
+            <span class="btn-icon">💡</span>
+            看看我的想法
           </a>
         </div>
-      </div>
-      <div class="hero-visual">
-        <div class="avatar-wrapper">
-          <div class="avatar-ring"></div>
-          <div class="avatar">
-            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="100" cy="100" r="96" fill="url(#avatarGrad)"/>
-              <circle cx="100" cy="80" r="32" fill="#fff" opacity="0.9"/>
-              <path d="M40 180 C 50 130, 150 130, 160 180 L 160 200 L 40 200 Z" fill="#fff" opacity="0.9"/>
-              <defs>
-                <linearGradient id="avatarGrad" x1="0" y1="0" x2="200" y2="200">
-                  <stop offset="0%" stop-color="#667eea"/>
-                  <stop offset="100%" stop-color="#764ba2"/>
-                </linearGradient>
-              </defs>
-            </svg>
+        <div class="hero-stats-row">
+          <div class="mini-stat">
+            <span class="mini-num" data-count="42">0</span>
+            <span class="mini-label">实验项目</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-num" data-count="128">0</span>
+            <span class="mini-label">技术笔记</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-num" data-count="365">0</span>
+            <span class="mini-label">天连续编码</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-num">∞</span>
+            <span class="mini-label">好奇指数</span>
           </div>
         </div>
-        <div class="floating-card card-1">
-          <span class="card-icon">⚛️</span>
-          <span class="card-text">React</span>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-orb">
+          <div class="orb-ring orb-ring-1"></div>
+          <div class="orb-ring orb-ring-2"></div>
+          <div class="orb-ring orb-ring-3"></div>
+          <div class="orb-core">
+            <div class="orb-text">
+              <span class="orb-big">LAB</span>
+              <span class="orb-small">/ 001</span>
+            </div>
+          </div>
         </div>
-        <div class="floating-card card-2">
-          <span class="card-icon">🟢</span>
-          <span class="card-text">Vue.js</span>
+        <div class="float-tag tag-1">
+          <span class="tag-dot"></span>
+          Currently Building
         </div>
-        <div class="floating-card card-3">
-          <span class="card-icon">🟩</span>
-          <span class="card-text">Node.js</span>
+        <div class="float-tag tag-2">
+          <span class="tag-icon">🧠</span>
+          Exploring AI
         </div>
-        <div class="floating-card card-4">
-          <span class="card-icon">🐍</span>
-          <span class="card-text">Python</span>
+        <div class="float-tag tag-3">
+          <span class="tag-icon">🎨</span>
+          Design × Code
+        </div>
+        <div class="float-tag tag-4">
+          <span class="tag-icon">🔬</span>
+          Experimenting
         </div>
       </div>
     </div>
-    <a href="#about" class="scroll-down" aria-label="向下滚动">
-      <span></span>
-    </a>
+
+    <div class="hero-scroll-hint">
+      <span>SCROLL TO EXPLORE</span>
+      <div class="scroll-line"></div>
+    </div>
   </section>
 
-  <!-- ========== About 关于我 ========== -->
+  <!-- ========== About 关于 ========== -->
   <section class="section about" id="about">
     <div class="container">
-      <div class="section-header">
-        <span class="section-tag">About Me</span>
-        <h2 class="section-title">关于我</h2>
-        <div class="section-line"></div>
+      <div class="section-label">
+        <span class="label-num">01</span>
+        <span class="label-text">/ ABOUT</span>
       </div>
       <div class="about-grid">
-        <div class="about-text">
-          <h3>你好！我是 <span class="gradient-text">YCC</span></h3>
-          <p>
-            一名热爱技术的全栈开发者，拥有丰富的 Web 应用开发经验。
-            从前端页面到后端服务，从数据库设计到部署运维，都有实际项目经验。
-          </p>
-          <p>
-            我喜欢钻研新技术，关注行业发展趋势，享受将想法变成现实的过程。
-            在项目中，我注重代码质量和用户体验，追求优雅的解决方案。
-          </p>
-          <p>
-            工作之余，我会在 GitHub 上参与开源项目，分享技术心得，
-            也喜欢折腾各种有趣的 side project。
-          </p>
-          <div class="about-info">
-            <div class="info-item">
-              <span class="info-label">📍 位置</span>
-              <span class="info-value">中国</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">💼 身份</span>
-              <span class="info-value">全栈开发工程师</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">🎓 学历</span>
-              <span class="info-value">计算机相关专业</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">🌐 语言</span>
-              <span class="info-value">中文 / 英文</span>
-            </div>
+        <div class="about-main">
+          <h2 class="section-title big">
+            一个对世界充满好奇的<br/>
+            <span class="gradient-text">创意开发者</span>
+          </h2>
+          <div class="about-text">
+            <p>
+              你好，欢迎来到我的数字实验室 👋 我是 YCC，一名热爱创造的全栈开发者。
+              相比「完成项目」，我更享受「探索过程」—— 把一个模糊的想法，
+              通过代码、设计、算法，一步步变成可触摸的现实。
+            </p>
+            <p>
+              我的兴趣很杂：从 Web 开发到 AI 算法，从数据可视化到交互设计，
+              从产品思辩到工具效率。我相信 <strong>跨界的碰撞</strong> 才是创意的源泉。
+              这个网站就是我的"工作台"，记录所有正在折腾的东西。
+            </p>
+            <p>
+              如果你也对某些方向感兴趣，或者有奇怪的想法想聊，
+              <a href="#contact" class="inline-link">随时找我 →</a>
+            </p>
           </div>
-          <a href="#" class="btn btn-primary" download>
-            📄 下载简历
-          </a>
+
+          <div class="about-tags">
+            <span class="chip">🧩 全栈开发</span>
+            <span class="chip">🤖 AI 探索</span>
+            <span class="chip">📊 数据可视化</span>
+            <span class="chip">🎨 交互设计</span>
+            <span class="chip">⚙️ 工具控</span>
+            <span class="chip">📚 终身学习</span>
+            <span class="chip">🎮 游戏爱好者</span>
+            <span class="chip">📷 摄影</span>
+          </div>
         </div>
-        <div class="about-stats">
-          <div class="stat-card">
-            <div class="stat-number" data-target="5+">0</div>
-            <div class="stat-label">年开发经验</div>
+
+        <div class="about-side">
+          <div class="info-card">
+            <div class="info-card-header">
+              <span class="card-dot"></span>
+              <span class="card-title">/ profile.txt</span>
+            </div>
+            <div class="info-card-body">
+              <div class="info-line"><span class="info-key">name</span><span class="info-val">YCC</span></div>
+              <div class="info-line"><span class="info-key">role</span><span class="info-val">Creative Developer</span></div>
+              <div class="info-line"><span class="info-key">location</span><span class="info-val">China 🌏</span></div>
+              <div class="info-line"><span class="info-key">status</span><span class="info-val status-online">● online</span></div>
+              <div class="info-line"><span class="info-key">focus</span><span class="info-val">Web + AI</span></div>
+              <div class="info-line"><span class="info-key">learning</span><span class="info-val">LLM / CV</span></div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-number" data-target="20+">0</div>
-            <div class="stat-label">完成项目</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" data-target="500+">0</div>
-            <div class="stat-label">GitHub Stars</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" data-target="∞">0</div>
-            <div class="stat-label">学习热情</div>
+
+          <div class="quote-card">
+            <span class="quote-mark">"</span>
+            <p>Stay curious,<br/>keep building,<br/>never stop exploring.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== Skills 技能 ========== -->
+  <!-- ========== Skills 技术栈 ========== -->
   <section class="section skills" id="skills">
     <div class="container">
-      <div class="section-header">
-        <span class="section-tag">My Skills</span>
-        <h2 class="section-title">技能栈</h2>
-        <div class="section-line"></div>
-        <p class="section-desc">多年积累的技术栈，覆盖前端、后端、数据库及工具链</p>
+      <div class="section-label">
+        <span class="label-num">02</span>
+        <span class="label-text">/ TECH STACK</span>
       </div>
-      <div class="skills-grid">
-        <div class="skill-category">
-          <div class="skill-category-header">
-            <span class="skill-icon">🎨</span>
-            <h3>前端开发</h3>
+      <h2 class="section-title big left">
+        我的 <span class="gradient-text">武器库</span>
+      </h2>
+      <p class="section-sub left">从前端到后端，从训练到部署，持续扩展中...</p>
+
+      <div class="skills-bento">
+        <!-- 前端 -->
+        <div class="bento-card bento-large tilt-card">
+          <div class="bento-icon">🎨</div>
+          <h3>前端开发</h3>
+          <p class="bento-desc">追求像素级还原与丝滑交互体验</p>
+          <div class="bento-tags">
+            <span>React</span><span>Vue</span><span>TypeScript</span>
+            <span>Next.js</span><span>Tailwind</span><span>Three.js</span>
+            <span>GSAP</span><span>WebGL</span>
           </div>
-          <div class="skill-items">
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>HTML / CSS</span>
-                <span>95%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 95%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>JavaScript / TypeScript</span>
-                <span>90%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>React / Redux</span>
-                <span>88%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 88%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>Vue.js / Vuex</span>
-                <span>85%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>响应式 / 移动端适配</span>
-                <span>90%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div>
-            </div>
+          <div class="bento-level">
+            <div class="level-bar" style="width: 92%"></div>
           </div>
         </div>
 
-        <div class="skill-category">
-          <div class="skill-category-header">
-            <span class="skill-icon">⚙️</span>
-            <h3>后端开发</h3>
-          </div>
-          <div class="skill-items">
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>Node.js / Express</span>
-                <span>85%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>Python / Django</span>
-                <span>80%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 80%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>RESTful API 设计</span>
-                <span>88%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 88%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>数据库 (MySQL / MongoDB)</span>
-                <span>82%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 82%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>Redis / 缓存策略</span>
-                <span>75%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 75%"></div></div>
-            </div>
+        <!-- 后端 -->
+        <div class="bento-card tilt-card">
+          <div class="bento-icon">⚙️</div>
+          <h3>后端服务</h3>
+          <div class="bento-tags small">
+            <span>Node.js</span><span>Python</span><span>Go</span>
+            <span>Django</span><span>Express</span>
           </div>
         </div>
 
-        <div class="skill-category">
-          <div class="skill-category-header">
-            <span class="skill-icon">🛠️</span>
-            <h3>工具 & 其他</h3>
-          </div>
-          <div class="skill-items">
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>Git / GitHub</span>
-                <span>90%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>Docker / 容器化</span>
-                <span>75%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 75%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>CI/CD 自动化部署</span>
-                <span>78%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 78%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>Webpack / Vite</span>
-                <span>85%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info">
-                <span>Linux 服务器运维</span>
-                <span>78%</span>
-              </div>
-              <div class="skill-bar"><div class="skill-progress" style="width: 78%"></div></div>
-            </div>
+        <!-- AI / 算法 -->
+        <div class="bento-card tilt-card">
+          <div class="bento-icon">🧠</div>
+          <h3>AI & 算法</h3>
+          <div class="bento-tags small">
+            <span>PyTorch</span><span>TensorFlow</span>
+            <span>LLM</span><span>CV</span><span>NLP</span>
           </div>
         </div>
-      </div>
 
-      <!-- 技术标签云 -->
-      <div class="tech-tags">
-        <span class="tech-tag">React</span>
-        <span class="tech-tag">Vue.js</span>
-        <span class="tech-tag">TypeScript</span>
-        <span class="tech-tag">Node.js</span>
-        <span class="tech-tag">Python</span>
-        <span class="tech-tag">Django</span>
-        <span class="tech-tag">Express</span>
-        <span class="tech-tag">MongoDB</span>
-        <span class="tech-tag">MySQL</span>
-        <span class="tech-tag">Redis</span>
-        <span class="tech-tag">Docker</span>
-        <span class="tech-tag">Git</span>
-        <span class="tech-tag">Webpack</span>
-        <span class="tech-tag">Vite</span>
-        <span class="tech-tag">Sass</span>
-        <span class="tech-tag">TailwindCSS</span>
-        <span class="tech-tag">GraphQL</span>
-        <span class="tech-tag">Flutter</span>
+        <!-- 数据库 -->
+        <div class="bento-card tilt-card">
+          <div class="bento-icon">🗄️</div>
+          <h3>数据库</h3>
+          <div class="bento-tags small">
+            <span>MySQL</span><span>MongoDB</span>
+            <span>Redis</span><span>PostgreSQL</span>
+          </div>
+        </div>
+
+        <!-- 工具 & 运维 -->
+        <div class="bento-card tilt-card">
+          <div class="bento-icon">🛠️</div>
+          <h3>工具 & 运维</h3>
+          <div class="bento-tags small">
+            <span>Docker</span><span>Git</span><span>CI/CD</span>
+            <span>Linux</span><span>AWS</span>
+          </div>
+        </div>
+
+        <!-- 设计 -->
+        <div class="bento-card tilt-card">
+          <div class="bento-icon">✨</div>
+          <h3>设计能力</h3>
+          <div class="bento-tags small">
+            <span>Figma</span><span>UI/UX</span>
+            <span>动效设计</span><span>品牌</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== Projects 项目展示 ========== -->
+  <!-- ========== Projects 项目实验 ========== -->
   <section class="section projects" id="projects">
     <div class="container">
-      <div class="section-header">
-        <span class="section-tag">My Work</span>
-        <h2 class="section-title">项目作品</h2>
-        <div class="section-line"></div>
-        <p class="section-desc">精选项目展示，点击查看详情和源码</p>
+      <div class="section-label">
+        <span class="label-num">03</span>
+        <span class="label-text">/ PROJECTS</span>
+      </div>
+      <div class="section-header-row">
+        <h2 class="section-title big left">
+          实验<span class="gradient-text">项目</span>
+        </h2>
+        <div class="project-filter">
+          <button class="filter-btn active" data-filter="all">全部</button>
+          <button class="filter-btn" data-filter="web">Web</button>
+          <button class="filter-btn" data-filter="ai">AI</button>
+          <button class="filter-btn" data-filter="mobile">移动端</button>
+          <button class="filter-btn" data-filter="tool">工具</button>
+          <button class="filter-btn" data-filter="design">设计</button>
+        </div>
       </div>
 
-      <!-- 筛选按钮 -->
-      <div class="project-filter">
-        <button class="filter-btn active" data-filter="all">全部</button>
-        <button class="filter-btn" data-filter="web">Web 应用</button>
-        <button class="filter-btn" data-filter="mobile">移动应用</button>
-        <button class="filter-btn" data-filter="open-source">开源项目</button>
-        <button class="filter-btn" data-filter="design">设计作品</button>
-      </div>
-
-      <!-- 项目卡片网格 -->
       <div class="projects-grid" id="projectsGrid">
 
         <!-- 项目 1 -->
-        <div class="project-card" data-category="web">
-          <div class="project-image">
-            <div class="project-img-placeholder project-img-1">
-              <span class="project-emoji">📋</span>
+        <article class="project-card tilt-card" data-category="web ai">
+          <div class="project-visual pv-1">
+            <div class="pv-content">
+              <span class="pv-emoji">🤖</span>
             </div>
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="project-link" title="查看源码">
+            <div class="pv-overlay">
+              <div class="pv-links">
+                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="pv-link" title="GitHub">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
                 </a>
-                <a href="#" target="_blank" rel="noopener" class="project-link" title="在线预览">
+                <a href="#" class="pv-link" title="Demo">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
                 </a>
               </div>
             </div>
           </div>
           <div class="project-body">
-            <span class="project-category">Web 应用</span>
-            <h3 class="project-title">智能任务管理系统</h3>
-            <p class="project-desc">支持团队协作的任务管理工具，包含进度追踪、智能提醒、甘特图等功能。前后端分离架构，支持多端访问。</p>
-            <div class="project-tags">
-              <span>React</span>
-              <span>Node.js</span>
-              <span>MongoDB</span>
-              <span>Redux</span>
+            <div class="project-meta">
+              <span class="project-type">AI × Web</span>
+              <span class="project-date">2024</span>
+            </div>
+            <h3 class="project-title">AI 智能对话助手</h3>
+            <p class="project-desc">基于大语言模型的对话系统，支持多轮对话、代码生成、文档分析。前端 React + 后端 FastAPI + 向量数据库。</p>
+            <div class="project-stack">
+              <span>React</span><span>Python</span><span>LLM</span><span>LangChain</span>
+            </div>
+            <div class="project-highlight">
+              <span>🏆 亮点：流式输出 / 记忆管理 / 插件系统</span>
             </div>
           </div>
-        </div>
+        </article>
 
         <!-- 项目 2 -->
-        <div class="project-card" data-category="web">
-          <div class="project-image">
-            <div class="project-img-placeholder project-img-2">
-              <span class="project-emoji">📊</span>
+        <article class="project-card tilt-card" data-category="web">
+          <div class="project-visual pv-2">
+            <div class="pv-content">
+              <span class="pv-emoji">📊</span>
             </div>
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="project-link" title="查看源码">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                </a>
-                <a href="#" target="_blank" rel="noopener" class="project-link" title="在线预览">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-                </a>
+            <div class="pv-overlay">
+              <div class="pv-links">
+                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="pv-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+                <a href="#" class="pv-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>
               </div>
             </div>
           </div>
           <div class="project-body">
-            <span class="project-category">Web 应用</span>
-            <h3 class="project-title">电商数据分析平台</h3>
-            <p class="project-desc">面向电商企业的数据可视化分析系统，实时监控销售数据、用户行为和库存状况，助力数据驱动决策。</p>
-            <div class="project-tags">
-              <span>Vue.js</span>
-              <span>Python</span>
-              <span>Django</span>
-              <span>ECharts</span>
+            <div class="project-meta">
+              <span class="project-type">数据可视化</span>
+              <span class="project-date">2024</span>
+            </div>
+            <h3 class="project-title">实时数据大屏系统</h3>
+            <p class="project-desc">企业级数据可视化大屏，支持多种图表类型、实时数据推送、自定义布局拖拽。WebGL 渲染万级数据点流畅不卡。</p>
+            <div class="project-stack">
+              <span>Vue 3</span><span>ECharts</span><span>WebGL</span><span>WebSocket</span>
+            </div>
+            <div class="project-highlight">
+              <span>⚡ 亮点：10w+ 数据点 / 60fps 渲染</span>
             </div>
           </div>
-        </div>
+        </article>
 
         <!-- 项目 3 -->
-        <div class="project-card" data-category="mobile">
-          <div class="project-image">
-            <div class="project-img-placeholder project-img-3">
-              <span class="project-emoji">💪</span>
+        <article class="project-card tilt-card" data-category="ai">
+          <div class="project-visual pv-3">
+            <div class="pv-content">
+              <span class="pv-emoji">👁️</span>
             </div>
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="project-link" title="查看源码">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                </a>
-                <a href="#" target="_blank" rel="noopener" class="project-link" title="在线预览">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-                </a>
+            <div class="pv-overlay">
+              <div class="pv-links">
+                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="pv-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
               </div>
             </div>
           </div>
           <div class="project-body">
-            <span class="project-category">移动应用</span>
-            <h3 class="project-title">健康追踪 App</h3>
-            <p class="project-desc">帮助用户记录运动、饮食和睡眠数据的健康管理应用。包含丰富的数据可视化图表和个性化健康建议。</p>
-            <div class="project-tags">
-              <span>Flutter</span>
-              <span>Firebase</span>
-              <span>Dart</span>
-              <span>REST API</span>
+            <div class="project-meta">
+              <span class="project-type">计算机视觉</span>
+              <span class="project-date">2023</span>
+            </div>
+            <h3 class="project-title">图像风格迁移工具</h3>
+            <p class="project-desc">基于深度学习的图像风格迁移应用，支持实时预览、多种艺术风格、自定义风格训练。优化了推理速度，移动端也能跑。</p>
+            <div class="project-stack">
+              <span>PyTorch</span><span>CNN</span><span>ONNX</span><span>Flutter</span>
+            </div>
+            <div class="project-highlight">
+              <span>🎨 亮点：20+ 风格 / 实时预览 / 移动端部署</span>
             </div>
           </div>
-        </div>
+        </article>
 
         <!-- 项目 4 -->
-        <div class="project-card" data-category="open-source">
-          <div class="project-image">
-            <div class="project-img-placeholder project-img-4">
-              <span class="project-emoji">📦</span>
+        <article class="project-card tilt-card" data-category="tool">
+          <div class="project-visual pv-4">
+            <div class="pv-content">
+              <span class="pv-emoji">⚡</span>
             </div>
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="project-link" title="查看源码">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                </a>
-                <a href="#" target="_blank" rel="noopener" class="project-link" title="查看文档">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h6v6h6v10H6z"/></svg>
-                </a>
+            <div class="pv-overlay">
+              <div class="pv-links">
+                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="pv-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
               </div>
             </div>
           </div>
           <div class="project-body">
-            <span class="project-category">开源项目</span>
-            <h3 class="project-title">UI 组件库</h3>
-            <p class="project-desc">一套现代化的 React UI 组件库，包含按钮、表单、卡片等常用组件，支持主题定制和响应式设计。</p>
-            <div class="project-tags">
-              <span>TypeScript</span>
-              <span>React</span>
-              <span>Storybook</span>
-              <span>SASS</span>
+            <div class="project-meta">
+              <span class="project-type">开发工具</span>
+              <span class="project-date">2024</span>
+            </div>
+            <h3 class="project-title">CLI 效率工具箱</h3>
+            <p class="project-desc">一套命令行效率工具集：项目脚手架、代码模板、自动部署、Git 助手。让重复工作一键完成，节省了大量时间。</p>
+            <div class="project-stack">
+              <span>Node.js</span><span>TypeScript</span><span>Commander</span>
+            </div>
+            <div class="project-highlight">
+              <span>🚀 亮点：提升 300% 开发效率</span>
             </div>
           </div>
-        </div>
+        </article>
 
         <!-- 项目 5 -->
-        <div class="project-card" data-category="web">
-          <div class="project-image">
-            <div class="project-img-placeholder project-img-5">
-              <span class="project-emoji">🎓</span>
+        <article class="project-card tilt-card" data-category="mobile">
+          <div class="project-visual pv-5">
+            <div class="pv-content">
+              <span class="pv-emoji">📱</span>
             </div>
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="project-link" title="查看源码">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                </a>
-                <a href="#" target="_blank" rel="noopener" class="project-link" title="在线预览">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-                </a>
+            <div class="pv-overlay">
+              <div class="pv-links">
+                <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="pv-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
               </div>
             </div>
           </div>
           <div class="project-body">
-            <span class="project-category">Web 应用</span>
-            <h3 class="project-title">在线教育平台</h3>
-            <p class="project-desc">功能完善的在线学习平台，支持视频课程、在线测验、学习进度追踪。包含教师管理后台和学生学习空间。</p>
-            <div class="project-tags">
-              <span>Angular</span>
-              <span>Express.js</span>
-              <span>PostgreSQL</span>
-              <span>WebRTC</span>
+            <div class="project-meta">
+              <span class="project-type">移动端</span>
+              <span class="project-date">2023</span>
+            </div>
+            <h3 class="project-title">习惯养成 App</h3>
+            <p class="project-desc">用游戏化方式帮助养成好习惯的应用。打卡、成就系统、数据统计、好友 PK。设计灵感来自独立游戏的成就感设计。</p>
+            <div class="project-stack">
+              <span>React Native</span><span>Firebase</span><span>Redux</span>
+            </div>
+            <div class="project-highlight">
+              <span>🎮 亮点：游戏化设计 / 社交激励</span>
             </div>
           </div>
-        </div>
+        </article>
 
         <!-- 项目 6 -->
-        <div class="project-card" data-category="design">
-          <div class="project-image">
-            <div class="project-img-placeholder project-img-6">
-              <span class="project-emoji">🏠</span>
+        <article class="project-card tilt-card" data-category="design">
+          <div class="project-visual pv-6">
+            <div class="pv-content">
+              <span class="pv-emoji">🎨</span>
             </div>
-            <div class="project-overlay">
-              <div class="project-links">
-                <a href="#" target="_blank" rel="noopener" class="project-link" title="查看原型">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h6v6h6v10H6z"/></svg>
-                </a>
+            <div class="pv-overlay">
+              <div class="pv-links">
+                <a href="#" class="pv-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h6v6h6v10H6z"/></svg></a>
               </div>
             </div>
           </div>
           <div class="project-body">
-            <span class="project-category">设计作品</span>
-            <h3 class="project-title">智能家居控制界面</h3>
-            <p class="project-desc">为智能家居系统设计的用户界面，提供直观的设备控制和场景管理，注重用户体验和视觉美感。</p>
-            <div class="project-tags">
-              <span>Figma</span>
-              <span>UI/UX</span>
-              <span>原型设计</span>
+            <div class="project-meta">
+              <span class="project-type">设计系统</span>
+              <span class="project-date">2024</span>
+            </div>
+            <h3 class="project-title">组件设计系统</h3>
+            <p class="project-desc">一套完整的设计系统，包含设计规范、组件库、主题定制、暗黑模式。从 Figma 到代码的完整工作流，支持多品牌定制。</p>
+            <div class="project-stack">
+              <span>Figma</span><span>React</span><span>Storybook</span><span>Design Token</span>
+            </div>
+            <div class="project-highlight">
+              <span>✨ 亮点：设计开发一体化 / 50+ 组件</span>
             </div>
           </div>
-        </div>
+        </article>
 
       </div>
 
-      <!-- 更多项目按钮 -->
       <div class="more-projects">
         <a href="https://github.com/ycc1999122?tab=repositories" target="_blank" rel="noopener" class="btn btn-outline">
-          查看更多项目
+          在 GitHub 上看更多
           <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ========== Contact 联系我 ========== -->
+  <!-- ========== Ideas 创意想法 ========== -->
+  <section class="section ideas" id="ideas">
+    <div class="container">
+      <div class="section-label">
+        <span class="label-num">04</span>
+        <span class="label-text">/ IDEAS</span>
+      </div>
+      <h2 class="section-title big left">
+        正在<span class="gradient-text">思考</span>的事
+      </h2>
+      <p class="section-sub left">一些半成品的想法、待验证的假设、以及奇怪的脑洞。欢迎交流！</p>
+
+      <div class="ideas-grid">
+        <div class="idea-card tilt-card">
+          <div class="idea-header">
+            <span class="idea-status wip">🚧 探索中</span>
+            <span class="idea-category">AI × 教育</span>
+          </div>
+          <h3 class="idea-title">AI 编程导师系统</h3>
+          <p class="idea-desc">
+            能不能做一个像「私人编程教练」一样的 AI？不只是回答问题，
+            而是能根据学习者的水平，循序渐进地出练习题、review 代码、
+            指出思维误区。就像有个耐心的老师随时在身边。
+          </p>
+          <div class="idea-tags">
+            <span>LLM</span><span>教育科技</span><span>自适应学习</span>
+          </div>
+        </div>
+
+        <div class="idea-card tilt-card">
+          <div class="idea-header">
+            <span class="idea-status seed">💡 想法阶段</span>
+            <span class="idea-category">工具 × 效率</span>
+          </div>
+          <h3 class="idea-title">开发者第二大脑</h3>
+          <p class="idea-desc">
+            每天读代码、写代码、查文档，知识散落在各处。
+            能不能做一个工具，自动收集我看过的代码片段、技术文章、
+            bug 解决方案，然后自动关联、形成知识网络？
+          </p>
+          <div class="idea-tags">
+            <span>知识管理</span><span>RAG</span><span>开发者工具</span>
+          </div>
+        </div>
+
+        <div class="idea-card tilt-card">
+          <div class="idea-header">
+            <span class="idea-status done">✅ 已验证</span>
+            <span class="idea-category">可视化</span>
+          </div>
+          <h3 class="idea-title">代码 commit 可视化</h3>
+          <p class="idea-desc">
+            把一个项目的 Git 提交历史做成动态可视化，看代码是如何一行行生长出来的，
+            哪些文件最活跃，贡献者的协作模式是什么样。像看城市建设一样看代码演化。
+          </p>
+          <div class="idea-tags">
+            <span>数据可视化</span><span>Canvas</span><span>Git 分析</span>
+          </div>
+        </div>
+
+        <div class="idea-card tilt-card">
+          <div class="idea-header">
+            <span class="idea-status wip">🚧 探索中</span>
+            <span class="idea-category">AI × 创意</span>
+          </div>
+          <h3 class="idea-title">AI 协作创作实验</h3>
+          <p class="idea-desc">
+            人和 AI 一起创作会是什么感觉？不是 AI 生成我来改，
+            而是像两个艺术家对话一样，你一句我一句，
+            最后出来一个谁都单独想不出来的东西。
+          </p>
+          <div class="idea-tags">
+            <span>生成式 AI</span><span>创意工具</span><span>交互设计</span>
+          </div>
+        </div>
+
+        <div class="idea-card tilt-card">
+          <div class="idea-header">
+            <span class="idea-status seed">💡 想法阶段</span>
+            <span class="idea-category">游戏化</span>
+          </div>
+          <h3 class="idea-title">把生活变成 RPG</h3>
+          <p class="idea-desc">
+            学习、健身、工作... 为什么坚持一件事这么难？
+            如果把日常任务变成 RPG 里的任务，完成获得经验值升级，
+            解锁技能树，会不会更容易坚持下去？
+          </p>
+          <div class="idea-tags">
+            <span>游戏化设计</span><span>习惯养成</span><span>自我量化</span>
+          </div>
+        </div>
+
+        <div class="idea-card tilt-card">
+          <div class="idea-header">
+            <span class="idea-status future">🔮 远期设想</span>
+            <span class="idea-category">AI × 科研</span>
+          </div>
+          <h3 class="idea-title">AI 辅助论文阅读</h3>
+          <p class="idea-desc">
+            论文太多读不完？让 AI 帮你读，然后用通俗的话讲给你听，
+            还能对比不同论文的观点、找出争议点、甚至推荐相关研究。
+            让站在巨人肩膀上变得更容易。
+          </p>
+          <div class="idea-tags">
+            <span>NLP</span><span>学术工具</span><span>知识图谱</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Notes 技术笔记 ========== -->
+  <section class="section notes" id="notes">
+    <div class="container">
+      <div class="section-label">
+        <span class="label-num">05</span>
+        <span class="label-text">/ NOTES</span>
+      </div>
+      <h2 class="section-title big left">
+        技术<span class="gradient-text">笔记</span>
+      </h2>
+      <p class="section-sub left">记录学习过程中的思考与总结，持续更新中...</p>
+
+      <div class="notes-grid">
+        <a href="#" class="note-card tilt-card">
+          <div class="note-date">
+            <span class="note-day">15</span>
+            <span class="note-month">OCT</span>
+          </div>
+          <div class="note-content">
+            <span class="note-category">前端深度</span>
+            <h3 class="note-title">深入理解浏览器渲染流水线：从 HTML 到像素</h3>
+            <p class="note-excerpt">浏览器是如何把一行行代码变成屏幕上的画面的？这篇笔记整理了我对关键渲染路径的理解...</p>
+            <span class="note-read">阅读全文 →</span>
+          </div>
+        </a>
+
+        <a href="#" class="note-card tilt-card">
+          <div class="note-date">
+            <span class="note-day">08</span>
+            <span class="note-month">OCT</span>
+          </div>
+          <div class="note-content">
+            <span class="note-category">AI 探索</span>
+            <h3 class="note-title">微调 vs RAG：什么时候该用哪种方案？</h3>
+            <p class="note-excerpt">项目中经常被问到这个问题。整理一下两种方案的优劣对比、适用场景，以及我踩过的坑...</p>
+            <span class="note-read">阅读全文 →</span>
+          </div>
+        </a>
+
+        <a href="#" class="note-card tilt-card">
+          <div class="note-date">
+            <span class="note-day">28</span>
+            <span class="note-month">SEP</span>
+          </div>
+          <div class="note-content">
+            <span class="note-category">工程实践</span>
+            <h3 class="note-title">从零搭建一套 CI/CD 流水线的完整思考</h3>
+            <p class="note-excerpt">最近帮团队搭了一套自动化部署流程。记录下从需求分析到技术选型，再到踩坑的全过程...</p>
+            <span class="note-read">阅读全文 →</span>
+          </div>
+        </a>
+
+        <a href="#" class="note-card tilt-card">
+          <div class="note-date">
+            <span class="note-day">20</span>
+            <span class="note-month">SEP</span>
+          </div>
+          <div class="note-content">
+            <span class="note-category">算法笔记</span>
+            <h3 class="note-title">动态规划真的很难吗？我的解题套路总结</h3>
+            <p class="note-excerpt">曾经最怕动态规划题，刷了几十道之后慢慢摸到了门道。分享一下我的 DP 解题模板...</p>
+            <span class="note-read">阅读全文 →</span>
+          </div>
+        </a>
+
+        <a href="#" class="note-card tilt-card">
+          <div class="note-date">
+            <span class="note-day">12</span>
+            <span class="note-month">SEP</span>
+          </div>
+          <div class="note-content">
+            <span class="note-category">设计思考</span>
+            <h3 class="note-title">为什么好的 UI 动效这么重要？</h3>
+            <p class="note-excerpt">动效不只是好看，它在引导注意力、传达状态、增强沉浸感方面有不可替代的作用...</p>
+            <span class="note-read">阅读全文 →</span>
+          </div>
+        </a>
+
+        <a href="#" class="note-card tilt-card">
+          <div class="note-date">
+            <span class="note-day">05</span>
+            <span class="note-month">SEP</span>
+          </div>
+          <div class="note-content">
+            <span class="note-category">工具推荐</span>
+            <h3 class="note-title">我的 2024 开发者效率工具清单</h3>
+            <p class="note-excerpt">作为一个工具控，每年都会更新我的效率工具箱。今年发现了几个相见恨晚的神器...</p>
+            <span class="note-read">阅读全文 →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Contact 联系 ========== -->
   <section class="section contact" id="contact">
     <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Get In Touch</span>
-        <h2 class="section-title">联系我</h2>
-        <div class="section-line"></div>
-        <p class="section-desc">有项目合作或技术交流？欢迎随时联系我！</p>
+      <div class="section-label">
+        <span class="label-num">06</span>
+        <span class="label-text">/ CONTACT</span>
       </div>
+      <div class="contact-wrap">
+        <div class="contact-left">
+          <h2 class="section-title big left">
+            让我们<span class="gradient-text">聊聊</span>
+          </h2>
+          <p class="contact-desc">
+            无论是技术交流、项目合作、还是只是想打个招呼，
+            都欢迎随时联系我。我相信有趣的对话总能带来新的灵感。
+          </p>
 
-      <div class="contact-grid">
-        <div class="contact-info">
-          <div class="contact-item">
-            <div class="contact-icon">📧</div>
-            <div>
-              <h4>邮箱</h4>
-              <a href="mailto:your@email.com">your@email.com</a>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon">💻</div>
-            <div>
-              <h4>GitHub</h4>
-              <a href="https://github.com/ycc1999122" target="_blank" rel="noopener">github.com/ycc1999122</a>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon">📍</div>
-            <div>
-              <h4>位置</h4>
-              <p>中国 · 远程协作</p>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon">⏰</div>
-            <div>
-              <h4>工作状态</h4>
-              <p><span class="status-dot"></span> 开放合作机会</p>
-            </div>
-          </div>
-
-          <div class="contact-social">
-            <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="social-link big" title="GitHub">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <div class="contact-list">
+            <a href="mailto:your@email.com" class="contact-item">
+              <span class="ci-icon">📧</span>
+              <div>
+                <span class="ci-label">Email</span>
+                <span class="ci-value">your@email.com</span>
+              </div>
+              <span class="ci-arrow">→</span>
             </a>
-            <a href="mailto:your@email.com" class="social-link big" title="Email">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <a href="https://github.com/ycc1999122" target="_blank" rel="noopener" class="contact-item">
+              <span class="ci-icon">💻</span>
+              <div>
+                <span class="ci-label">GitHub</span>
+                <span class="ci-value">@ycc1999122</span>
+              </div>
+              <span class="ci-arrow">→</span>
             </a>
-            <a href="#" target="_blank" rel="noopener" class="social-link big" title="博客">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <a href="#" target="_blank" rel="noopener" class="contact-item">
+              <span class="ci-icon">🐦</span>
+              <div>
+                <span class="ci-label">Twitter / X</span>
+                <span class="ci-value">@ycc_dev</span>
+              </div>
+              <span class="ci-arrow">→</span>
+            </a>
+            <a href="#" target="_blank" rel="noopener" class="contact-item">
+              <span class="ci-icon">📝</span>
+              <div>
+                <span class="ci-label">博客</span>
+                <span class="ci-value">blog.ycc-lab.com</span>
+              </div>
+              <span class="ci-arrow">→</span>
             </a>
           </div>
         </div>
 
-        <div class="contact-form-wrapper">
+        <div class="contact-right">
           <form class="contact-form" id="contactForm">
-            <div class="form-group">
-              <label for="name">姓名</label>
-              <input type="text" id="name" name="name" placeholder="请输入您的姓名" required />
+            <div class="form-header">
+              <span class="form-dot"></span>
+              <span>/ send-message.sh</span>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>姓名</label>
+                <input type="text" name="name" placeholder="你的名字" required />
+              </div>
+              <div class="form-group">
+                <label>邮箱</label>
+                <input type="email" name="email" placeholder="your@email.com" required />
+              </div>
             </div>
             <div class="form-group">
-              <label for="email">邮箱</label>
-              <input type="email" id="email" name="email" placeholder="请输入您的邮箱" required />
+              <label>主题</label>
+              <input type="text" name="subject" placeholder="想聊点什么？" />
             </div>
             <div class="form-group">
-              <label for="subject">主题</label>
-              <input type="text" id="subject" name="subject" placeholder="想聊点什么？" />
-            </div>
-            <div class="form-group">
-              <label for="message">留言</label>
-              <textarea id="message" name="message" rows="5" placeholder="请输入留言内容..." required></textarea>
+              <label>内容</label>
+              <textarea name="message" rows="5" placeholder="随便说点什么..." required></textarea>
             </div>
             <button type="submit" class="btn btn-primary btn-full">
-              发送消息 <span class="arrow">→</span>
+              <span class="btn-icon">🚀</span>
+              发送消息
+              <span class="btn-arrow">→</span>
             </button>
           </form>
         </div>
@@ -639,16 +787,43 @@
   <!-- ========== Footer ========== -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-content">
-        <p>© 2024 YCC. All rights reserved.</p>
-        <p class="footer-made">用 ❤️ 和代码打造</p>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="footer-logo">◉ YCC's Lab</span>
+          <p>用代码建造想法的实验场</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h5>导航</h5>
+            <a href="#about">关于</a>
+            <a href="#projects">项目</a>
+            <a href="#ideas">想法</a>
+            <a href="#notes">笔记</a>
+          </div>
+          <div class="footer-col">
+            <h5>社交</h5>
+            <a href="https://github.com/ycc1999122" target="_blank" rel="noopener">GitHub</a>
+            <a href="#" target="_blank" rel="noopener">Twitter</a>
+            <a href="mailto:your@email.com">Email</a>
+          </div>
+          <div class="footer-col">
+            <h5>更多</h5>
+            <a href="#" target="_blank" rel="noopener">博客</a>
+            <a href="#" target="_blank" rel="noopener">RSS</a>
+            <a href="#" target="_blank" rel="noopener">友情链接</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 YCC's Lab. Built with ❤️ and lots of ☕</p>
+        <p class="footer-motto">Stay curious. Keep building. 🚀</p>
       </div>
     </div>
   </footer>
 
-  <!-- 回到顶部按钮 -->
+  <!-- 回到顶部 -->
   <button class="back-to-top" id="backToTop" aria-label="回到顶部">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+    <span>↑</span>
   </button>
 
   <script src="js/main.js"></script>
