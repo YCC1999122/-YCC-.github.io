@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Style Transfer Studio / 风格迁移工作室</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #0f0b1e;
+    color: #e8e4f5;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* 背景装饰 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    right: -10%;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 顶部导航 */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #b8b0d0;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  .back-btn:hover {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: #fff;
+    transform: translateX(-3px);
+  }
+  .back-btn svg { width: 16px; height: 16px; }
+
+  .page-title {
+    text-align: center;
+    flex: 1;
+  }
+  .page-title h1 {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.5px;
+  }
+  .page-title p {
+    font-size: 13px;
+    color: #7a7294;
+    margin-top: 4px;
+  }
+
+  .header-spacer { width: 110px; }
+
+  /* 主内容区 */
+  .main-content {
+    display: grid;
+    grid-template-columns: 1fr 120px 1fr;
+    gap: 30px;
+    align-items: start;
+    margin-bottom: 30px;
+  }
+
+  /* 卡片通用样式 */
+  .card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #d4ccee;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a78bfa, #ec4899);
+  }
+
+  /* 左侧上传区域 */
+  .upload-zone {
+    border: 2px dashed rgba(167, 139, 250, 0.4);
+    border-radius: 16px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(167, 139, 250, 0.03);
+    margin-bottom: 20px;
+  }
+  .upload-zone:hover {
+    border-color: rgba(236, 72, 153, 0.6);
+    background: rgba(236, 72, 153, 0.05);
+    transform: translateY(-2px);
+  }
+  .upload-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(236, 72, 153, 0.2));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .upload-icon svg {
+    width: 28px;
+    height: 28px;
+    color: #c4b5fd;
+  }
+  .upload-zone h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e8e4f5;
+    margin-bottom: 6px;
+  }
+  .upload-zone p {
+    font-size: 12px;
+    color: #7a7294;
+  }
+
+  /* 示例原图 */
+  .sample-image {
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #1a1530 0%, #2d1f4a 100%);
+  }
+  .sample-image svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .sample-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    font-size: 11px;
+    color: #c4b5fd;
+  }
+
+  /* 中间箭头区域 */
+  .arrow-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;
+    gap: 20px;
+  }
+  .arrow-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4); }
+    50% { box-shadow: 0 8px 48px rgba(236, 72, 153, 0.6); }
+  }
+  .arrow-circle svg {
+    width: 30px;
+    height: 30px;
+    color: white;
+  }
+  .style-transfer-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    background: linear-gradient(180deg, #a78bfa 0%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* 右侧风格选择 */
+  .style-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .style-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    aspect-ratio: 1;
+  }
+  .style-item:hover {
+    transform: translateY(-3px);
+  }
+  .style-item.active {
+    border-color: #ec4899;
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+  }
+  .style-item svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .style-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 6px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    font-size: 11px;
+    color: #fff;
+    text-align: center;
+    font-weight: 500;
+  }
+  .style-item.active .style-name::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .style-item.active .style-name::after {
+    content: '✓';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  /* 底部控制区 */
+  .controls-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  /* 滑块控件 */
+  .slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .slider-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .slider-label {
+    font-size: 13px;
+    color: #c4bcda;
+    font-weight: 500;
+  }
+  .slider-value {
+    font-size: 12px;
+    color: #a78bfa;
+    font-weight: 600;
+    padding: 2px 8px;
+    background: rgba(167, 139, 250, 0.1);
+    border-radius: 6px;
+  }
+  .slider-track {
+    position: relative;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .slider-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899);
+    border-radius: 3px;
+  }
+  .slider-thumb {
+    position: absolute;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.5);
+    cursor: pointer;
+  }
+
+  /* 开始按钮 */
+  .start-btn-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .start-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 18px 36px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4);
+    letter-spacing: 2px;
+  }
+  .start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(236, 72, 153, 0.5);
+  }
+  .start-btn:active {
+    transform: translateY(-1px);
+  }
+  .start-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* 右下角预览框 */
+  .preview-panel {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 300px;
+    background: rgba(20, 15, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 18px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+  }
+  .preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .preview-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e8e4f5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .preview-title .indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .preview-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #7a7294;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  .preview-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+  .preview-image {
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #2d1f4a, #4a1f3a);
+    position: relative;
+  }
+  .preview-image svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .preview-meta {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .preview-style {
+    font-size: 12px;
+    color: #a78bfa;
+    font-weight: 500;
+  }
+  .preview-time {
+    font-size: 11px;
+    color: #7a7294;
+  }
+  .preview-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .preview-action-btn {
+    flex: 1;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #c4bcda;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .preview-action-btn:hover {
+    background: rgba(167, 139, 250, 0.15);
+    border-color: rgba(167, 139, 250, 0.3);
+    color: #fff;
+  }
+  .preview-action-btn svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* 响应式 */
+  @media (max-width: 1100px) {
+    .main-content {
+      grid-template-columns: 1fr;
+    }
+    .arrow-section {
+      padding-top: 0;
+      flex-direction: row;
+    }
+    .style-transfer-text {
+      writing-mode: horizontal-tb;
+    }
+    .controls-section {
+      grid-template-columns: 1fr;
+    }
+    .preview-panel {
+      position: static;
+      width: 100%;
+      margin-top: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部 -->
+    <div class="header">
+      <a href="../../index.html" class="back-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        返回主页
+      </a>
+      <div class="page-title">
+        <h1>Style Transfer Studio</h1>
+        <p>风格迁移工作室 · 让你的照片拥有艺术灵魂</p>
+      </div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+      <!-- 左侧：上传区域 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="dot"></span>
+          上传原图
+        </div>
+        <div class="upload-zone">
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <h3>点击或拖拽上传图片</h3>
+          <p>支持 JPG / PNG / WEBP · 最大 10MB</p>
+        </div>
+        <div class="card-title" style="margin-top: 8px;">
+          <span class="dot"></span>
+          示例原图
+        </div>
+        <div class="sample-image">
+          <span class="sample-label">风景照片</span>
+          <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+            <!-- 天空 -->
+            <defs>
+              <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#87ceeb"/>
+                <stop offset="100%" style="stop-color:#e0f7fa"/>
+              </linearGradient>
+              <linearGradient id="mountainGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#6b8e9e"/>
+                <stop offset="100%" style="stop-color:#4a6675"/>
+              </linearGradient>
+              <linearGradient id="mountainGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#8aa5b3"/>
+                <stop offset="100%" style="stop-color:#6b8e9e"/>
+              </linearGradient>
+              <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#4fc3f7"/>
+                <stop offset="100%" style="stop-color:#0288d1"/>
+              </linearGradient>
+            </defs>
+            <rect width="400" height="300" fill="url(#skyGrad)"/>
+            <!-- 太阳 -->
+            <circle cx="320" cy="60" r="35" fill="#ffeb3b" opacity="0.9"/>
+            <!-- 云朵 -->
+            <ellipse cx="80" cy="50" rx="40" ry="15" fill="white" opacity="0.8"/>
+            <ellipse cx="100" cy="45" rx="30" ry="12" fill="white" opacity="0.8"/>
+            <ellipse cx="250" cy="40" rx="35" ry="12" fill="white" opacity="0.7"/>
+            <!-- 远山 -->
+            <polygon points="0,180 80,100 160,160 240,90 320,150 400,110 400,300 0,300" fill="url(#mountainGrad2)" opacity="0.6"/>
+            <!-- 近山 -->
+            <polygon points="0,220 60,140 140,200 220,130 300,190 380,140 400,170 400,300 0,300" fill="url(#mountainGrad1)"/>
+            <!-- 水面 -->
+            <rect x="0" y="230" width="400" height="70" fill="url(#waterGrad)"/>
+            <!-- 水面波纹 -->
+            <path d="M0,245 Q50,240 100,245 T200,245 T300,245 T400,245" stroke="white" stroke-width="1" fill="none" opacity="0.3"/>
+            <path d="M0,260 Q50,255 100,260 T200,260 T300,260 T400,260" stroke="white" stroke-width="1" fill="none" opacity="0.2"/>
+            <path d="M0,275 Q50,270 100,275 T200,275 T300,275 T400,275" stroke="white" stroke-width="1" fill="none" opacity="0.2"/>
+            <!-- 小船 -->
+            <path d="M170,245 L200,245 L195,255 L175,255 Z" fill="#5d4037"/>
+            <line x1="185" y1="245" x2="185" y2="225" stroke="#5d4037" stroke-width="2"/>
+            <path d="M185,225 L200,235 L185,240 Z" fill="#fff"/>
+            <!-- 树 -->
+            <rect x="45" y="200" width="6" height="30" fill="#5d4037"/>
+            <circle cx="48" cy="195" r="15" fill="#2e7d32"/>
+            <circle cx="42" cy="200" r="10" fill="#388e3c"/>
+            <circle cx="55" cy="198" r="10" fill="#388e3c"/>
+            <rect x="350" y="205" width="5" height="25" fill="#5d4037"/>
+            <circle cx="352" cy="200" r="12" fill="#2e7d32"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 中间：箭头 -->
+      <div class="arrow-section">
+        <div class="arrow-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </div>
+        <div class="style-transfer-text">STYLE TRANSFER</div>
+      </div>
+
+      <!-- 右侧：风格选择 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="dot"></span>
+          选择风格
+        </div>
+        <div class="style-grid">
+          <!-- 梵高星空 -->
+          <div class="style-item active">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="vg-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#1a237e"/>
+                  <stop offset="100%" style="stop-color:#4a148c"/>
+                </linearGradient>
+              </defs>
+              <rect width="200" height="200" fill="url(#vg-bg)"/>
+              <!-- 漩涡星星 -->
+              <circle cx="50" cy="40" r="12" fill="#ffeb3b" opacity="0.9"/>
+              <circle cx="140" cy="30" r="8" fill="#fff176" opacity="0.8"/>
+              <circle cx="170" cy="70" r="10" fill="#ffee58" opacity="0.9"/>
+              <circle cx="30" cy="90" r="6" fill="#fff9c4" opacity="0.7"/>
+              <!-- 漩涡线条 -->
+              <path d="M0,120 Q50,100 70,120 T140,120 T200,110" stroke="#7986cb" stroke-width="4" fill="none" opacity="0.6"/>
+              <path d="M0,140 Q60,120 80,140 T160,140 T200,130" stroke="#5c6bc0" stroke-width="3" fill="none" opacity="0.5"/>
+              <path d="M0,160 Q40,140 80,160 T160,160 T200,150" stroke="#3f51b5" stroke-width="4" fill="none" opacity="0.6"/>
+              <!-- 月亮 -->
+              <circle cx="160" cy="50" r="18" fill="#fff59d" opacity="0.7"/>
+              <circle cx="155" cy="45" r="15" fill="#1a237e"/>
+              <!-- 柏树 -->
+              <path d="M80,200 L80,130 Q75,110 85,90 Q90,70 80,50 Q85,70 90,90 Q100,110 90,130 L90,200 Z" fill="#1b5e20" opacity="0.8"/>
+              <!-- 村庄 -->
+              <rect x="120" y="170" width="15" height="20" fill="#bf360c"/>
+              <polygon points="117,170 138,170 127,155" fill="#3e2723"/>
+              <rect x="145" y="175" width="12" height="15" fill="#e64a19"/>
+              <polygon points="142,175 160,175 151,163" fill="#4e342e"/>
+              <rect x="165" y="172" width="18" height="18" fill="#d84315"/>
+              <polygon points="162,172 186,172 174,158" fill="#3e2723"/>
+            </svg>
+            <div class="style-name">梵高星空</div>
+          </div>
+
+          <!-- 浮世绘 -->
+          <div class="style-item">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="ukiyo-sky" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#ef5350"/>
+                  <stop offset="50%" style="stop-color:#ff8a65"/>
+                  <stop offset="100%" style="stop-color:#fff3e0"/>
+                </linearGradient>
+              </defs>
+              <rect width="200" height="200" fill="url(#ukiyo-sky)"/>
+              <!-- 太阳 -->
+              <circle cx="100" cy="70" r="30" fill="#ffeb3b" opacity="0.9"/>
+              <!-- 富士山 -->
+              <polygon points="50,150 100,60 150,150" fill="#fff"/>
+              <polygon points="65,130 100,75 135,130" fill="#e0e0e0"/>
+              <polygon points="80,105 100,75 120,105" fill="#fff"/>
+              <!-- 云层 -->
+              <path d="M0,140 Q30,130 60,140 T120,140 T200,135" fill="#fff" opacity="0.9"/>
+              <path d="M0,155 Q40,145 80,155 T160,155 T200,150" fill="#fff" opacity="0.8"/>
+              <!-- 波浪 -->
+              <path d="M0,170 Q30,155 50,170 Q70,185 100,170 Q130,155 150,170 Q170,185 200,170 L200,200 L0,200 Z" fill="#1565c0"/>
+              <path d="M0,180 Q25,170 50,180 Q75,190 100,180 Q125,170 150,180 Q175,190 200,180 L200,200 L0,200 Z" fill="#0d47a1"/>
+              <!-- 浪尖泡沫 -->
+              <path d="M40,165 Q50,158 60,165 Q50,172 40,165" fill="white" opacity="0.8"/>
+              <path d="M140,165 Q150,158 160,165 Q150,172 140,165" fill="white" opacity="0.8"/>
+            </svg>
+            <div class="style-name">浮世绘</div>
+          </div>
+
+          <!-- 水墨画 -->
+          <div class="style-item">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <rect width="200" height="200" fill="#faf5e4"/>
+              <!-- 远山 -->
+              <path d="M0,80 Q30,50 60,70 Q90,90 120,60 Q150,40 180,70 Q200,85 200,90 L200,100 L0,100 Z" fill="#9e9e9e" opacity="0.3"/>
+              <!-- 中山 -->
+              <path d="M0,120 Q40,80 80,110 Q120,130 160,90 Q190,70 200,100 L200,130 L0,130 Z" fill="#616161" opacity="0.5"/>
+              <!-- 近山 -->
+              <path d="M0,150 Q30,110 60,140 Q100,170 140,120 Q170,95 200,140 L200,170 L0,170 Z" fill="#424242" opacity="0.7"/>
+              <!-- 水面 -->
+              <rect x="0" y="170" width="200" height="30" fill="#e8e0c8"/>
+              <!-- 竹子 -->
+              <line x1="20" y1="170" x2="20" y2="80" stroke="#2e7d32" stroke-width="3" opacity="0.6"/>
+              <line x1="20" y1="120" x2="8" y2="110" stroke="#2e7d32" stroke-width="2" opacity="0.5"/>
+              <path d="M8,110 Q5,105 8,100 Q12,108 8,110" fill="#2e7d32" opacity="0.5"/>
+              <line x1="30" y1="170" x2="30" y2="100" stroke="#2e7d32" stroke-width="2" opacity="0.5"/>
+              <!-- 飞鸟 -->
+              <path d="M150,40 Q155,35 160,40 Q165,35 170,40" stroke="#424242" stroke-width="2" fill="none" opacity="0.7"/>
+              <path d="M120,55 Q124,51 128,55 Q132,51 136,55" stroke="#424242" stroke-width="1.5" fill="none" opacity="0.6"/>
+              <path d="M170,60 Q173,57 176,60 Q179,57 182,60" stroke="#424242" stroke-width="1.5" fill="none" opacity="0.5"/>
+              <!-- 印章 -->
+              <rect x="170" y="175" width="18" height="18" fill="#c62828" opacity="0.8" rx="2"/>
+            </svg>
+            <div class="style-name">水墨画</div>
+          </div>
+
+          <!-- 赛博朋克 -->
+          <div class="style-item">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="cyber-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#0d0221"/>
+                  <stop offset="50%" style="stop-color:#1a0533"/>
+                  <stop offset="100%" style="stop-color:#2d0a4e"/>
+                </linearGradient>
+              </defs>
+              <rect width="200" height="200" fill="url(#cyber-bg)"/>
+              <!-- 霓虹网格 -->
+              <line x1="0" y1="140" x2="200" y2="140" stroke="#ff00ff" stroke-width="1" opacity="0.5"/>
+              <line x1="0" y1="155" x2="200" y2="155" stroke="#00ffff" stroke-width="1" opacity="0.4"/>
+              <line x1="0" y1="170" x2="200" y2="170" stroke="#ff00ff" stroke-width="1" opacity="0.3"/>
+              <line x1="100" y1="140" x2="200" y2="200" stroke="#ff00ff" stroke-width="1" opacity="0.3"/>
+              <line x1="100" y1="140" x2="0" y2="200" stroke="#00ffff" stroke-width="1" opacity="0.3"/>
+              <line x1="150" y1="140" x2="200" y2="180" stroke="#ff00ff" stroke-width="1" opacity="0.2"/>
+              <line x1="50" y1="140" x2="0" y2="180" stroke="#00ffff" stroke-width="1" opacity="0.2"/>
+              <!-- 建筑 -->
+              <rect x="20" y="60" width="25" height="80" fill="#1a1a2e"/>
+              <rect x="50" y="40" width="20" height="100" fill="#16213e"/>
+              <rect x="75" y="70" width="30" height="70" fill="#1a1a2e"/>
+              <rect x="110" y="30" width="25" height="110" fill="#0f0f23"/>
+              <rect x="140" y="55" width="20" height="85" fill="#16213e"/>
+              <rect x="165" y="80" width="25" height="60" fill="#1a1a2e"/>
+              <!-- 霓虹窗户 -->
+              <rect x="25" y="70" width="4" height="6" fill="#ff00ff" opacity="0.8"/>
+              <rect x="33" y="70" width="4" height="6" fill="#00ffff" opacity="0.8"/>
+              <rect x="25" y="82" width="4" height="6" fill="#00ffff" opacity="0.7"/>
+              <rect x="33" y="82" width="4" height="6" fill="#ff00ff" opacity="0.7"/>
+              <rect x="25" y="94" width="4" height="6" fill="#ff00ff" opacity="0.6"/>
+              <rect x="55" y="50" width="3" height="5" fill="#ff00ff" opacity="0.8"/>
+              <rect x="62" y="50" width="3" height="5" fill="#00ffff" opacity="0.8"/>
+              <rect x="55" y="62" width="3" height="5" fill="#00ffff" opacity="0.7"/>
+              <rect x="55" y="74" width="3" height="5" fill="#ff00ff" opacity="0.6"/>
+              <rect x="115" y="40" width="5" height="7" fill="#ff00ff" opacity="0.9"/>
+              <rect x="125" y="40" width="5" height="7" fill="#00ffff" opacity="0.9"/>
+              <rect x="115" y="55" width="5" height="7" fill="#00ffff" opacity="0.8"/>
+              <rect x="125" y="55" width="5" height="7" fill="#ff00ff" opacity="0.8"/>
+              <rect x="115" y="70" width="5" height="7" fill="#ff00ff" opacity="0.7"/>
+              <!-- 霓虹招牌 -->
+              <rect x="80" y="90" width="20" height="8" fill="#ff00ff" opacity="0.6"/>
+              <rect x="140" y="100" width="18" height="6" fill="#00ffff" opacity="0.6"/>
+              <!-- 雨滴 -->
+              <line x1="40" y1="20" x2="38" y2="35" stroke="#ff00ff" stroke-width="1" opacity="0.4"/>
+              <line x1="80" y1="10" x2="78" y2="25" stroke="#00ffff" stroke-width="1" opacity="0.3"/>
+              <line x1="120" y1="15" x2="118" y2="30" stroke="#ff00ff" stroke-width="1" opacity="0.4"/>
+              <line x1="160" y1="25" x2="158" y2="40" stroke="#00ffff" stroke-width="1" opacity="0.3"/>
+              <line x1="60" y1="30" x2="58" y2="45" stroke="#00ffff" stroke-width="1" opacity="0.3"/>
+              <line x1="180" y1="15" x2="178" y2="30" stroke="#ff00ff" stroke-width="1" opacity="0.4"/>
+            </svg>
+            <div class="style-name">赛博朋克</div>
+          </div>
+
+          <!-- 油画 -->
+          <div class="style-item">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="oil-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#ffb74d"/>
+                  <stop offset="50%" style="stop-color:#ff8a65"/>
+                  <stop offset="100%" style="stop-color:#ba68c8"/>
+                </linearGradient>
+              </defs>
+              <rect width="200" height="200" fill="url(#oil-bg)"/>
+              <!-- 厚涂笔触效果 -->
+              <ellipse cx="30" cy="40" rx="25" ry="15" fill="#ffcc80" opacity="0.6" transform="rotate(-15 30 40)"/>
+              <ellipse cx="80" cy="30" rx="30" ry="12" fill="#ffab91" opacity="0.5" transform="rotate(10 80 30)"/>
+              <ellipse cx="150" cy="45" rx="28" ry="14" fill="#ce93d8" opacity="0.5" transform="rotate(-8 150 45)"/>
+              <ellipse cx="170" cy="25" rx="20" ry="10" fill="#ffb74d" opacity="0.6" transform="rotate(20 170 25)"/>
+              <!-- 中间笔触 -->
+              <ellipse cx="50" cy="90" rx="35" ry="18" fill="#ffcc80" opacity="0.4" transform="rotate(5 50 90)"/>
+              <ellipse cx="100" cy="80" rx="40" ry="20" fill="#ffab91" opacity="0.5" transform="rotate(-10 100 80)"/>
+              <ellipse cx="160" cy="95" rx="30" ry="16" fill="#ce93d8" opacity="0.4" transform="rotate(15 160 95)"/>
+              <!-- 下方笔触 -->
+              <ellipse cx="30" cy="140" rx="28" ry="15" fill="#a1887f" opacity="0.6" transform="rotate(-20 30 140)"/>
+              <ellipse cx="80" cy="150" rx="35" ry="18" fill="#8d6e63" opacity="0.5" transform="rotate(10 80 150)"/>
+              <ellipse cx="140" cy="145" rx="40" ry="20" fill="#a1887f" opacity="0.6" transform="rotate(-5 140 145)"/>
+              <ellipse cx="180" cy="155" rx="25" ry="14" fill="#8d6e63" opacity="0.5" transform="rotate(15 180 155)"/>
+              <!-- 底部草地 -->
+              <ellipse cx="50" cy="185" rx="45" ry="12" fill="#66bb6a" opacity="0.7"/>
+              <ellipse cx="120" cy="190" rx="50" ry="10" fill="#4caf50" opacity="0.6"/>
+              <ellipse cx="180" cy="185" rx="30" ry="12" fill="#81c784" opacity="0.7"/>
+              <!-- 花 -->
+              <circle cx="60" cy="175" r="5" fill="#e91e63" opacity="0.8"/>
+              <circle cx="130" cy="180" r="4" fill="#ffeb3b" opacity="0.9"/>
+              <circle cx="170" cy="175" r="5" fill="#9c27b0" opacity="0.8"/>
+              <circle cx="90" cy="182" r="3" fill="#f44336" opacity="0.7"/>
+            </svg>
+            <div class="style-name">油画</div>
+          </div>
+
+          <!-- 素描 -->
+          <div class="style-item">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <rect width="200" height="200" fill="#f5f5f0"/>
+              <!-- 素描风景 - 用线条表示 -->
+              <!-- 天空线条 -->
+              <line x1="10" y1="20" x2="190" y2="20" stroke="#9e9e9e" stroke-width="0.5" opacity="0.3"/>
+              <line x1="15" y1="30" x2="185" y2="28" stroke="#9e9e9e" stroke-width="0.5" opacity="0.25"/>
+              <line x1="10" y1="40" x2="190" y2="38" stroke="#9e9e9e" stroke-width="0.5" opacity="0.2"/>
+              <!-- 山的轮廓 -->
+              <path d="M0,100 Q40,50 80,80 Q120,110 160,60 Q190,40 200,80" stroke="#424242" stroke-width="1.5" fill="none"/>
+              <!-- 山的阴影线 -->
+              <line x1="30" y1="85" x2="50" y2="70" stroke="#757575" stroke-width="0.5" opacity="0.6"/>
+              <line x1="35" y1="88" x2="55" y2="73" stroke="#757575" stroke-width="0.5" opacity="0.5"/>
+              <line x1="40" y1="90" x2="60" y2="76" stroke="#757575" stroke-width="0.5" opacity="0.4"/>
+              <line x1="130" y1="80" x2="150" y2="65" stroke="#757575" stroke-width="0.5" opacity="0.6"/>
+              <line x1="135" y1="83" x2="155" y2="68" stroke="#757575" stroke-width="0.5" opacity="0.5"/>
+              <line x1="140" y1="86" x2="160" y2="71" stroke="#757575" stroke-width="0.5" opacity="0.4"/>
+              <!-- 第二座山 -->
+              <path d="M0,130 Q50,90 100,120 Q150,150 200,110" stroke="#616161" stroke-width="1.2" fill="none"/>
+              <line x1="20" y1="120" x2="40" y2="105" stroke="#9e9e9e" stroke-width="0.5" opacity="0.5"/>
+              <line x1="25" y1="122" x2="45" y2="107" stroke="#9e9e9e" stroke-width="0.5" opacity="0.4"/>
+              <line x1="60" y1="115" x2="80" y2="100" stroke="#9e9e9e" stroke-width="0.5" opacity="0.5"/>
+              <line x1="110" y1="125" x2="130" y2="110" stroke="#9e9e9e" stroke-width="0.5" opacity="0.5"/>
+              <line x1="160" y1="120" x2="180" y2="105" stroke="#9e9e9e" stroke-width="0.5" opacity="0.5"/>
+              <!-- 地面 -->
+              <line x1="0" y1="160" x2="200" y2="160" stroke="#424242" stroke-width="1"/>
+              <!-- 地面阴影线 -->
+              <line x1="0" y1="165" x2="200" y2="163" stroke="#9e9e9e" stroke-width="0.5" opacity="0.4"/>
+              <line x1="0" y1="170" x2="200" y2="168" stroke="#bdbdbd" stroke-width="0.5" opacity="0.3"/>
+              <line x1="0" y1="175" x2="200" y2="173" stroke="#bdbdbd" stroke-width="0.5" opacity="0.2"/>
+              <line x1="0" y1="180" x2="200" y2="179" stroke="#e0e0e0" stroke-width="0.5" opacity="0.3"/>
+              <!-- 树 -->
+              <line x1="35" y1="160" x2="35" y2="125" stroke="#424242" stroke-width="2"/>
+              <ellipse cx="35" cy="115" rx="15" ry="18" stroke="#616161" stroke-width="1" fill="none"/>
+              <path d="M25,115 Q35,100 45,115" stroke="#757575" stroke-width="0.5" fill="none" opacity="0.6"/>
+              <path d="M22,120 Q35,105 48,120" stroke="#9e9e9e" stroke-width="0.5" fill="none" opacity="0.5"/>
+              <!-- 第二棵树 -->
+              <line x1="165" y1="160" x2="165" y2="135" stroke="#424242" stroke-width="1.5"/>
+              <ellipse cx="165" cy="128" rx="12" ry="14" stroke="#616161" stroke-width="1" fill="none"/>
+              <!-- 云 -->
+              <path d="M50,35 Q60,28 70,35 Q80,28 90,35" stroke="#9e9e9e" stroke-width="0.8" fill="none" opacity="0.6"/>
+              <path d="M130,25 Q140,18 150,25 Q160,18 170,25" stroke="#9e9e9e" stroke-width="0.8" fill="none" opacity="0.5"/>
+              <!-- 签名 -->
+              <text x="160" y="195" font-family="serif" font-size="10" fill="#757575" font-style="italic">Sketch</text>
+            </svg>
+            <div class="style-name">素描</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部控制区 -->
+    <div class="controls-section">
+      <!-- 左：参数滑块组 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="dot"></span>
+          风格参数
+        </div>
+        <div class="slider-group">
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-label">风格强度</span>
+              <span class="slider-value">75%</span>
+            </div>
+            <div class="slider-track">
+              <div class="slider-fill" style="width: 75%"></div>
+              <div class="slider-thumb" style="left: 75%"></div>
+            </div>
+          </div>
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-label">色彩保持</span>
+              <span class="slider-value">50%</span>
+            </div>
+            <div class="slider-track">
+              <div class="slider-fill" style="width: 50%"></div>
+              <div class="slider-thumb" style="left: 50%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 中：开始按钮 -->
+      <div class="start-btn-wrapper">
+        <button class="start-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          开始迁移
+        </button>
+      </div>
+
+      <!-- 右：更多参数 -->
+      <div class="card">
+        <div class="card-title">
+          <span class="dot"></span>
+          高级设置
+        </div>
+        <div class="slider-group">
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-label">细节保留</span>
+              <span class="slider-value">60%</span>
+            </div>
+            <div class="slider-track">
+              <div class="slider-fill" style="width: 60%"></div>
+              <div class="slider-thumb" style="left: 60%"></div>
+            </div>
+          </div>
+          <div class="slider-item">
+            <div class="slider-header">
+              <span class="slider-label">平滑程度</span>
+              <span class="slider-value">35%</span>
+            </div>
+            <div class="slider-track">
+              <div class="slider-fill" style="width: 35%"></div>
+              <div class="slider-thumb" style="left: 35%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右下角预览框 -->
+  <div class="preview-panel">
+    <div class="preview-header">
+      <div class="preview-title">
+        <span class="indicator"></span>
+        生成预览
+      </div>
+      <div class="preview-close">×</div>
+    </div>
+    <div class="preview-image">
+      <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+        <!-- 梵高风格化的风景预览 -->
+        <defs>
+          <linearGradient id="prev-sky" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a237e"/>
+            <stop offset="100%" style="stop-color:#4a148c"/>
+          </linearGradient>
+        </defs>
+        <rect width="400" height="300" fill="url(#prev-sky)"/>
+        <!-- 星星 -->
+        <circle cx="80" cy="40" r="15" fill="#ffeb3b" opacity="0.9"/>
+        <circle cx="250" cy="30" r="10" fill="#fff176" opacity="0.8"/>
+        <circle cx="340" cy="60" r="12" fill="#ffee58" opacity="0.9"/>
+        <circle cx="180" cy="50" r="7" fill="#fff9c4" opacity="0.7"/>
+        <!-- 漩涡云 -->
+        <path d="M0,100 Q100,80 150,100 T300,100 T400,90" stroke="#7986cb" stroke-width="5" fill="none" opacity="0.6"/>
+        <path d="M0,120 Q80,100 140,120 T280,120 T400,110" stroke="#5c6bc0" stroke-width="4" fill="none" opacity="0.5"/>
+        <!-- 山（梵高风格） -->
+        <polygon points="0,200 60,120 140,180 220,110 300,170 400,130 400,300 0,300" fill="#5d4037" opacity="0.9"/>
+        <path d="M0,195 Q60,185 120,195 T240,195 T400,190" stroke="#6d4c41" stroke-width="6" fill="none" opacity="0.7"/>
+        <!-- 水面（梵高风格波纹） -->
+        <rect x="0" y="240" width="400" height="60" fill="#1565c0"/>
+        <path d="M0,250 Q50,240 100,250 T200,250 T300,250 T400,245" stroke="#42a5f5" stroke-width="3" fill="none" opacity="0.6"/>
+        <path d="M0,265 Q50,255 100,265 T200,265 T300,265 T400,260" stroke="#64b5f6" stroke-width="2" fill="none" opacity="0.5"/>
+        <path d="M0,280 Q50,270 100,280 T200,280 T300,280 T400,275" stroke="#90caf9" stroke-width="2" fill="none" opacity="0.4"/>
+        <!-- 柏树 -->
+        <path d="M50,240 L50,160 Q45,140 55,120 Q60,100 50,80 Q55,100 60,120 Q70,140 60,160 L60,240 Z" fill="#2e7d32" opacity="0.85"/>
+      </svg>
+    </div>
+    <div class="preview-meta">
+      <span class="preview-style">梵高星空风格</span>
+      <span class="preview-time">约 3.2 秒</span>
+    </div>
+    <div class="preview-actions">
+      <button class="preview-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        下载
+      </button>
+      <button class="preview-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="17 1 21 5 17 9"/>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7 23 3 19 7 15"/>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+        对比
+      </button>
+      <button class="preview-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+        分享
+      </button>
+    </div>
+  </div>
+</body>
+</html>

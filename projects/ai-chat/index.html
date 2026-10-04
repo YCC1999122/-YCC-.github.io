@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Chat Assistant / 智能对话助手</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-primary: #0a0a14;
+    --bg-secondary: #12121f;
+    --bg-tertiary: #1a1a2e;
+    --bg-hover: #232340;
+    --text-primary: #e8e8f0;
+    --text-secondary: #9a9ab0;
+    --text-muted: #6a6a8a;
+    --accent-purple: #a855f7;
+    --accent-cyan: #06b6d4;
+    --accent-gradient: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
+    --accent-gradient-soft: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%);
+    --border-color: rgba(168, 85, 247, 0.15);
+    --user-bubble: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    --ai-bubble: #1e1e35;
+    --shadow-glow: 0 0 30px rgba(168, 85, 247, 0.15);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* 背景装饰 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 10% 10%, rgba(168, 85, 247, 0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 500px at 90% 90%, rgba(6, 182, 212, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app-container {
+    display: flex;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ========== 侧边栏 ========== */
+  .sidebar {
+    width: 280px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .back-btn:hover {
+    background: var(--bg-hover);
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+  }
+
+  .sidebar-title {
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .new-chat-btn {
+    margin: 16px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: var(--accent-gradient);
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+  }
+
+  .new-chat-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+  }
+
+  .chat-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 12px 16px;
+  }
+
+  .history-section-title {
+    padding: 12px 8px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .history-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2px;
+  }
+
+  .history-item:hover {
+    background: var(--bg-hover);
+  }
+
+  .history-item.active {
+    background: var(--accent-gradient-soft);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+  }
+
+  .history-item-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+
+  .history-item.active .history-item-icon {
+    background: var(--accent-gradient);
+  }
+
+  .history-item-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .history-item-title {
+    font-size: 13px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .history-item-time {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* 滚动条 */
+  .chat-history::-webkit-scrollbar,
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  .chat-history::-webkit-scrollbar-track,
+  .chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .chat-history::-webkit-scrollbar-thumb,
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.2);
+    border-radius: 3px;
+  }
+  .chat-history::-webkit-scrollbar-thumb:hover,
+  .chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.4);
+  }
+
+  /* ========== 主对话区 ========== */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .chat-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(18, 18, 31, 0.8);
+    backdrop-filter: blur(10px);
+  }
+
+  .chat-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .chat-title h1 {
+    font-size: 18px;
+    font-weight: 600;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .chat-title-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .chat-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--accent-cyan);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .icon-btn:hover {
+    background: var(--bg-hover);
+    color: var(--accent-purple);
+    border-color: var(--accent-purple);
+  }
+
+  /* 对话消息区 */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .message {
+    display: flex;
+    gap: 12px;
+    max-width: 80%;
+    animation: messageIn 0.3s ease-out;
+  }
+
+  @keyframes messageIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .message-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .message.user .message-avatar {
+    background: var(--user-bubble);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(168, 85, 247, 0.3);
+  }
+
+  .message.ai .message-avatar {
+    background: var(--accent-gradient);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(6, 182, 212, 0.3);
+  }
+
+  .message-bubble {
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .message.user .message-bubble {
+    background: var(--user-bubble);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .message.ai .message-bubble {
+    background: var(--ai-bubble);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+  }
+
+  .message-time {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  .message.user .message-time {
+    text-align: right;
+  }
+
+  /* 代码块样式 */
+  .message-bubble code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 13px;
+  }
+
+  .message-bubble pre {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 8px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* 输入区 */
+  .chat-input-area {
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border-color);
+    background: rgba(18, 18, 31, 0.8);
+    backdrop-filter: blur(10px);
+  }
+
+  .input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 10px 12px;
+    transition: all 0.2s ease;
+  }
+
+  .input-wrapper:focus-within {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  }
+
+  .api-setting-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .api-setting-btn:hover {
+    background: var(--bg-hover);
+    color: var(--accent-cyan);
+    border-color: var(--border-color);
+  }
+
+  .chat-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    resize: none;
+    max-height: 120px;
+    min-height: 24px;
+    line-height: 1.5;
+    font-family: inherit;
+  }
+
+  .chat-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--accent-gradient);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(168, 85, 247, 0.3);
+  }
+
+  .send-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+  }
+
+  .send-btn:active {
+    transform: scale(0.95);
+  }
+
+  .input-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 10px;
+  }
+
+  .input-hint kbd {
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    border: 1px solid var(--border-color);
+  }
+
+  /* 设置弹窗 */
+  .settings-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .settings-modal.active {
+    display: flex;
+  }
+
+  .settings-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    width: 420px;
+    max-width: 90vw;
+    box-shadow: var(--shadow-glow);
+    animation: modalIn 0.2s ease-out;
+  }
+
+  @keyframes modalIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .settings-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.2s ease;
+  }
+
+  .close-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .settings-group {
+    margin-bottom: 18px;
+  }
+
+  .settings-label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .settings-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .settings-input:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  }
+
+  .settings-select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .settings-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .btn-secondary {
+    flex: 1;
+    padding: 10px 16px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .btn-primary {
+    flex: 1;
+    padding: 10px 16px;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+  }
+</style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="../../index.html" class="back-btn" title="返回主页">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </a>
+        <span class="sidebar-title">AI Chat</span>
+      </div>
+
+      <button class="new-chat-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        新建对话
+      </button>
+
+      <div class="chat-history">
+        <div class="history-section-title">历史对话</div>
+
+        <div class="history-item active">
+          <div class="history-item-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="history-item-text">
+            <div class="history-item-title">新对话</div>
+            <div class="history-item-time">刚刚</div>
+          </div>
+        </div>
+
+        <div class="history-item">
+          <div class="history-item-icon">🎨</div>
+          <div class="history-item-text">
+            <div class="history-item-title">AI 绘画提示词生成</div>
+            <div class="history-item-time">今天 14:32</div>
+          </div>
+        </div>
+
+        <div class="history-item">
+          <div class="history-item-icon">💻</div>
+          <div class="history-item-text">
+            <div class="history-item-title">代码调试助手</div>
+            <div class="history-item-time">今天 10:15</div>
+          </div>
+        </div>
+
+        <div class="history-item">
+          <div class="history-item-icon">📝</div>
+          <div class="history-item-text">
+            <div class="history-item-title">文档翻译与润色</div>
+            <div class="history-item-time">昨天 16:48</div>
+          </div>
+        </div>
+
+        <div class="history-section-title">更早</div>
+
+        <div class="history-item">
+          <div class="history-item-icon">📊</div>
+          <div class="history-item-text">
+            <div class="history-item-title">数据分析报告生成</div>
+            <div class="history-item-time">10月3日</div>
+          </div>
+        </div>
+
+        <div class="history-item">
+          <div class="history-item-icon">📚</div>
+          <div class="history-item-text">
+            <div class="history-item-title">学习计划制定</div>
+            <div class="history-item-time">10月2日</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 主对话区 -->
+    <main class="main-content">
+      <header class="chat-header">
+        <div class="chat-title">
+          <h1>AI Chat Assistant / 智能对话助手</h1>
+          <span class="chat-title-sub">基于大语言模型的智能对话系统</span>
+        </div>
+        <div class="chat-header-actions">
+          <div class="status-indicator">
+            <span class="status-dot"></span>
+            在线
+          </div>
+          <button class="icon-btn" id="settingsBtn" title="设置">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- 消息区 -->
+      <div class="chat-messages">
+        <!-- AI 消息 -->
+        <div class="message ai">
+          <div class="message-avatar">AI</div>
+          <div>
+            <div class="message-bubble">
+              你好！我是 AI 智能对话助手 👋<br><br>
+              我可以帮你完成以下任务：<br>
+              • 回答各种问题，提供知识咨询<br>
+              • 编写和调试代码<br>
+              • 生成创意文案、文章、邮件<br>
+              • 翻译和润色文档<br>
+              • 数据分析和报告生成<br><br>
+              有什么我可以帮助你的吗？
+            </div>
+            <div class="message-time">AI 助手 · 10:01</div>
+          </div>
+        </div>
+
+        <!-- 用户消息 -->
+        <div class="message user">
+          <div class="message-avatar">我</div>
+          <div>
+            <div class="message-bubble">
+              你好！请帮我写一个 Python 快速排序的实现，最好带注释说明。
+            </div>
+            <div class="message-time">我 · 10:02</div>
+          </div>
+        </div>
+
+        <!-- AI 消息 -->
+        <div class="message ai">
+          <div class="message-avatar">AI</div>
+          <div>
+            <div class="message-bubble">
+              好的！以下是 Python 实现的快速排序算法，带有详细注释：
+              <pre>def quick_sort(arr, low=0, high=None):
+    """
+    快速排序算法实现
+    时间复杂度: 平均 O(n log n)，最坏 O(n²)
+    空间复杂度: O(log n) - 递归栈空间
+    """
+    if high is None:
+        high = len(arr) - 1
+    
+    if low < high:
+        # 获取分区点索引
+        pivot_index = partition(arr, low, high)
+        # 递归排序左半部分
+        quick_sort(arr, low, pivot_index - 1)
+        # 递归排序右半部分
+        quick_sort(arr, pivot_index + 1, high)
+    
+    return arr
+
+
+def partition(arr, low, high):
+    """分区函数：选择基准元素并将数组分为两部分"""
+    # 选择最后一个元素作为基准
+    pivot = arr[high]
+    # i 是小于基准的元素的边界
+    i = low - 1
+    
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            i += 1
+            arr[i], arr[j] = arr[j], arr[i]
+    
+    # 将基准放到正确位置
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return i + 1
+
+
+# 测试示例
+arr = [64, 34, 25, 12, 22, 11, 90]
+print("排序前:", arr)
+print("排序后:", quick_sort(arr.copy()))</pre>
+              快速排序是一种高效的分治算法，通过选择基准元素将数组分成两部分，然后递归排序。需要我进一步解释某个部分，或者需要其他语言的实现吗？
+            </div>
+            <div class="message-time">AI 助手 · 10:02</div>
+          </div>
+        </div>
+
+        <!-- 用户消息 -->
+        <div class="message user">
+          <div class="message-avatar">我</div>
+          <div>
+            <div class="message-bubble">
+              太棒了！解释得很清楚。那快速排序和归并排序有什么区别呢？各自的优缺点是什么？
+            </div>
+            <div class="message-time">我 · 10:03</div>
+          </div>
+        </div>
+
+        <!-- AI 消息（正在输入状态） -->
+        <div class="message ai">
+          <div class="message-avatar">AI</div>
+          <div>
+            <div class="message-bubble">
+              很好的问题！快速排序和归并排序都是经典的分治排序算法，但它们有以下关键区别：<br><br>
+              <strong>1. 排序方式不同</strong><br>
+              • <code>快速排序</code>：按值分区，选择一个基准元素，将数组分为「小于基准」和「大于基准」两部分<br>
+              • <code>归并排序</code>：按位置分区，将数组从中间分成两半，分别排序后再合并<br><br>
+              <strong>2. 稳定性</strong><br>
+              • 快速排序是<strong>不稳定</strong>的（相等元素的相对顺序可能改变）<br>
+              • 归并排序是<strong>稳定</strong>的<br><br>
+              <strong>3. 空间复杂度</strong><br>
+              • 快速排序：<code>O(log n)</code> 递归栈空间，原地排序<br>
+              • 归并排序：<code>O(n)</code> 额外空间用于合并<br><br>
+              <strong>4. 适用场景</strong><br>
+              • 快速排序适合内存排序、数组排序，实际运行速度通常更快<br>
+              • 归并排序适合链表排序、外部排序（大数据量磁盘排序）、需要稳定性的场景<br><br>
+              在实际应用中，大多数语言的内置排序（如 Python 的 <code>list.sort()</code>）使用的是 TimSort，一种结合了归并排序和插入排序优点的混合算法。
+            </div>
+            <div class="message-time">AI 助手 · 10:03</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 输入区 -->
+      <div class="chat-input-area">
+        <div class="input-wrapper">
+          <button class="api-setting-btn" id="apiSettingBtn" title="API 地址设置">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+              <line x1="6" y1="1" x2="6" y2="4"/>
+              <line x1="10" y1="1" x2="10" y2="4"/>
+              <line x1="14" y1="1" x2="14" y2="4"/>
+            </svg>
+          </button>
+          <textarea class="chat-input" placeholder="输入你的消息... (Enter 发送，Shift+Enter 换行)" rows="1"></textarea>
+          <button class="send-btn" title="发送">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+        <div class="input-hint">
+          按 <kbd>Enter</kbd> 发送，<kbd>Shift</kbd> + <kbd>Enter</kbd> 换行
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 设置弹窗 -->
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h2>设置</h2>
+        <button class="close-btn" id="closeSettings">&times;</button>
+      </div>
+
+      <div class="settings-group">
+        <label class="settings-label">API 服务器地址</label>
+        <input type="text" class="settings-input" value="https://api.openai.com/v1" placeholder="输入 API 地址">
+      </div>
+
+      <div class="settings-group">
+        <label class="settings-label">API Key</label>
+        <input type="password" class="settings-input" value="sk-************************" placeholder="输入 API Key">
+      </div>
+
+      <div class="settings-group">
+        <label class="settings-label">模型选择</label>
+        <select class="settings-input settings-select">
+          <option>gpt-4o</option>
+          <option>gpt-4-turbo</option>
+          <option>gpt-3.5-turbo</option>
+          <option>claude-3-opus</option>
+          <option>deepseek-chat</option>
+        </select>
+      </div>
+
+      <div class="settings-group">
+        <label class="settings-label">温度 (Temperature)</label>
+        <input type="text" class="settings-input" value="0.7" placeholder="0.0 - 1.0">
+      </div>
+
+      <div class="settings-footer">
+        <button class="btn-secondary" id="cancelSettings">取消</button>
+        <button class="btn-primary" id="saveSettings">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // 设置弹窗控制
+  const settingsBtn = document.getElementById('settingsBtn');
+  const apiSettingBtn = document.getElementById('apiSettingBtn');
+  const settingsModal = document.getElementById('settingsModal');
+  const closeSettings = document.getElementById('closeSettings');
+  const cancelSettings = document.getElementById('cancelSettings');
+  const saveSettings = document.getElementById('saveSettings');
+
+  function openSettings() {
+    settingsModal.classList.add('active');
+  }
+
+  function closeSettingsModal() {
+    settingsModal.classList.remove('active');
+  }
+
+  settingsBtn.addEventListener('click', openSettings);
+  apiSettingBtn.addEventListener('click', openSettings);
+  closeSettings.addEventListener('click', closeSettingsModal);
+  cancelSettings.addEventListener('click', closeSettingsModal);
+
+  settingsModal.addEventListener('click', function(e) {
+    if (e.target === settingsModal) {
+      closeSettingsModal();
+    }
+  });
+
+  saveSettings.addEventListener('click', function() {
+    closeSettingsModal();
+  });
+
+  // 历史对话切换
+  const historyItems = document.querySelectorAll('.history-item');
+  historyItems.forEach(item => {
+    item.addEventListener('click', function() {
+      historyItems.forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // 输入框自适应高度
+  const chatInput = document.querySelector('.chat-input');
+  chatInput.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
+
+  // 发送按钮模拟
+  const sendBtn = document.querySelector('.send-btn');
+  sendBtn.addEventListener('click', function() {
+    if (chatInput.value.trim()) {
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+    }
+  });
+
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendBtn.click();
+    }
+  });
+
+  // ESC 关闭弹窗
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeSettingsModal();
+    }
+  });
+</script>
+</body>
+</html>

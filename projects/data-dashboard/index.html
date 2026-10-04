@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实时数据监控系统 - Real-Time Data Monitor</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    background: #030b1a;
+    color: #e0f0ff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at top, rgba(0, 120, 200, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at bottom, rgba(0, 60, 120, 0.1) 0%, transparent 60%);
+  }
+
+  /* ===== 背景网格 ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      linear-gradient(rgba(0, 150, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 150, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .dashboard {
+    position: relative;
+    z-index: 1;
+    padding: 15px 20px 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== 顶部标题栏 ===== */
+  .header {
+    position: relative;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+
+  .header::before,
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 35%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+  }
+
+  .header::before { left: 5%; }
+  .header::after { right: 5%; }
+
+  .back-btn {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(0, 100, 180, 0.15);
+    border: 1px solid rgba(0, 180, 255, 0.3);
+    border-radius: 4px;
+    color: #00d4ff;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.3s;
+  }
+
+  .back-btn:hover {
+    background: rgba(0, 150, 255, 0.25);
+    border-color: #00d4ff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  }
+
+  .back-btn::before {
+    content: '←';
+    font-size: 16px;
+  }
+
+  .header-title {
+    text-align: center;
+  }
+
+  .header-title h1 {
+    font-size: 30px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    background: linear-gradient(180deg, #ffffff 0%, #00d4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+  }
+
+  .header-title h2 {
+    font-size: 13px;
+    font-weight: normal;
+    color: #5a8ab0;
+    letter-spacing: 8px;
+    margin-top: 2px;
+  }
+
+  .header-time {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: right;
+    color: #7ab8e0;
+    font-size: 13px;
+  }
+
+  .header-time .time {
+    font-size: 22px;
+    color: #00d4ff;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  }
+
+  /* ===== 主体布局 ===== */
+  .main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 320px 1fr 320px;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .left-panel,
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .center-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  /* ===== 面板通用样式 ===== */
+  .panel {
+    position: relative;
+    background: linear-gradient(135deg, rgba(0, 40, 80, 0.4) 0%, rgba(0, 20, 50, 0.6) 100%);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    border-radius: 4px;
+    padding: 15px;
+    backdrop-filter: blur(5px);
+  }
+
+  .panel::before,
+  .panel::after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border: 2px solid #00d4ff;
+  }
+
+  .panel::before {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .panel::after {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+  }
+
+  .panel-title {
+    font-size: 15px;
+    color: #00d4ff;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 150, 255, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 1px;
+  }
+
+  .panel-title::before {
+    content: '';
+    width: 4px;
+    height: 16px;
+    background: linear-gradient(180deg, #00d4ff, #0066aa);
+    border-radius: 2px;
+  }
+
+  /* ===== 数据卡片 ===== */
+  .data-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(0, 60, 120, 0.3) 0%, rgba(0, 30, 60, 0.5) 100%);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+
+  .data-card:hover {
+    border-color: rgba(0, 212, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 150, 255, 0.2);
+  }
+
+  .data-card:last-child {
+    margin-bottom: 0;
+  }
+
+  .data-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, #00d4ff, #0066aa);
+  }
+
+  .data-card .card-label {
+    font-size: 12px;
+    color: #7ab8e0;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .data-card .card-value {
+    font-size: 32px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    line-height: 1.1;
+  }
+
+  .data-card .card-trend {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+    font-size: 12px;
+  }
+
+  .data-card .card-trend.up {
+    color: #00ff88;
+  }
+
+  .data-card .card-trend.down {
+    color: #ff5577;
+  }
+
+  .data-card .card-trend .arrow {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .data-card .card-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    opacity: 0.6;
+  }
+
+  .data-card.visits .card-icon {
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+  }
+
+  .data-card.users .card-icon {
+    background: rgba(0, 255, 136, 0.15);
+    color: #00ff88;
+  }
+
+  .data-card.load .card-icon {
+    background: rgba(255, 200, 0, 0.15);
+    color: #ffc800;
+  }
+
+  .data-card.alerts .card-icon {
+    background: rgba(255, 85, 119, 0.15);
+    color: #ff5577;
+  }
+
+  /* ===== 中间主图表 ===== */
+  .chart-panel {
+    flex: 1;
+    min-height: 350px;
+  }
+
+  .chart-container {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 40px);
+    min-height: 300px;
+  }
+
+  .chart-container canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #7ab8e0;
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  .legend-dot.blue { background: #00d4ff; box-shadow: 0 0 6px #00d4ff; }
+  .legend-dot.green { background: #00ff88; box-shadow: 0 0 6px #00ff88; }
+  .legend-dot.orange { background: #ffaa00; box-shadow: 0 0 6px #ffaa00; }
+  .legend-dot.purple { background: #aa66ff; box-shadow: 0 0 6px #aa66ff; }
+
+  /* ===== 环形进度图 ===== */
+  .ring-chart-panel {
+    flex: 0 0 auto;
+  }
+
+  .ring-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+  }
+
+  .ring-chart {
+    position: relative;
+    width: 160px;
+    height: 160px;
+  }
+
+  .ring-chart svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .ring-bg {
+    fill: none;
+    stroke: rgba(0, 100, 180, 0.15);
+    stroke-width: 10;
+  }
+
+  .ring-progress {
+    fill: none;
+    stroke: url(#ringGradient);
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-dasharray: 440;
+    stroke-dashoffset: 132;
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+  }
+
+  .ring-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .ring-center .value {
+    font-size: 36px;
+    font-weight: bold;
+    color: #00d4ff;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  }
+
+  .ring-center .label {
+    font-size: 12px;
+    color: #7ab8e0;
+    margin-top: 2px;
+  }
+
+  .ring-stats {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 150, 255, 0.1);
+  }
+
+  .ring-stat {
+    text-align: center;
+  }
+
+  .ring-stat .num {
+    font-size: 18px;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+  }
+
+  .ring-stat .lbl {
+    font-size: 11px;
+    color: #5a8ab0;
+    margin-top: 2px;
+  }
+
+  /* ===== 告警列表 ===== */
+  .alert-list-panel {
+    flex: 1;
+    min-height: 200px;
+  }
+
+  .alert-list {
+    list-style: none;
+  }
+
+  .alert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 100, 180, 0.1);
+    font-size: 12px;
+  }
+
+  .alert-item:last-child {
+    border-bottom: none;
+  }
+
+  .alert-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .alert-dot.high {
+    background: #ff5577;
+    box-shadow: 0 0 8px #ff5577;
+    animation: pulse 2s infinite;
+  }
+
+  .alert-dot.medium {
+    background: #ffaa00;
+    box-shadow: 0 0 8px #ffaa00;
+  }
+
+  .alert-dot.low {
+    background: #00d4ff;
+    box-shadow: 0 0 8px #00d4ff;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .alert-content {
+    flex: 1;
+  }
+
+  .alert-title {
+    color: #e0f0ff;
+    margin-bottom: 3px;
+  }
+
+  .alert-time {
+    color: #5a8ab0;
+    font-size: 11px;
+  }
+
+  /* ===== 底部表格 ===== */
+  .bottom-panel {
+    flex: 0 0 auto;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .data-table thead th {
+    background: rgba(0, 100, 180, 0.2);
+    color: #00d4ff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: normal;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 150, 255, 0.2);
+  }
+
+  .data-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(0, 100, 180, 0.08);
+    color: #b0d0e8;
+  }
+
+  .data-table tbody tr:hover {
+    background: rgba(0, 150, 255, 0.08);
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .status-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+  }
+
+  .status-tag.success {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+  }
+
+  .status-tag.warning {
+    background: rgba(255, 170, 0, 0.1);
+    color: #ffaa00;
+    border: 1px solid rgba(255, 170, 0, 0.3);
+  }
+
+  .status-tag.error {
+    background: rgba(255, 85, 119, 0.1);
+    color: #ff5577;
+    border: 1px solid rgba(255, 85, 119, 0.3);
+  }
+
+  .status-tag.running {
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  /* ===== 装饰元素 ===== */
+  .corner-deco {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+  }
+
+  .corner-deco.tl { top: -2px; left: -2px; border-top: 2px solid #00d4ff; border-left: 2px solid #00d4ff; }
+  .corner-deco.tr { top: -2px; right: -2px; border-top: 2px solid #00d4ff; border-right: 2px solid #00d4ff; }
+  .corner-deco.bl { bottom: -2px; left: -2px; border-bottom: 2px solid #00d4ff; border-left: 2px solid #00d4ff; }
+  .corner-deco.br { bottom: -2px; right: -2px; border-bottom: 2px solid #00d4ff; border-right: 2px solid #00d4ff; }
+
+  /* ===== 扫描线效果 ===== */
+  .scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.6), transparent);
+    animation: scan 4s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes scan {
+    0% { top: 0; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 1200px) {
+    .main {
+      grid-template-columns: 280px 1fr 280px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .main {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="dashboard">
+
+  <!-- ===== 顶部标题栏 ===== -->
+  <div class="header">
+    <a href="../../index.html" class="back-btn">返回主页</a>
+    <div class="header-title">
+      <h1>REAL-TIME DATA MONITOR</h1>
+      <h2>实 时 数 据 监 控 系 统</h2>
+    </div>
+    <div class="header-time">
+      <div class="time" id="currentTime">00:00:00</div>
+      <div id="currentDate">2026-01-01 星期一</div>
+    </div>
+  </div>
+
+  <!-- ===== 主体区域 ===== -->
+  <div class="main">
+
+    <!-- 左侧面板 -->
+    <div class="left-panel">
+
+      <div class="panel">
+        <div class="corner-deco tl"></div>
+        <div class="corner-deco tr"></div>
+        <div class="corner-deco bl"></div>
+        <div class="corner-deco br"></div>
+        <div class="panel-title">核心指标 / KEY METRICS</div>
+
+        <!-- 访问量 -->
+        <div class="data-card visits">
+          <div class="card-icon">👁</div>
+          <div class="card-label">今日访问量</div>
+          <div class="card-value">128,456</div>
+          <div class="card-trend up">
+            <span class="arrow">▲</span>
+            <span>12.5% 较昨日</span>
+          </div>
+        </div>
+
+        <!-- 在线用户 -->
+        <div class="data-card users">
+          <div class="card-icon">👥</div>
+          <div class="card-label">在线用户</div>
+          <div class="card-value">8,932</div>
+          <div class="card-trend up">
+            <span class="arrow">▲</span>
+            <span>5.2% 较上小时</span>
+          </div>
+        </div>
+
+        <!-- 系统负载 -->
+        <div class="data-card load">
+          <div class="card-icon">⚡</div>
+          <div class="card-label">系统负载</div>
+          <div class="card-value">68.7%</div>
+          <div class="card-trend down">
+            <span class="arrow">▼</span>
+            <span>3.1% 较上小时</span>
+          </div>
+        </div>
+
+        <!-- 告警数 -->
+        <div class="data-card alerts">
+          <div class="card-icon">⚠</div>
+          <div class="card-label">今日告警</div>
+          <div class="card-value">27</div>
+          <div class="card-trend up">
+            <span class="arrow">▲</span>
+            <span>8 条未处理</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 中间面板 -->
+    <div class="center-panel">
+
+      <div class="panel chart-panel">
+        <div class="corner-deco tl"></div>
+        <div class="corner-deco tr"></div>
+        <div class="corner-deco bl"></div>
+        <div class="corner-deco br"></div>
+        <div class="scan-line"></div>
+        <div class="panel-title">实时趋势监控 / REAL-TIME TREND</div>
+        <div class="chart-container">
+          <canvas id="mainChart"></canvas>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="legend-dot blue"></span>
+            <span>访问趋势</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot green"></span>
+            <span>CPU 使用率</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot orange"></span>
+            <span>内存使用率</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot purple"></span>
+            <span>网络流量</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧面板 -->
+    <div class="right-panel">
+
+      <!-- CPU 环形图 -->
+      <div class="panel ring-chart-panel">
+        <div class="corner-deco tl"></div>
+        <div class="corner-deco tr"></div>
+        <div class="corner-deco bl"></div>
+        <div class="corner-deco br"></div>
+        <div class="panel-title">CPU 使用率 / CPU USAGE</div>
+        <div class="ring-container">
+          <div class="ring-chart">
+            <svg viewBox="0 0 160 160">
+              <defs>
+                <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00d4ff"/>
+                  <stop offset="100%" stop-color="#0066aa"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-bg" cx="80" cy="80" r="70"/>
+              <circle class="ring-progress" cx="80" cy="80" r="70"/>
+            </svg>
+            <div class="ring-center">
+              <div class="value">70%</div>
+              <div class="label">CPU 使用率</div>
+            </div>
+          </div>
+          <div class="ring-stats">
+            <div class="ring-stat">
+              <div class="num">4.2GHz</div>
+              <div class="lbl">主频</div>
+            </div>
+            <div class="ring-stat">
+              <div class="num">8核</div>
+              <div class="lbl">核心</div>
+            </div>
+            <div class="ring-stat">
+              <div class="num">56℃</div>
+              <div class="lbl">温度</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 告警列表 -->
+      <div class="panel alert-list-panel">
+        <div class="corner-deco tl"></div>
+        <div class="corner-deco tr"></div>
+        <div class="corner-deco bl"></div>
+        <div class="corner-deco br"></div>
+        <div class="panel-title">最近告警 / RECENT ALERTS</div>
+        <ul class="alert-list">
+          <li class="alert-item">
+            <span class="alert-dot high"></span>
+            <div class="alert-content">
+              <div class="alert-title">服务器 node-03 内存使用率超过 90%</div>
+              <div class="alert-time">2 分钟前</div>
+            </div>
+          </li>
+          <li class="alert-item">
+            <span class="alert-dot high"></span>
+            <div class="alert-content">
+              <div class="alert-title">数据库连接池耗尽，请求被拒绝</div>
+              <div class="alert-time">8 分钟前</div>
+            </div>
+          </li>
+          <li class="alert-item">
+            <span class="alert-dot medium"></span>
+            <div class="alert-content">
+              <div class="alert-title">API 网关响应时间超过阈值</div>
+              <div class="alert-time">15 分钟前</div>
+            </div>
+          </li>
+          <li class="alert-item">
+            <span class="alert-dot medium"></span>
+            <div class="alert-content">
+              <div class="alert-title">磁盘使用率达到 80%，建议清理</div>
+              <div class="alert-time">32 分钟前</div>
+            </div>
+          </li>
+          <li class="alert-item">
+            <span class="alert-dot low"></span>
+            <div class="alert-content">
+              <div class="alert-title">系统自动扩容，新增 2 个实例</div>
+              <div class="alert-time">1 小时前</div>
+            </div>
+          </li>
+          <li class="alert-item">
+            <span class="alert-dot low"></span>
+            <div class="alert-content">
+              <div class="alert-title">每日数据备份任务已完成</div>
+              <div class="alert-time">3 小时前</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== 底部表格 ===== -->
+  <div class="panel bottom-panel">
+    <div class="corner-deco tl"></div>
+    <div class="corner-deco tr"></div>
+    <div class="corner-deco bl"></div>
+    <div class="corner-deco br"></div>
+    <div class="panel-title">最近访问记录 / RECENT RECORDS</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>时间</th>
+          <th>IP 地址</th>
+          <th>请求路径</th>
+          <th>状态码</th>
+          <th>响应时间</th>
+          <th>状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>#001</td>
+          <td>2026-10-05 09:32:15</td>
+          <td>192.168.1.125</td>
+          <td>GET /api/v1/users</td>
+          <td>200</td>
+          <td>45ms</td>
+          <td><span class="status-tag success">成功</span></td>
+        </tr>
+        <tr>
+          <td>#002</td>
+          <td>2026-10-05 09:32:12</td>
+          <td>10.0.0.88</td>
+          <td>POST /api/v1/orders</td>
+          <td>201</td>
+          <td>128ms</td>
+          <td><span class="status-tag success">成功</span></td>
+        </tr>
+        <tr>
+          <td>#003</td>
+          <td>2026-10-05 09:32:08</td>
+          <td>172.16.0.45</td>
+          <td>GET /api/v1/dashboard</td>
+          <td>500</td>
+          <td>2300ms</td>
+          <td><span class="status-tag error">错误</span></td>
+        </tr>
+        <tr>
+          <td>#004</td>
+          <td>2026-10-05 09:32:05</td>
+          <td>192.168.1.201</td>
+          <td>PUT /api/v1/profile</td>
+          <td>200</td>
+          <td>67ms</td>
+          <td><span class="status-tag success">成功</span></td>
+        </tr>
+        <tr>
+          <td>#005</td>
+          <td>2026-10-05 09:32:01</td>
+          <td>10.0.1.156</td>
+          <td>GET /api/v1/reports</td>
+          <td>304</td>
+          <td>12ms</td>
+          <td><span class="status-tag running">缓存</span></td>
+        </tr>
+        <tr>
+          <td>#006</td>
+          <td>2026-10-05 09:31:58</td>
+          <td>192.168.2.89</td>
+          <td>DELETE /api/v1/tokens</td>
+          <td>401</td>
+          <td>5ms</td>
+          <td><span class="status-tag warning">未授权</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  // 更新时间
+  function updateTime() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('currentTime').textContent = `${h}:${m}:${s}`;
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const days = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+    document.getElementById('currentDate').textContent = `${year}-${month}-${day} ${days[now.getDay()]}`;
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // 绘制主图表
+  function drawChart() {
+    const canvas = document.getElementById('mainChart');
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+
+    const W = rect.width;
+    const H = rect.height;
+    const padding = { top: 20, right: 20, bottom: 30, left: 50 };
+    const chartW = W - padding.left - padding.right;
+    const chartH = H - padding.top - padding.bottom;
+
+    // 生成随机数据点
+    function generateData(points, min, max, seed) {
+      const data = [];
+      let val = (min + max) / 2;
+      for (let i = 0; i < points; i++) {
+        val += (Math.sin(i * 0.3 + seed) + Math.random() - 0.5) * (max - min) * 0.05;
+        val = Math.max(min, Math.min(max, val));
+        data.push(val);
+      }
+      return data;
+    }
+
+    const points = 50;
+    const data1 = generateData(points, 30, 100, 0);   // 访问趋势
+    const data2 = generateData(points, 40, 90, 1.5);  // CPU
+    const data3 = generateData(points, 50, 85, 3);    // 内存
+    const data4 = generateData(points, 20, 95, 4.5);  // 网络
+
+    // 绘制网格
+    ctx.strokeStyle = 'rgba(0, 150, 255, 0.08)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+      const y = padding.top + (chartH / 5) * i;
+      ctx.beginPath();
+      ctx.moveTo(padding.left, y);
+      ctx.lineTo(W - padding.right, y);
+      ctx.stroke();
+    }
+    for (let i = 0; i <= 10; i++) {
+      const x = padding.left + (chartW / 10) * i;
+      ctx.beginPath();
+      ctx.moveTo(x, padding.top);
+      ctx.lineTo(x, H - padding.bottom);
+      ctx.stroke();
+    }
+
+    // 绘制Y轴标签
+    ctx.fillStyle = 'rgba(120, 180, 220, 0.6)';
+    ctx.font = '11px Courier New';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 5; i++) {
+      const y = padding.top + (chartH / 5) * i;
+      const val = Math.round(100 - i * 20);
+      ctx.fillText(val + '%', padding.left - 8, y + 4);
+    }
+
+    // 绘制X轴标签
+    ctx.textAlign = 'center';
+    const hours = ['00:00','04:00','08:00','12:00','16:00','20:00','24:00'];
+    for (let i = 0; i <= 6; i++) {
+      const x = padding.left + (chartW / 6) * i;
+      ctx.fillText(hours[i], x, H - padding.bottom + 18);
+    }
+
+    // 绘制曲线函数
+    function drawLine(data, color, glow) {
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = glow;
+      ctx.shadowBlur = 10;
+
+      for (let i = 0; i < data.length; i++) {
+        const x = padding.left + (chartW / (data.length - 1)) * i;
+        const y = padding.top + chartH - (data[i] / 100) * chartH;
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          const prevX = padding.left + (chartW / (data.length - 1)) * (i - 1);
+          const prevY = padding.top + chartH - (data[i - 1] / 100) * chartH;
+          const cpX = (prevX + x) / 2;
+          ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+        }
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // 绘制渐变填充
+      const lastX = padding.left + chartW;
+      const lastY = padding.top + chartH - (data[data.length - 1] / 100) * chartH;
+      ctx.lineTo(lastX, H - padding.bottom);
+      ctx.lineTo(padding.left, H - padding.bottom);
+      ctx.closePath();
+
+      const gradient = ctx.createLinearGradient(0, padding.top, 0, H - padding.bottom);
+      gradient.addColorStop(0, color.replace(')', ', 0.3)').replace('rgb', 'rgba'));
+      gradient.addColorStop(1, color.replace(')', ', 0)').replace('rgb', 'rgba'));
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    }
+
+    // 绘制各条曲线
+    drawLine(data1, 'rgb(0, 212, 255)', 'rgba(0, 212, 255, 0.8)');
+    drawLine(data2, 'rgb(0, 255, 136)', 'rgba(0, 255, 136, 0.8)');
+    drawLine(data3, 'rgb(255, 170, 0)', 'rgba(255, 170, 0, 0.8)');
+    drawLine(data4, 'rgb(170, 102, 255)', 'rgba(170, 102, 255, 0.8)');
+  }
+
+  // 初始绘制和响应式重绘
+  window.addEventListener('load', drawChart);
+  window.addEventListener('resize', drawChart);
+</script>
+</body>
+</html>

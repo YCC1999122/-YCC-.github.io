@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toolbox / 在线工具箱</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #f5faf7;
+    color: #2c3e50;
+    min-height: 100vh;
+  }
+
+  /* 顶部导航栏 */
+  .navbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e8f1ec;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #f0f7f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #10b981;
+    transition: all 0.2s ease;
+    font-size: 18px;
+  }
+
+  .back-btn:hover {
+    background: #d1fae5;
+    transform: translateX(-2px);
+  }
+
+  .logo {
+    font-size: 20px;
+    font-weight: 600;
+    color: #065f46;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #f0f7f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #10b981;
+    font-size: 18px;
+    border: none;
+  }
+
+  .nav-icon-btn:hover {
+    background: #d1fae5;
+    transform: translateY(-1px);
+  }
+
+  /* 主体容器 */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* 页面标题 */
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #065f46;
+    margin-bottom: 8px;
+  }
+
+  .page-subtitle {
+    font-size: 15px;
+    color: #6b7f79;
+  }
+
+  /* 搜索框 */
+  .search-wrapper {
+    max-width: 560px;
+    margin: 0 auto 28px;
+    position: relative;
+  }
+
+  .search-box {
+    width: 100%;
+    height: 48px;
+    padding: 0 20px 0 48px;
+    border: 2px solid #e8f1ec;
+    border-radius: 12px;
+    font-size: 15px;
+    background: #fff;
+    transition: all 0.2s ease;
+    outline: none;
+    color: #2c3e50;
+  }
+
+  .search-box:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a39f;
+    font-size: 18px;
+    pointer-events: none;
+  }
+
+  /* 分类标签 */
+  .category-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+
+  .tab {
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+    color: #6b7f79;
+    border: 1px solid #e8f1ec;
+    user-select: none;
+  }
+
+  .tab:hover {
+    color: #10b981;
+    border-color: #a7f3d0;
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  /* 工具卡片网格 */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .tool-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid #edf2f0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #06b6d4);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: left;
+  }
+
+  .tool-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(16, 185, 129, 0.15);
+    border-color: #a7f3d0;
+  }
+
+  .tool-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .tool-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .tool-icon.dev { background: #ecfdf5; color: #059669; }
+  .tool-icon.design { background: #f0fdfa; color: #0d9488; }
+  .tool-icon.text { background: #f0f9ff; color: #0284c7; }
+  .tool-icon.image { background: #faf5ff; color: #9333ea; }
+  .tool-icon.calc { background: #fff7ed; color: #ea580c; }
+
+  .tool-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #134e4a;
+    margin-bottom: 6px;
+  }
+
+  .tool-desc {
+    font-size: 13px;
+    color: #7d8f8a;
+    line-height: 1.5;
+  }
+
+  .tool-fav {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: #cbd5d1;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0;
+  }
+
+  .tool-card:hover .tool-fav {
+    opacity: 1;
+  }
+
+  .tool-fav:hover {
+    color: #f59e0b;
+    transform: scale(1.1);
+  }
+
+  /* 页脚 */
+  .footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: #94a39f;
+    font-size: 13px;
+    margin-top: 40px;
+    border-top: 1px solid #e8f1ec;
+  }
+
+  .footer a {
+    color: #10b981;
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* 响应式 */
+  @media (max-width: 640px) {
+    .navbar {
+      padding: 0 16px;
+    }
+
+    .container {
+      padding: 24px 16px;
+    }
+
+    .page-title {
+      font-size: 24px;
+    }
+
+    .tools-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .tool-card {
+      padding: 18px;
+    }
+
+    .tab {
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<nav class="navbar">
+  <div class="nav-left">
+    <a href="../../index.html" class="back-btn" title="返回主页">&#8592;</a>
+    <div class="logo">
+      <div class="logo-icon">&#128736;</div>
+      <span>Toolbox</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-icon-btn" title="收藏">&#9733;</button>
+    <button class="nav-icon-btn" title="历史记录">&#9203;</button>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- 页面标题 -->
+  <div class="page-header">
+    <h1 class="page-title">在线工具箱</h1>
+    <p class="page-subtitle">精选实用工具，提升你的工作效率</p>
+  </div>
+
+  <!-- 搜索框 -->
+  <div class="search-wrapper">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" class="search-box" placeholder="搜索工具，例如：JSON格式化、二维码生成...">
+  </div>
+
+  <!-- 分类标签 -->
+  <div class="category-tabs">
+    <div class="tab active">全部</div>
+    <div class="tab">开发工具</div>
+    <div class="tab">设计工具</div>
+    <div class="tab">文本工具</div>
+    <div class="tab">图片工具</div>
+    <div class="tab">计算工具</div>
+  </div>
+
+  <!-- 工具卡片网格 -->
+  <div class="tools-grid">
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">{ }</div>
+      <div class="tool-name">JSON 格式化</div>
+      <div class="tool-desc">快速格式化、压缩、校验 JSON 数据，支持语法高亮</div>
+    </div>
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">B64</div>
+      <div class="tool-name">Base64 编解码</div>
+      <div class="tool-desc">支持文本和图片的 Base64 编码与解码转换</div>
+    </div>
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">&#9610;</div>
+      <div class="tool-name">二维码生成</div>
+      <div class="tool-desc">输入文本或链接，一键生成高清二维码图片</div>
+    </div>
+
+    <div class="tool-card" data-category="design">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon design">&#9679;</div>
+      <div class="tool-name">颜色选择器</div>
+      <div class="tool-desc">取色、调色板、颜色格式转换（HEX/RGB/HSL）</div>
+    </div>
+
+    <div class="tool-card" data-category="image">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon image">&#128247;</div>
+      <div class="tool-name">图片压缩</div>
+      <div class="tool-desc">在线智能压缩 JPG/PNG 图片，保持画质减小体积</div>
+    </div>
+
+    <div class="tool-card" data-category="text">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon text">M↓</div>
+      <div class="tool-name">Markdown 预览</div>
+      <div class="tool-desc">实时预览 Markdown 文档，支持导出 HTML/PDF</div>
+    </div>
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">&#128274;</div>
+      <div class="tool-name">密码生成器</div>
+      <div class="tool-desc">一键生成高强度随机密码，可自定义长度和字符集</div>
+    </div>
+
+    <div class="tool-card" data-category="calc">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon calc">&#9201;</div>
+      <div class="tool-name">时间戳转换</div>
+      <div class="tool-desc">Unix 时间戳与日期时间相互转换，支持多时区</div>
+    </div>
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">.*</div>
+      <div class="tool-name">正则测试</div>
+      <div class="tool-desc">在线测试正则表达式，实时高亮匹配结果</div>
+    </div>
+
+    <div class="tool-card" data-category="calc">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon calc">&#8646;</div>
+      <div class="tool-name">单位换算</div>
+      <div class="tool-desc">长度、重量、面积、体积、温度等单位快速换算</div>
+    </div>
+
+    <div class="tool-card" data-category="calc">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon calc">01</div>
+      <div class="tool-name">进制转换</div>
+      <div class="tool-desc">二进制、八进制、十进制、十六进制相互转换</div>
+    </div>
+
+    <div class="tool-card" data-category="text">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon text">&#8781;</div>
+      <div class="tool-name">文本对比</div>
+      <div class="tool-desc">两段文本差异对比，高亮显示增删改内容</div>
+    </div>
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">#</div>
+      <div class="tool-name">哈希计算</div>
+      <div class="tool-desc">MD5/SHA1/SHA256 等多种哈希算法在线计算</div>
+    </div>
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">%</div>
+      <div class="tool-name">URL 编码</div>
+      <div class="tool-desc">URL 编码与解码，支持中文及特殊字符处理</div>
+    </div>
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">u-id</div>
+      <div class="tool-name">UUID 生成</div>
+      <div class="tool-desc">批量生成唯一标识符 UUID v1/v4 版本</div>
+    </div>
+
+    <div class="tool-card" data-category="dev">
+      <span class="tool-fav">&#9734;</span>
+      <div class="tool-icon dev">&#127760;</div>
+      <div class="tool-name">IP 查询</div>
+      <div class="tool-desc">查询 IP 地址归属地、运营商及地理位置信息</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 页脚 -->
+<div class="footer">
+  <p>Toolbox &copy; 2026 · <a href="#">关于我们</a> · <a href="#">反馈建议</a></p>
+</div>
+
+<script>
+  // 分类筛选交互
+  const tabs = document.querySelectorAll('.tab');
+  const cards = document.querySelectorAll('.tool-card');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const category = tab.textContent.trim();
+      cards.forEach(card => {
+        if (category === '全部') {
+          card.style.display = '';
+        } else {
+          const catMap = {
+            '开发工具': 'dev',
+            '设计工具': 'design',
+            '文本工具': 'text',
+            '图片工具': 'image',
+            '计算工具': 'calc'
+          };
+          const cat = catMap[category];
+          card.style.display = card.dataset.category === cat ? '' : 'none';
+        }
+      });
+    });
+  });
+
+  // 搜索过滤
+  const searchBox = document.querySelector('.search-box');
+  searchBox.addEventListener('input', (e) => {
+    const keyword = e.target.value.toLowerCase().trim();
+    cards.forEach(card => {
+      const name = card.querySelector('.tool-name').textContent.toLowerCase();
+      const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
+      card.style.display = (name.includes(keyword) || desc.includes(keyword)) ? '' : 'none';
+    });
+
+    // 搜索时重置分类标签为"全部"
+    if (keyword) {
+      tabs.forEach(t => t.classList.remove('active'));
+      tabs[0].classList.add('active');
+    }
+  });
+
+  // 收藏按钮交互
+  document.querySelectorAll('.tool-fav').forEach(fav => {
+    fav.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (fav.innerHTML === '&#9734;') {
+        fav.innerHTML = '&#9733;';
+        fav.style.color = '#f59e0b';
+      } else {
+        fav.innerHTML = '&#9734;';
+        fav.style.color = '';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

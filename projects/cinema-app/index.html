@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>西瓜影城 - 演示</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #f5f0ed;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 0;
+    position: relative;
+  }
+
+  /* 返回主页按钮 */
+  .back-home {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #e63946;
+    font-size: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    z-index: 100;
+  }
+  .back-home:hover {
+    background: #e63946;
+    color: #fff;
+    transform: translateX(-3px);
+  }
+
+  /* 手机外框 */
+  .phone {
+    width: 375px;
+    height: 812px;
+    background: #1a1a1a;
+    border-radius: 45px;
+    padding: 12px;
+    position: relative;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+  }
+
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 30px;
+    background: #1a1a1a;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #faf7f5;
+    border-radius: 35px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 状态栏 */
+  .status-bar {
+    height: 44px;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 25px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    flex-shrink: 0;
+  }
+
+  .status-bar .right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+  }
+
+  /* 顶部搜索区 */
+  .header {
+    padding: 10px 16px 15px;
+    background: linear-gradient(135deg, #e63946 0%, #ff6b35 100%);
+    flex-shrink: 0;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .logo-icon {
+    font-size: 24px;
+  }
+
+  .city-select {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .city-select::after {
+    content: '▼';
+    font-size: 10px;
+    opacity: 0.8;
+  }
+
+  /* 搜索栏 */
+  .search-bar {
+    background: rgba(255,255,255,0.95);
+    border-radius: 25px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 10px;
+  }
+
+  .search-bar .icon {
+    color: #999;
+    font-size: 16px;
+  }
+
+  .search-bar input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .search-bar input::placeholder {
+    color: #bbb;
+  }
+
+  /* 滚动内容区 */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 70px;
+  }
+
+  .content::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 轮播图 */
+  .banner {
+    margin: 16px;
+    height: 160px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+  }
+
+  .banner-slide {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: #fff;
+  }
+
+  .banner-slide.interstellar {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  }
+
+  .banner-slide.oppenheimer {
+    background: linear-gradient(135deg, #2c1810 0%, #5c3d2e 50%, #8b5a2b 100%);
+  }
+
+  .banner-slide.dune {
+    background: linear-gradient(135deg, #c2956e 0%, #d4a574 50%, #e8c39e 100%);
+  }
+
+  .banner-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+
+  .banner-subtitle {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-top: 6px;
+    letter-spacing: 2px;
+  }
+
+  .banner-text {
+    text-align: center;
+  }
+
+  /* 轮播指示器 */
+  .banner-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 3;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+  }
+
+  .dot.active {
+    width: 18px;
+    border-radius: 3px;
+    background: #fff;
+  }
+
+  /* 分类标签 */
+  .tabs {
+    display: flex;
+    padding: 0 16px;
+    gap: 24px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .tab {
+    padding: 10px 0;
+    font-size: 15px;
+    color: #999;
+    font-weight: 500;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .tab.active {
+    color: #e63946;
+    font-weight: 700;
+    font-size: 17px;
+  }
+
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: #e63946;
+    border-radius: 2px;
+  }
+
+  /* 电影列表 */
+  .movie-list {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .movie-card {
+    display: flex;
+    gap: 12px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .movie-poster {
+    width: 75px;
+    height: 105px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    writing-mode: vertical-rl;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .movie-poster.p1 { background: linear-gradient(180deg, #e63946, #ff6b35); }
+  .movie-poster.p2 { background: linear-gradient(180deg, #4a90d9, #67b8de); }
+  .movie-poster.p3 { background: linear-gradient(180deg, #9b59b6, #c39bd3); }
+  .movie-poster.p4 { background: linear-gradient(180deg, #2ecc71, #58d68d); }
+  .movie-poster.p5 { background: linear-gradient(180deg, #f39c12, #f5b041); }
+  .movie-poster.p6 { background: linear-gradient(180deg, #34495e, #5d6d7e); }
+
+  .movie-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  .movie-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #222;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .movie-rating {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    margin-top: 4px;
+  }
+
+  .rating-score {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ff6b35;
+  }
+
+  .rating-star {
+    font-size: 12px;
+    color: #ffb400;
+  }
+
+  .movie-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    background: #f0f0f0;
+    color: #666;
+    border-radius: 4px;
+  }
+
+  .movie-desc {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .buy-btn {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #e63946, #ff6b35);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* 底部导航栏 */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: #fff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding-top: 8px;
+    padding-bottom: 20px;
+    border-top: 1px solid #eee;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex: 1;
+  }
+
+  .nav-item.active {
+    color: #e63946;
+  }
+
+  .nav-icon {
+    font-size: 22px;
+  }
+
+  .nav-label {
+    font-weight: 500;
+  }
+
+  /* 手机侧边按钮装饰 */
+  .phone::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: 120px;
+    width: 3px;
+    height: 60px;
+    background: #1a1a1a;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .side-btn {
+    position: absolute;
+    left: -3px;
+    width: 3px;
+    background: #1a1a1a;
+    border-radius: 3px 0 0 3px;
+  }
+  .side-btn.s1 { top: 100px; height: 35px; }
+  .side-btn.s2 { top: 150px; height: 50px; }
+  .side-btn.s3 { top: 210px; height: 50px; }
+</style>
+</head>
+<body>
+
+<a href="../../index.html" class="back-home" title="返回主页">←</a>
+
+<div class="phone">
+  <div class="side-btn s1"></div>
+  <div class="side-btn s2"></div>
+  <div class="side-btn s3"></div>
+
+  <div class="phone-screen">
+    <!-- 状态栏 -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span>📶</span>
+        <span>🔋</span>
+      </div>
+    </div>
+
+    <!-- 顶部 -->
+    <div class="header">
+      <div class="header-top">
+        <div class="logo">
+          <span class="logo-icon">🍉</span>
+          <span>西瓜影城</span>
+        </div>
+        <div class="city-select">北京</div>
+      </div>
+      <div class="search-bar">
+        <span class="icon">🔍</span>
+        <input type="text" placeholder="搜索电影、影院、演员">
+      </div>
+    </div>
+
+    <!-- 内容区 -->
+    <div class="content">
+      <!-- 轮播 -->
+      <div class="banner">
+        <div class="banner-slide interstellar">
+          <div class="banner-text">
+            <div class="banner-title">星际穿越</div>
+            <div class="banner-subtitle">INTERSTELLAR</div>
+          </div>
+        </div>
+        <div class="banner-dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- 分类标签 -->
+      <div class="tabs">
+        <div class="tab active">正在热映</div>
+        <div class="tab">即将上映</div>
+        <div class="tab">经典推荐</div>
+      </div>
+
+      <!-- 电影列表 -->
+      <div class="movie-list">
+        <div class="movie-card">
+          <div class="movie-poster p1">流浪地球3</div>
+          <div class="movie-info">
+            <div>
+              <div class="movie-title">流浪地球3</div>
+              <div class="movie-rating">
+                <span class="rating-star">★</span>
+                <span class="rating-score">9.5</span>
+              </div>
+              <div class="movie-tags">
+                <span class="tag">科幻</span>
+                <span class="tag">灾难</span>
+                <span class="tag">2D/IMAX</span>
+              </div>
+              <div class="movie-desc">太阳危机下人类的终极救赎</div>
+            </div>
+            <button class="buy-btn">购票</button>
+          </div>
+        </div>
+
+        <div class="movie-card">
+          <div class="movie-poster p2">哪吒之魔童闹海</div>
+          <div class="movie-info">
+            <div>
+              <div class="movie-title">哪吒之魔童闹海</div>
+              <div class="movie-rating">
+                <span class="rating-star">★</span>
+                <span class="rating-score">9.2</span>
+              </div>
+              <div class="movie-tags">
+                <span class="tag">动画</span>
+                <span class="tag">奇幻</span>
+                <span class="tag">3D</span>
+              </div>
+              <div class="movie-desc">我命由我不由天的热血传奇</div>
+            </div>
+            <button class="buy-btn">购票</button>
+          </div>
+        </div>
+
+        <div class="movie-card">
+          <div class="movie-poster p3">奥本海默</div>
+          <div class="movie-info">
+            <div>
+              <div class="movie-title">奥本海默</div>
+              <div class="movie-rating">
+                <span class="rating-star">★</span>
+                <span class="rating-score">8.9</span>
+              </div>
+              <div class="movie-tags">
+                <span class="tag">传记</span>
+                <span class="tag">历史</span>
+                <span class="tag">2D</span>
+              </div>
+              <div class="movie-desc">原子弹之父的矛盾人生</div>
+            </div>
+            <button class="buy-btn">购票</button>
+          </div>
+        </div>
+
+        <div class="movie-card">
+          <div class="movie-poster p4">沙丘2</div>
+          <div class="movie-info">
+            <div>
+              <div class="movie-title">沙丘2</div>
+              <div class="movie-rating">
+                <span class="rating-star">★</span>
+                <span class="rating-score">8.8</span>
+              </div>
+              <div class="movie-tags">
+                <span class="tag">科幻</span>
+                <span class="tag">冒险</span>
+                <span class="tag">IMAX</span>
+              </div>
+              <div class="movie-desc">沙漠星球上的命运抉择</div>
+            </div>
+            <button class="buy-btn">购票</button>
+          </div>
+        </div>
+
+        <div class="movie-card">
+          <div class="movie-poster p5">热辣滚烫</div>
+          <div class="movie-info">
+            <div>
+              <div class="movie-title">热辣滚烫</div>
+              <div class="movie-rating">
+                <span class="rating-star">★</span>
+                <span class="rating-score">8.3</span>
+              </div>
+              <div class="movie-tags">
+                <span class="tag">喜剧</span>
+                <span class="tag">励志</span>
+                <span class="tag">2D</span>
+              </div>
+              <div class="movie-desc">拳击台上的人生逆袭</div>
+            </div>
+            <button class="buy-btn">购票</button>
+          </div>
+        </div>
+
+        <div class="movie-card">
+          <div class="movie-poster p6">碟中谍8</div>
+          <div class="movie-info">
+            <div>
+              <div class="movie-title">碟中谍8：最终清算</div>
+              <div class="movie-rating">
+                <span class="rating-star">★</span>
+                <span class="rating-score">8.6</span>
+              </div>
+              <div class="movie-tags">
+                <span class="tag">动作</span>
+                <span class="tag">谍战</span>
+                <span class="tag">2D/IMAX</span>
+              </div>
+              <div class="movie-desc">特工伊森的终极任务</div>
+            </div>
+            <button class="buy-btn">购票</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">首页</div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">🎬</div>
+        <div class="nav-label">电影</div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">🏢</div>
+        <div class="nav-label">影院</div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">👤</div>
+        <div class="nav-label">我的</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
