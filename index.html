@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YCC's Lab — 创意·代码·探索</title>
-  <meta name="description" content="一个开发者的创意实验室：项目实验、技术笔记、AI 探索、设计想法与生活记录。" />
-  <link rel="stylesheet" href="css/style.css?v=4.2" />
+  <title>Creative Research Lab — 创意·算法·探索</title>
+    <meta name="description" content="面向创意与技术的开放研究平台：AI 探索、算法设计、数据洞察、全栈开发、交互设计、硬件创新与游戏实验。" />
+  <link rel="stylesheet" href="css/style.css?v=4.3" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
@@ -77,6 +77,9 @@
         <li><a href="#contact" class="nav-link"><span class="nav-num">06</span><span data-i18n="nav.contact">联系</span></a></li>
       </ul>
       <div class="nav-actions">
+        <button class="help-btn" id="helpBtn" aria-label="帮助说明">
+          <span>?</span>
+        </button>
         <button class="lang-toggle" id="langToggle" aria-label="切换语言">
           <span class="lang-cn active">中</span>
           <span class="lang-divider">/</span>
@@ -118,18 +121,17 @@
       <div class="hero-left">
         <div class="hero-tag">
           <span class="pulse-dot"></span>
-          <span data-i18n="hero.tag">CREATIVE DEVELOPER LAB / 创意开发实验室</span>
+          <span data-i18n="hero.tag">CREATIVE RESEARCH LAB / 创意研究实验室</span>
         </div>
         <h1 class="hero-title">
-          <span class="line"><span class="line-inner" data-i18n="hero.line1">用代码</span></span>
-          <span class="line"><span class="line-inner gradient-text" data-i18n="hero.line2">建造想法</span></span>
-          <span class="line"><span class="line-inner" data-i18n="hero.line3">的实验场</span></span>
+          <span class="line"><span class="line-inner" data-i18n="hero.line1">探索</span></span>
+          <span class="line"><span class="line-inner gradient-text" data-i18n="hero.line2">创意与算法</span></span>
+          <span class="line"><span class="line-inner" data-i18n="hero.line3">的边界</span></span>
         </h1>
         <p class="hero-desc" data-i18n="hero.desc">
-          这里是我的数字花园 —— 记录代码实验、技术探索、AI 研究、
-          设计思考与一切有趣的创意碰撞。<br/>
-          从前端交互到后端架构，从算法优化到产品设计，
-          持续折腾，永不停歇。
+          一个面向创意与技术的开放实验平台 —— 聚焦 AI 探索、算法设计、数据洞察、
+          全栈开发、交互设计、硬件创新与游戏实验。<br/>
+          在这里，想法被验证，原型被构建，边界被推动。
         </p>
         <div class="hero-actions">
           <a href="#projects" class="btn btn-primary">
@@ -145,20 +147,20 @@
         </div>
         <div class="hero-stats-row">
           <div class="mini-stat">
+            <span class="mini-num" data-count="86">0</span>
+            <span class="mini-label" data-i18n="hero.stat1.label">创意项目</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-num" data-count="156">0</span>
+            <span class="mini-label" data-i18n="hero.stat2.label">研究笔记</span>
+          </div>
+          <div class="mini-stat">
             <span class="mini-num" data-count="42">0</span>
-            <span class="mini-label" data-i18n="hero.stat1.label">实验项目</span>
-          </div>
-          <div class="mini-stat">
-            <span class="mini-num" data-count="128">0</span>
-            <span class="mini-label" data-i18n="hero.stat2.label">技术笔记</span>
-          </div>
-          <div class="mini-stat">
-            <span class="mini-num" data-count="365">0</span>
-            <span class="mini-label" data-i18n="hero.stat3.label">天连续编码</span>
+            <span class="mini-label" data-i18n="hero.stat3.label">开源仓库</span>
           </div>
           <div class="mini-stat">
             <span class="mini-num">∞</span>
-            <span class="mini-label" data-i18n="hero.stat4.label">好奇指数</span>
+            <span class="mini-label" data-i18n="hero.stat4.label">探索方向</span>
           </div>
         </div>
       </div>
@@ -177,7 +179,7 @@
         </div>
         <div class="float-tag tag-1">
           <span class="tag-dot"></span>
-          <span class="tag-label">BUILDING</span>
+          <span class="tag-label">EXPLORING</span>
         </div>
         <div class="float-tag tag-2">
           <span class="tag-num">01</span>
@@ -185,11 +187,11 @@
         </div>
         <div class="float-tag tag-3">
           <span class="tag-num">02</span>
-          <span class="tag-label">DESIGN × CODE</span>
+          <span class="tag-label">ALGORITHM × DESIGN</span>
         </div>
         <div class="float-tag tag-4">
           <span class="tag-num">03</span>
-          <span class="tag-label">EXPERIMENTING</span>
+          <span class="tag-label">INNOVATION</span>
         </div>
       </div>
     </div>
@@ -205,40 +207,38 @@
     <div class="container">
       <div class="section-label">
         <span class="label-num">01</span>
-        <span class="label-text">/ ABOUT</span>
+        <span class="label-text">/ OVERVIEW</span>
       </div>
       <div class="about-grid">
         <div class="about-main">
           <h2 class="section-title big">
-            一个对世界充满好奇的<br/>
-            <span class="gradient-text">创意开发者</span>
+            创意 × 算法 × 设计<br/>
+            <span class="gradient-text">开放实验场</span>
           </h2>
           <div class="about-text">
             <p>
-              你好，欢迎来到我的数字实验室 👋 我是 YCC，一名热爱创造的全栈开发者。
-              相比「完成项目」，我更享受「探索过程」—— 把一个模糊的想法，
-              通过代码、设计、算法，一步步变成可触摸的现实。
+              这是一个面向创意与技术的开放研究平台。我们相信技术的价值在于实现想法，
+              而好的想法往往诞生于跨领域的碰撞之中。
             </p>
             <p>
-              我的兴趣很杂：从 Web 开发到 AI 算法，从数据可视化到交互设计，
-              从产品思辩到工具效率。我相信 <strong>跨界的碰撞</strong> 才是创意的源泉。
-              这个网站就是我的"工作台"，记录所有正在折腾的东西。
+              从人工智能到数据科学，从全栈工程到交互设计，从硬件原型到游戏实验 ——
+              在这里，想法被快速验证，原型被持续迭代，边界被不断推动。
             </p>
             <p>
-              如果你也对某些方向感兴趣，或者有奇怪的想法想聊，
-              <a href="#contact" class="inline-link">随时找我 →</a>
+              如果你有创意想法想要落地，或对某个方向有独到见解，
+              <a href="#contact" class="inline-link">欢迎提交与交流 →</a>
             </p>
           </div>
 
           <div class="about-tags">
-            <span class="chip">#全栈开发</span>
             <span class="chip">#AI探索</span>
-            <span class="chip">#数据可视化</span>
+            <span class="chip">#算法设计</span>
+            <span class="chip">#数据分析</span>
+            <span class="chip">#全栈开发</span>
             <span class="chip">#交互设计</span>
-            <span class="chip">#工具控</span>
-            <span class="chip">#终身学习</span>
-            <span class="chip">#独立游戏</span>
-            <span class="chip">#胶片摄影</span>
+            <span class="chip">#硬件创新</span>
+            <span class="chip">#游戏实验</span>
+            <span class="chip">#开源共建</span>
           </div>
         </div>
 
@@ -892,6 +892,53 @@
     <span>↑</span>
   </button>
 
-  <script src="js/main.js?v=4.2"></script>
+  <!-- 帮助弹窗 -->
+  <div class="help-modal" id="helpModal">
+    <div class="help-modal-overlay" id="helpModalOverlay"></div>
+    <div class="help-modal-content">
+      <button class="help-modal-close" id="helpModalClose" aria-label="关闭">×</button>
+      <div class="help-modal-header">
+        <span class="help-modal-icon">💡</span>
+        <h3 data-i18n="help.title">关于本站</h3>
+      </div>
+      <div class="help-modal-body">
+        <div class="help-section">
+          <h4 data-i18n="help.what.title">这是什么？</h4>
+          <p data-i18n="help.what.desc">一个面向创意与技术的开放研究平台，聚焦 AI 探索、算法设计、数据洞察、全栈开发、交互设计、硬件创新与游戏实验。</p>
+        </div>
+        <div class="help-section">
+          <h4 data-i18n="help.features.title">核心内容</h4>
+          <ul class="help-list">
+            <li data-i18n="help.features.1">🧠 AI 探索与算法研究</li>
+            <li data-i18n="help.features.2">📊 数据科学与可视化</li>
+            <li data-i18n="help.features.3">💻 全栈开发与工程实践</li>
+            <li data-i18n="help.features.4">🎨 交互设计与创意实验</li>
+            <li data-i18n="help.features.5">🔌 硬件创新与物联网</li>
+            <li data-i18n="help.features.6">🎮 游戏开发与交互艺术</li>
+            <li data-i18n="help.features.7">📚 技术研究笔记与文献</li>
+            <li data-i18n="help.features.8">💡 前沿想法与未来展望</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h4 data-i18n="help.usage.title">如何使用</h4>
+          <ul class="help-list">
+            <li data-i18n="help.usage.1">🖱 滚动页面浏览各板块内容</li>
+            <li data-i18n="help.usage.2">🌐 点击右上角「中 / EN」切换语言</li>
+            <li data-i18n="help.usage.3">📬 有想法？通过「提交与交流」板块发送</li>
+            <li data-i18n="help.usage.4">⚡ 滚动时可观察网格翻砖过渡特效</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h4 data-i18n="help.contact.title">联系方式</h4>
+          <div class="help-contact">
+            <span class="help-contact-item">📧 ycc.lab@example.com</span>
+            <span class="help-contact-item">🐙 github.com/ycc1999122</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js?v=4.3"></script>
 </body>
 </html>

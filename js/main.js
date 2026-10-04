@@ -753,50 +753,50 @@ document.addEventListener('DOMContentLoaded', function () {
   // ==========================================
   const i18n = {
     zh: {
-      'nav.about': '关于',
-      'nav.skills': '技术栈',
-      'nav.projects': '项目实验',
-      'nav.ideas': '想法',
-      'nav.notes': '笔记',
-      'nav.contact': '联系',
+      'nav.about': '概览',
+      'nav.skills': '方向',
+      'nav.projects': '项目',
+      'nav.ideas': '创意',
+      'nav.notes': '研究',
+      'nav.contact': '交流',
       'visit.total': '总访问',
       'visit.last': '最近',
       'visit.online': '在线',
-      'hero.tag': 'CREATIVE DEVELOPER LAB / 创意开发实验室',
-      'hero.line1': '用代码',
-      'hero.line2': '建造想法',
-      'hero.line3': '的实验场',
-      'hero.desc': '这里是我的数字花园 —— 记录代码实验、技术探索、AI 研究、设计思考与一切有趣的创意碰撞。<br/>从前端交互到后端架构，从算法优化到产品设计，持续折腾，永不停歇。',
-      'hero.btn1': '查看实验项目',
-      'hero.btn2.sub': '创意想法',
-      'hero.stat1.label': '实验项目',
-      'hero.stat2.label': '技术笔记',
-      'hero.stat3.label': '天连续编码',
-      'hero.stat4.label': '好奇指数',
-      'skills.title.p1': '我的',
-      'skills.title.p2': '武器库',
-      'skills.subtitle': '从前端到后端，从训练到部署，持续扩展中...',
-      'projects.title.p1': '实验',
+      'hero.tag': 'CREATIVE RESEARCH LAB / 创意研究实验室',
+      'hero.line1': '探索',
+      'hero.line2': '创意与算法',
+      'hero.line3': '的边界',
+      'hero.desc': '一个面向创意与技术的开放实验平台 —— 聚焦 AI 探索、算法设计、数据洞察、全栈开发、交互设计、硬件创新与游戏实验。<br/>在这里，想法被验证，原型被构建，边界被推动。',
+      'hero.btn1': '浏览创意项目',
+      'hero.btn2.sub': '前沿想法',
+      'hero.stat1.label': '创意项目',
+      'hero.stat2.label': '研究笔记',
+      'hero.stat3.label': '开源仓库',
+      'hero.stat4.label': '探索方向',
+      'skills.title.p1': '研究',
+      'skills.title.p2': '方向',
+      'skills.subtitle': '从人工智能到硬件创新，跨学科探索，持续扩展中...',
+      'projects.title.p1': '创意',
       'projects.title.p2': '项目',
-      'projects.subtitle': '一些正在折腾或已经折腾完的东西',
+      'projects.subtitle': '跨越多个领域的实验项目与开源作品',
       'filter.all': '全部',
       'filter.mobile': '移动端',
-      'ideas.title.p1': '正在',
-      'ideas.title.p2': '思考',
-      'ideas.title.p3': '的事',
-      'ideas.subtitle': '一些半成品的想法、待验证的假设、以及奇怪的脑洞。欢迎交流！',
-      'notes.title.p1': '技术',
+      'ideas.title.p1': '前沿',
+      'ideas.title.p2': '创意',
+      'ideas.title.p3': '探索',
+      'ideas.subtitle': '待验证的假设、跨学科的思考、以及对未来技术的展望。欢迎参与讨论！',
+      'notes.title.p1': '研究',
       'notes.title.p2': '笔记',
-      'notes.subtitle': '记录学习过程中的思考与总结，持续更新中...',
-      'contact.title.p1': '让我们',
-      'contact.title.p2': '聊聊',
-      'contact.desc': '无论是技术交流、项目合作、还是只是想打个招呼，都欢迎随时联系我。我相信有趣的对话总能带来新的灵感。',
-      'footer.desc': '一个开发者的创意实验室，记录代码、设计与生活的点滴。',
+      'notes.subtitle': '技术洞察、算法推导、设计思考与研究总结',
+      'contact.title.p1': '提交与',
+      'contact.title.p2': '交流',
+      'contact.desc': '有创意想法想要落地？对某个方向有独到见解？欢迎提交与交流，我们相信好的想法值得被实现。',
+      'footer.desc': '一个面向创意与技术的开放研究平台，持续探索算法、设计与创新的边界。',
       'footer.col1': '导航',
       'footer.col2': '资源',
-      'footer.col3': '联系',
-      'footer.copyright': '© 2025 YCC. All rights reserved.',
-      'footer.motto': '保持好奇，持续创造。',
+      'footer.col3': '交流',
+      'footer.copyright': '© 2025 Creative Research Lab. All rights reserved.',
+      'footer.motto': '探索不止，创新不息。',
       'form.nameLabel': '姓名',
       'form.name': '你的名字',
       'form.emailLabel': '邮箱',
@@ -804,61 +804,97 @@ document.addEventListener('DOMContentLoaded', function () {
       'form.subject': '想聊点什么？',
       'form.messageLabel': '内容',
       'form.message': '随便说点什么...',
-      'form.submit': '发送消息'
+      'form.submit': '提交消息',
+      'help.title': '关于本站',
+      'help.what.title': '这是什么？',
+      'help.what.desc': '一个面向创意与技术的开放研究平台，聚焦 AI 探索、算法设计、数据洞察、全栈开发、交互设计、硬件创新与游戏实验。',
+      'help.features.title': '核心内容',
+      'help.features.1': '🧠 AI 探索与算法研究',
+      'help.features.2': '📊 数据科学与可视化',
+      'help.features.3': '💻 全栈开发与工程实践',
+      'help.features.4': '🎨 交互设计与创意实验',
+      'help.features.5': '🔌 硬件创新与物联网',
+      'help.features.6': '🎮 游戏开发与交互艺术',
+      'help.features.7': '📚 技术研究笔记与文献',
+      'help.features.8': '💡 前沿想法与未来展望',
+      'help.usage.title': '如何使用',
+      'help.usage.1': '🖱 滚动页面浏览各板块内容',
+      'help.usage.2': '🌐 点击右上角「中 / EN」切换语言',
+      'help.usage.3': '📬 有想法？通过「提交与交流」板块发送',
+      'help.usage.4': '⚡ 滚动时可观察网格翻砖过渡特效',
+      'help.contact.title': '联系方式'
     },
     en: {
-      'nav.about': 'About',
-      'nav.skills': 'Skills',
+      'nav.about': 'Overview',
+      'nav.skills': 'Focus',
       'nav.projects': 'Projects',
       'nav.ideas': 'Ideas',
-      'nav.notes': 'Notes',
-      'nav.contact': 'Contact',
+      'nav.notes': 'Research',
+      'nav.contact': 'Connect',
       'visit.total': 'Visits',
       'visit.last': 'Last',
       'visit.online': 'Online',
-      'hero.tag': 'CREATIVE DEVELOPER LAB',
-      'hero.line1': 'Building',
-      'hero.line2': 'ideas with',
-      'hero.line3': 'code',
-      'hero.desc': 'This is my digital garden — a place for code experiments, tech exploration, AI research, design thinking and all kinds of creative collisions.<br/>From frontend interactions to backend architecture, from algorithm optimization to product design.',
-      'hero.btn1': 'View Projects',
-      'hero.btn2.sub': 'Creative Ideas',
+      'hero.tag': 'CREATIVE RESEARCH LAB',
+      'hero.line1': 'Exploring',
+      'hero.line2': 'the edge of',
+      'hero.line3': 'ideas & algorithms',
+      'hero.desc': 'An open experimental platform for creativity and technology — focused on AI exploration, algorithm design, data insights, full-stack development, interaction design, hardware innovation and game experiments.<br/>Where ideas are validated, prototypes are built, and boundaries are pushed.',
+      'hero.btn1': 'Explore Projects',
+      'hero.btn2.sub': 'Frontier Ideas',
       'hero.stat1.label': 'Projects',
-      'hero.stat2.label': 'Notes',
-      'hero.stat3.label': 'Days Coding',
-      'hero.stat4.label': 'Curiosity',
-      'skills.title.p1': 'My',
-      'skills.title.p2': 'Toolkit',
-      'skills.subtitle': 'From frontend to backend, from training to deployment',
-      'projects.title.p1': 'Featured',
+      'hero.stat2.label': 'Papers',
+      'hero.stat3.label': 'Repos',
+      'hero.stat4.label': 'Directions',
+      'skills.title.p1': 'Research',
+      'skills.title.p2': 'Areas',
+      'skills.subtitle': 'From AI to hardware innovation — interdisciplinary exploration',
+      'projects.title.p1': 'Creative',
       'projects.title.p2': 'Projects',
-      'projects.subtitle': 'Things I\'m tinkering with or have built',
+      'projects.subtitle': 'Experimental projects and open-source works across disciplines',
       'filter.all': 'All',
       'filter.mobile': 'Mobile',
-      'ideas.title.p1': 'What I\'m',
-      'ideas.title.p2': 'Thinking',
-      'ideas.title.p3': 'About',
-      'ideas.subtitle': 'Half-baked ideas, hypotheses to validate, and random thoughts. Let\'s talk!',
-      'notes.title.p1': 'Tech',
+      'ideas.title.p1': 'Frontier',
+      'ideas.title.p2': 'Ideas',
+      'ideas.title.p3': '& Vision',
+      'ideas.subtitle': 'Hypotheses to validate, interdisciplinary thinking, and visions for future tech.',
+      'notes.title.p1': 'Research',
       'notes.title.p2': 'Notes',
-      'notes.subtitle': 'Lessons learned and thoughts along the way',
-      'contact.title.p1': 'Let\'s',
-      'contact.title.p2': 'Chat',
-      'contact.desc': 'Whether it\'s tech discussion, project collaboration, or just saying hi — feel free to reach out. Interesting conversations always spark new ideas.',
-      'footer.desc': 'A developer\'s creative lab — documenting code, design and life.',
+      'notes.subtitle': 'Technical insights, algorithm derivations, and design reflections',
+      'contact.title.p1': 'Submit &',
+      'contact.title.p2': 'Connect',
+      'contact.desc': 'Have a creative idea to build? A unique perspective to share? We believe good ideas deserve to be realized.',
+      'footer.desc': 'An open research platform for creativity and technology — pushing the boundaries of algorithms, design and innovation.',
       'footer.col1': 'Navigate',
       'footer.col2': 'Resources',
-      'footer.col3': 'Contact',
-      'footer.copyright': '© 2025 YCC. All rights reserved.',
-      'footer.motto': 'Stay curious, keep creating.',
+      'footer.col3': 'Connect',
+      'footer.copyright': '© 2025 Creative Research Lab. All rights reserved.',
+      'footer.motto': 'Explore endlessly, innovate ceaselessly.',
       'form.nameLabel': 'Name',
       'form.name': 'Your name',
       'form.emailLabel': 'Email',
       'form.subjectLabel': 'Subject',
-      'form.subject': 'What do you want to chat about?',
+      'form.subject': 'What would you like to share?',
       'form.messageLabel': 'Message',
-      'form.message': 'Say something...',
-      'form.submit': 'Send Message'
+      'form.message': 'Share your thoughts...',
+      'form.submit': 'Submit',
+      'help.title': 'About This Site',
+      'help.what.title': 'What is this?',
+      'help.what.desc': 'An open research platform for creativity and technology — focused on AI exploration, algorithm design, data insights, full-stack development, interaction design, hardware innovation and game experiments.',
+      'help.features.title': 'Core Areas',
+      'help.features.1': '🧠 AI Research & Algorithm Design',
+      'help.features.2': '📊 Data Science & Visualization',
+      'help.features.3': '💻 Full-Stack Development',
+      'help.features.4': '🎨 Interaction Design & Creative Experiments',
+      'help.features.5': '🔌 Hardware Innovation & IoT',
+      'help.features.6': '🎮 Game Dev & Interactive Art',
+      'help.features.7': '📚 Research Notes & Papers',
+      'help.features.8': '💡 Frontier Ideas & Future Vision',
+      'help.usage.title': 'How to Use',
+      'help.usage.1': '🖱 Scroll to explore different sections',
+      'help.usage.2': '🌐 Click "中 / EN" in the top-right to switch language',
+      'help.usage.3': '📬 Submit ideas via the "Submit & Connect" section',
+      'help.usage.4': '⚡ Watch for the grid tile transition when scrolling',
+      'help.contact.title': 'Contact'
     }
   };
 
@@ -964,5 +1000,38 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   updateVisitStats();
+
+  // ==========================================
+  // 16. 帮助弹窗
+  // ==========================================
+  const helpBtn = document.getElementById('helpBtn');
+  const helpModal = document.getElementById('helpModal');
+  const helpModalClose = document.getElementById('helpModalClose');
+  const helpModalOverlay = document.getElementById('helpModalOverlay');
+
+  function openHelpModal() {
+    if (helpModal) {
+      helpModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeHelpModal() {
+    if (helpModal) {
+      helpModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (helpBtn) helpBtn.addEventListener('click', openHelpModal);
+  if (helpModalClose) helpModalClose.addEventListener('click', closeHelpModal);
+  if (helpModalOverlay) helpModalOverlay.addEventListener('click', closeHelpModal);
+
+  // ESC 关闭
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && helpModal?.classList.contains('active')) {
+      closeHelpModal();
+    }
+  });
 
 });
