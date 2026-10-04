@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     { bg: '#f8f9fc', grid: 'rgba(109, 40, 217, 0.07)', accent: '#8b5cf6' }  // Contact - 紫
   ];
 
-  const TILE_SIZE = 36; // 网格块大小
+  const TILE_SIZE = 12; // 网格块大小（更细密）
   let gridCols = 0, gridRows = 0;
   let tiles = []; // 每个方块的状态
   let currentThemeIdx = 0;
@@ -360,17 +360,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // 翻转中的方块，填充一点颜色增加立体感
         if (p > 0 && p < 1) {
           gridCtx.fillStyle = color.replace(/[\d.]+\)$/, (parseFloat(color.match(/[\d.]+\)$/)?.[0] || 0.07) * 1.5).toFixed(3) + ')');
-          gridCtx.fillRect(x + 1, drawY + 1, TILE_SIZE - 2, drawH - 2);
+          gridCtx.fillRect(x + 0.5, drawY + 0.5, TILE_SIZE - 1, drawH - 1);
         }
 
-        // 网格线（四边）
+        // 网格线（四边）— 细线更细腻
         gridCtx.strokeStyle = color;
-        gridCtx.lineWidth = 1;
-        gridCtx.strokeRect(x + 0.5, drawY + 0.5, TILE_SIZE - 1, drawH - 1);
+        gridCtx.lineWidth = 0.5;
+        gridCtx.strokeRect(x + 0.25, drawY + 0.25, TILE_SIZE - 0.5, drawH - 0.5);
       }
     }
 
-    // 中心径向渐变遮罩（边缘淡出）
+    // 径向淡出（让网格从中心向边缘逐渐消失）
     const gradient = gridCtx.createRadialGradient(
       W / 2, H / 2, Math.min(W, H) * 0.25,
       W / 2, H / 2, Math.max(W, H) * 0.65
@@ -1112,8 +1112,11 @@ document.addEventListener('DOMContentLoaded', function () {
     return m + ':' + (s < 10 ? '0' + s : s);
   }
 
-  // 元数据加载完成
+  // 元数据加载完成 + 主动预加载
   if (bgMusic) {
+    // 页面加载后主动开始缓冲音频，减少首次播放延迟
+    try { bgMusic.load(); } catch(e) {}
+
     bgMusic.addEventListener('loadedmetadata', () => {
       if (musicDuration) musicDuration.textContent = formatTime(bgMusic.duration);
     });
@@ -1183,7 +1186,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 获取音乐能量
     const energy = getMusicEnergy();
-    const bassBoost = energy * 1.5; // 音乐越响，跳动越强
+    const bassBoost = energy * 0.6; // 音乐越响，跳动越强（调小幅度）
 
     for (let r = 0; r < gridRows; r++) {
       for (let c = 0; c < gridCols; c++) {
@@ -1201,38 +1204,38 @@ document.addEventListener('DOMContentLoaded', function () {
           // 不同列对应不同频率带
           const freqIndex = Math.floor((c / gridCols) * bufferLength * 0.6);
           const freqValue = dataArray[Math.min(freqIndex, bufferLength - 1)] / 255;
-          // 底部行对低频更敏感
-          musicPulse = freqValue * rowFactor * bassBoost * 0.6;
+          // 底部行对低频更敏感（整体幅度调小）
+          musicPulse = freqValue * rowFactor * bassBoost * 0.25;
         }
 
         // 合并翻砖进度和音乐跳动
-        const totalP = Math.min(1, p + musicPulse * 0.4);
+        const totalP = Math.min(1, p + musicPulse * 0.15);
         let scaleX = 1;
         let scaleY = 1;
         let color;
 
         if (totalP < 0.5) {
           scaleX = 1 - totalP * 1.2;
-          scaleY = 1 + musicPulse * 0.3;
+          scaleY = 1 + musicPulse * 0.12;
           color = fromColor;
         } else {
           scaleX = (totalP - 0.5) * 1.2 + 0.4;
-          scaleY = 1 + musicPulse * 0.3;
+          scaleY = 1 + musicPulse * 0.12;
           color = toColor;
         }
 
-        scaleX = Math.max(0.05, Math.min(1.1, scaleX));
-        scaleY = Math.max(0.9, Math.min(1.4, scaleY));
+        scaleX = Math.max(0.2, Math.min(1.05, scaleX));
+        scaleY = Math.max(0.95, Math.min(1.15, scaleY));
 
         const drawW = TILE_SIZE * scaleX;
         const drawH = TILE_SIZE * scaleY;
         const drawX = x + (TILE_SIZE - drawW) / 2;
         const drawY = y + (TILE_SIZE - drawH) / 2;
 
-        // 音乐模式下增加发光效果
-        if (musicVisualActive && musicPulse > 0.1) {
+        // 音乐模式下增加发光效果（调小幅度）
+        if (musicVisualActive && musicPulse > 0.04) {
           gridCtx.shadowColor = themeColors[currentThemeIdx]?.accent || '#8b5cf6';
-          gridCtx.shadowBlur = musicPulse * 12;
+          gridCtx.shadowBlur = musicPulse * 5;
         } else {
           gridCtx.shadowBlur = 0;
         }
@@ -1240,14 +1243,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (totalP > 0 && totalP < 1) {
           const alphaMatch = color.match(/[\d.]+\)$/);
           const baseAlpha = parseFloat(alphaMatch?.[0] || 0.07);
-          const fillAlpha = Math.min(0.25, baseAlpha * 2 + musicPulse * 0.15);
+          const fillAlpha = Math.min(0.2, baseAlpha * 2 + musicPulse * 0.06);
           gridCtx.fillStyle = color.replace(/[\d.]+\)$/, fillAlpha.toFixed(3) + ')');
-          gridCtx.fillRect(drawX + 1, drawY + 1, drawW - 2, drawH - 2);
+          gridCtx.fillRect(drawX + 0.5, drawY + 0.5, drawW - 1, drawH - 1);
         }
 
         gridCtx.strokeStyle = color;
-        gridCtx.lineWidth = 1;
-        gridCtx.strokeRect(drawX + 0.5, drawY + 0.5, drawW - 1, drawH - 1);
+        gridCtx.lineWidth = 0.5;
+        gridCtx.strokeRect(drawX + 0.25, drawY + 0.25, drawW - 0.5, drawH - 0.5);
       }
     }
 
