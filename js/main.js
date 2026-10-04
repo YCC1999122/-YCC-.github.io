@@ -124,27 +124,28 @@ document.addEventListener('DOMContentLoaded', function () {
   animateTrail();
 
   // ==========================================
-  // 2. 百叶窗滚动过渡效果（3D翻转 + 背景色同步过渡）
+  // 2. 网格翻砖滚动过渡（canvas）
   // ==========================================
-  const shutterOverlay = document.getElementById('shutterOverlay');
-  const slatFronts = document.querySelectorAll('.slat-front');
-  const slatBacks = document.querySelectorAll('.slat-back');
-  const globalGridBg = document.getElementById('globalGridBg');
+  const gridCanvas = document.getElementById('gridCanvas');
+  const gridCtx = gridCanvas.getContext('2d');
   const sectionList = document.querySelectorAll('.section');
-  let currentSectionIdx = 0;
-  let isShuttering = false;
-  let lastScrollPos = 0;
 
-  // 每个 section 对应的主题色（用于百叶窗和 body 背景过渡）
+  // 浅色主题各 section 的颜色
   const themeColors = [
-    { bg: '#0a0a0f', accent: '#8b5cf6', accent2: '#06b6d4' },  // Hero - 深紫
-    { bg: '#0a0d10', accent: '#06b6d4', accent2: '#8b5cf6' },  // About - 深青
-    { bg: '#0d0a12', accent: '#f472b6', accent2: '#8b5cf6' },  // Skills - 深粉
-    { bg: '#0a0c14', accent: '#3b82f6', accent2: '#8b5cf6' },  // Projects - 深蓝
-    { bg: '#0f0b0a', accent: '#f59e0b', accent2: '#f472b6' },  // Ideas - 暖橙
-    { bg: '#0a100d', accent: '#10b981', accent2: '#06b6d4' },  // Notes - 墨绿
-    { bg: '#0a0a0f', accent: '#8b5cf6', accent2: '#06b6d4' }   // Contact - 紫青
+    { bg: '#f8f9fc', grid: 'rgba(109, 40, 217, 0.07)', accent: '#8b5cf6' },   // Hero - 紫
+    { bg: '#f5f9fb', grid: 'rgba(8, 145, 178, 0.07)', accent: '#06b6d4' },   // About - 青
+    { bg: '#faf6fc', grid: 'rgba(219, 39, 119, 0.06)', accent: '#ec4899' },  // Skills - 粉
+    { bg: '#f6f8fc', grid: 'rgba(37, 99, 235, 0.07)', accent: '#3b82f6' },  // Projects - 蓝
+    { bg: '#fcf9f5', grid: 'rgba(217, 119, 6, 0.06)', accent: '#f59e0b' },  // Ideas - 橙
+    { bg: '#f5faf7', grid: 'rgba(5, 150, 105, 0.06)', accent: '#10b981' },  // Notes - 绿
+    { bg: '#f8f9fc', grid: 'rgba(109, 40, 217, 0.07)', accent: '#8b5cf6' }  // Contact - 紫
   ];
+
+  const TILE_SIZE = 36; // 网格块大小
+  let gridCols = 0, gridRows = 0;
+  let tiles = []; // 每个方块的状态
+  let currentThemeIdx = 0;
+  let nextThemeIdx = 0;
 
   // 给每个 section 注入光晕元素
   sectionList.forEach((section) => {
@@ -156,79 +157,32 @@ document.addEventListener('DOMContentLoaded', function () {
     section.insertBefore(glow2, section.firstChild);
   });
 
-  // 设置百叶窗正反面颜色
-  function setShutterColors(frontColor, backColor) {
-    slatFronts.forEach(face => {
-      face.style.backgroundColor = frontColor;
-    });
-    slatBacks.forEach(face => {
-      face.style.backgroundColor = backColor;
-    });
-  }
+  function resizeGridCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    gridCanvas.width = window.innerWidth * dpr;
+    gridCanvas.height = window.innerHeight * dpr;
+    gridCanvas.style.width = window.innerWidth + 'px';
+    gridCanvas.style.height = window.innerHeight + 'px';
+    gridCtx.scale(dpr, dpr);
 
-  // 设置全局网格颜色
-  function setGridColor(color) {
-    if (globalGridBg) {
-      globalGridBg.style.backgroundImage =
-        `linear-gradient(${color} 1px, transparent 1px),` +
-        `linear-gradient(90deg, ${color} 1px, transparent 1px)`;
-    }
-  }
+    gridCols = Math.ceil(window.innerWidth / TILE_SIZE) + 2;
+    gridRows = Math.ceil(window.innerHeight / TILE_SIZE) + 2;
 
-  function handleShutterScroll() {
-    const scrollY = window.scrollY;
-    const scrollDir = scrollY > lastScrollPos ? 'down' : 'up';
-    lastScrollPos = scrollY;
-
-    // 检测当前进入的 section（用 60% 的位置来触发，更自然）
-    const triggerLine = scrollY + window.innerHeight * 0.55;
-
-    let newIdx = -1;
-    sectionList.forEach((section, index) => {
-      const top = section.offsetTop;
-      const bottom = top + section.offsetHeight;
-      if (triggerLine >= top && triggerLine < bottom) {
-        newIdx = index;
+    // 初始化所有方块
+    tiles = [];
+    for (let r = 0; r < gridRows; r++) {
+      tiles[r] = [];
+      for (let c = 0; c < gridCols; c++) {
+        tiles[r][c] = {
+          flipProgress: 0,  // 0 = 当前色, 1 = 新色
+          flipping: false,
+          delay: 0
+        };
       }
-    });
-
-    if (newIdx !== -1 && newIdx !== currentSectionIdx && !isShuttering) {
-      const oldIdx = currentSectionIdx;
-      currentSectionIdx = newIdx;
-      triggerShutter(oldIdx, newIdx, scrollDir);
     }
   }
-
-  function triggerShutter(fromIdx, toIdx, direction) {
-    if (isShuttering) return;
-    isShuttering = true;
-
-    const fromTheme = themeColors[fromIdx] || themeColors[0];
-    const toTheme = themeColors[toIdx] || themeColors[0];
-
-    // 正面 = 离开的页面颜色，背面 = 进入的页面颜色
-    const frontColor = hexToRgba(fromTheme.accent, 0.28);
-    const backColor = hexToRgba(toTheme.accent, 0.28);
-    setShutterColors(frontColor, backColor);
-
-    // 触发翻转动画
-    shutterOverlay.classList.add('active');
-
-    // 翻转到一半时，切换 body 背景色（和百叶窗背面同步）
-    setTimeout(() => {
-      document.body.style.backgroundColor = toTheme.bg;
-      setGridColor(hexToRgba(toTheme.accent, 0.04));
-    }, 450);
-
-    // 动画结束，移除百叶窗
-    setTimeout(() => {
-      shutterOverlay.classList.remove('active');
-      // 解锁
-      setTimeout(() => {
-        isShuttering = false;
-      }, 900);
-    }, 1100);
-  }
+  resizeGridCanvas();
+  window.addEventListener('resize', resizeGridCanvas);
 
   // hex 转 rgba
   function hexToRgba(hex, alpha) {
@@ -238,17 +192,211 @@ document.addEventListener('DOMContentLoaded', function () {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 
-  // 节流滚动监听
-  let shutterThrottle = false;
+  // 颜色插值
+  function lerpColor(color1, color2, t) {
+    // 解析 rgba
+    const parse = (c) => {
+      const m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+      if (m) {
+        return [parseInt(m[1]), parseInt(m[2]), parseInt(m[3]), parseFloat(m[4] || 1)];
+      }
+      return [0, 0, 0, 1];
+    };
+    const [r1, g1, b1, a1] = parse(color1);
+    const [r2, g2, b2, a2] = parse(color2);
+    const r = Math.round(r1 + (r2 - r1) * t);
+    const g = Math.round(g1 + (g2 - g1) * t);
+    const b = Math.round(b1 + (b2 - b1) * t);
+    const a = (a1 + (a2 - a1) * t).toFixed(3);
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+  }
+
+  // 计算两个 section 之间的滚动进度 (0-1)
+  function getScrollProgress() {
+    const scrollY = window.scrollY;
+    const viewportH = window.innerHeight;
+
+    // 找到当前跨越的边界
+    for (let i = 0; i < sectionList.length - 1; i++) {
+      const sectionBottom = sectionList[i].offsetTop + sectionList[i].offsetHeight;
+      const nextSectionBottom = sectionList[i + 1].offsetTop + sectionList[i + 1].offsetHeight;
+
+      // 当视窗中间在两个 section 之间时
+      const midPoint = scrollY + viewportH * 0.5;
+      const boundary = sectionList[i + 1].offsetTop;
+
+      // 以边界为中心，前后各半屏作为过渡区域
+      const transitionZone = viewportH * 0.8;
+      const start = boundary - transitionZone * 0.5;
+      const end = boundary + transitionZone * 0.5;
+
+      if (midPoint >= start && midPoint <= end) {
+        const progress = (midPoint - start) / (end - start);
+        return {
+          fromIdx: i,
+          toIdx: i + 1,
+          progress: Math.max(0, Math.min(1, progress))
+        };
+      }
+    }
+
+    // 不在过渡区域，返回当前所在 section
+    let currentIdx = 0;
+    const midPoint = scrollY + viewportH * 0.5;
+    for (let i = 0; i < sectionList.length; i++) {
+      const top = sectionList[i].offsetTop;
+      const bottom = top + sectionList[i].offsetHeight;
+      if (midPoint >= top && midPoint < bottom) {
+        currentIdx = i;
+        break;
+      }
+    }
+    return { fromIdx: currentIdx, toIdx: currentIdx, progress: 0 };
+  }
+
+  // 触发翻砖动画
+  let lastFromIdx = 0;
+  let lastToIdx = 0;
+  let lastProgress = 0;
+
+  function updateGridFlip() {
+    const { fromIdx, toIdx, progress } = getScrollProgress();
+
+    // 如果跨越了新的边界，重置所有方块
+    if (fromIdx !== lastFromIdx || toIdx !== lastToIdx) {
+      lastFromIdx = fromIdx;
+      lastToIdx = toIdx;
+
+      // 如果是同一个 section，全部重置为 0
+      if (fromIdx === toIdx) {
+        for (let r = 0; r < gridRows; r++) {
+          for (let c = 0; c < gridCols; c++) {
+            tiles[r][c].flipProgress = 0;
+            tiles[r][c].flipping = false;
+          }
+        }
+        currentThemeIdx = fromIdx;
+        nextThemeIdx = fromIdx;
+        document.body.style.backgroundColor = themeColors[fromIdx].bg;
+      } else {
+        // 新的过渡开始，计算每块的延迟（从左到右波浪式）
+        const dir = toIdx > fromIdx ? 1 : -1;
+        for (let r = 0; r < gridRows; r++) {
+          for (let c = 0; c < gridCols; c++) {
+            // 从交界处开始，按列分布延迟
+            const normalizedCol = dir > 0 ? c / gridCols : (gridCols - c) / gridCols;
+            tiles[r][c].delay = normalizedCol * 0.6 + Math.random() * 0.1;
+            tiles[r][c].flipping = false;
+            // 如果往回滚，重置进度
+            if (dir < 0 && tiles[r][c].flipProgress > 0.5) {
+              tiles[r][c].flipProgress = 1 - tiles[r][c].flipProgress;
+            }
+          }
+        }
+        currentThemeIdx = fromIdx;
+        nextThemeIdx = toIdx;
+      }
+    }
+
+    lastProgress = progress;
+
+    // 更新每块的翻转进度
+    if (fromIdx !== toIdx) {
+      for (let r = 0; r < gridRows; r++) {
+        for (let c = 0; c < gridCols; c++) {
+          const tile = tiles[r][c];
+          const effectiveProgress = Math.max(0, Math.min(1, (progress - tile.delay) / 0.4));
+          tile.flipProgress = effectiveProgress;
+        }
+      }
+
+      // body 背景色在进度 50% 左右切换
+      if (progress > 0.5) {
+        document.body.style.backgroundColor = themeColors[toIdx].bg;
+      } else {
+        document.body.style.backgroundColor = themeColors[fromIdx].bg;
+      }
+    }
+  }
+
+  // 绘制网格
+  function drawGrid() {
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    gridCtx.clearRect(0, 0, W, H);
+
+    const fromColor = themeColors[currentThemeIdx]?.grid || 'rgba(109, 40, 217, 0.07)';
+    const toColor = themeColors[nextThemeIdx]?.grid || 'rgba(109, 40, 217, 0.07)';
+    const fromAccent = themeColors[currentThemeIdx]?.accent || '#8b5cf6';
+    const toAccent = themeColors[nextThemeIdx]?.accent || '#8b5cf6';
+
+    for (let r = 0; r < gridRows; r++) {
+      for (let c = 0; c < gridCols; c++) {
+        const x = c * TILE_SIZE;
+        const y = r * TILE_SIZE;
+        const tile = tiles[r][c];
+        const p = tile.flipProgress;
+
+        // 方块的翻转效果：用颜色渐变模拟 3D 翻转
+        // 进度 0-0.5: 正面缩窄，0.5-1: 背面展开
+        let scaleX = 1;
+        let color;
+
+        if (p < 0.5) {
+          // 前半段：从当前色翻转到边缘
+          scaleX = 1 - p * 1.6;
+          color = fromColor;
+        } else {
+          // 后半段：从边缘展开到新色
+          scaleX = (p - 0.5) * 1.6 + 0.2;
+          color = toColor;
+        }
+
+        scaleX = Math.max(0.05, Math.min(1, scaleX));
+
+        const drawW = TILE_SIZE * scaleX;
+        const drawX = x + (TILE_SIZE - drawW) / 2;
+
+        // 只画网格线（边框），保持"细网格"感
+        if (p > 0 && p < 1) {
+          // 翻转中的方块，填充一点颜色增加立体感
+          gridCtx.fillStyle = color.replace(/[\d.]+\)$/, (parseFloat(color.match(/[\d.]+\)$/)?.[0] || 0.07) * 1.5).toFixed(3) + ')');
+          gridCtx.fillRect(drawX + 1, y + 1, drawW - 2, TILE_SIZE - 2);
+        }
+
+        // 网格线（四边）
+        gridCtx.strokeStyle = color;
+        gridCtx.lineWidth = 1;
+        gridCtx.strokeRect(drawX + 0.5, y + 0.5, drawW - 1, TILE_SIZE - 1);
+      }
+    }
+
+    // 中心径向渐变遮罩（边缘淡出）
+    const gradient = gridCtx.createRadialGradient(
+      W / 2, H / 2, Math.min(W, H) * 0.25,
+      W / 2, H / 2, Math.max(W, H) * 0.65
+    );
+    gradient.addColorStop(0, 'rgba(0,0,0,0)');
+    gradient.addColorStop(1, themeColors[currentThemeIdx]?.bg || '#f8f9fc');
+
+    requestAnimationFrame(drawGrid);
+  }
+  drawGrid();
+
+  // 滚动监听
+  let scrollThrottle = false;
   window.addEventListener('scroll', () => {
-    if (!shutterThrottle) {
-      shutterThrottle = true;
+    if (!scrollThrottle) {
+      scrollThrottle = true;
       requestAnimationFrame(() => {
-        handleShutterScroll();
-        shutterThrottle = false;
+        updateGridFlip();
+        scrollThrottle = false;
       });
     }
   }, { passive: true });
+
+  // 初始化 body 背景
+  document.body.style.backgroundColor = themeColors[0].bg;
 
   // ==========================================
   // 3. 粒子背景
@@ -309,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(167, 139, 250, ${p.opacity})`;
+      ctx.fillStyle = `rgba(109, 40, 217, ${p.opacity * 0.5})`;
       ctx.fill();
     }
 
@@ -324,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function () {
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(139, 92, 246, ${opacity})`;
+          ctx.strokeStyle = `rgba(109, 40, 217, ${opacity * 0.4})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }

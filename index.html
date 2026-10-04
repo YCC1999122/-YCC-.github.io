@@ -6,15 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YCC's Lab — 创意·代码·探索</title>
   <meta name="description" content="一个开发者的创意实验室：项目实验、技术笔记、AI 探索、设计想法与生活记录。" />
-  <link rel="stylesheet" href="css/style.css?v=3.2" />
+  <link rel="stylesheet" href="css/style.css?v=4.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-  <!-- 全局网格背景 -->
-  <div class="global-grid-bg" id="globalGridBg"></div>
+  <!-- 网格翻砖背景（canvas） -->
+  <canvas id="gridCanvas" class="global-grid-bg"></canvas>
 
   <!-- 百叶窗滚动遮罩 -->
   <div class="shutter-overlay" id="shutterOverlay">
@@ -866,6 +866,6 @@
     <span>↑</span>
   </button>
 
-  <script src="js/main.js?v=3.2"></script>
+  <script src="js/main.js?v=4.0"></script>
 </body>
 </html>
