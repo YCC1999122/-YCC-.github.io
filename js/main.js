@@ -279,23 +279,23 @@ document.addEventListener('DOMContentLoaded', function () {
         nextThemeIdx = fromIdx;
         document.body.style.backgroundColor = themeColors[fromIdx].bg;
       } else {
-        // 新的过渡开始，计算每块的延迟（从左到右波浪式）
-        const dir = toIdx > fromIdx ? 1 : -1;
-        for (let r = 0; r < gridRows; r++) {
-          for (let c = 0; c < gridCols; c++) {
-            // 从交界处开始，按列分布延迟
-            const normalizedCol = dir > 0 ? c / gridCols : (gridCols - c) / gridCols;
-            tiles[r][c].delay = normalizedCol * 0.6 + Math.random() * 0.1;
-            tiles[r][c].flipping = false;
-            // 如果往回滚，重置进度
-            if (dir < 0 && tiles[r][c].flipProgress > 0.5) {
-              tiles[r][c].flipProgress = 1 - tiles[r][c].flipProgress;
-            }
-          }
-        }
-        currentThemeIdx = fromIdx;
-        nextThemeIdx = toIdx;
-      }
+         // 新的过渡开始，计算每块的延迟（从上到下波浪式）
+         const dir = toIdx > fromIdx ? 1 : -1;
+         for (let r = 0; r < gridRows; r++) {
+           for (let c = 0; c < gridCols; c++) {
+             // 从上往下按行分布延迟，每列加一点随机偏移
+             const normalizedRow = dir > 0 ? r / gridRows : (gridRows - r) / gridRows;
+             tiles[r][c].delay = normalizedRow * 0.5 + Math.random() * 0.12;
+             tiles[r][c].flipping = false;
+             // 如果往回滚，重置进度
+             if (dir < 0 && tiles[r][c].flipProgress > 0.5) {
+               tiles[r][c].flipProgress = 1 - tiles[r][c].flipProgress;
+             }
+           }
+         }
+         currentThemeIdx = fromIdx;
+         nextThemeIdx = toIdx;
+       }
     }
 
     lastProgress = progress;
@@ -337,37 +337,36 @@ document.addEventListener('DOMContentLoaded', function () {
         const tile = tiles[r][c];
         const p = tile.flipProgress;
 
-        // 方块的翻转效果：用颜色渐变模拟 3D 翻转
+        // 方块的翻转效果：用缩放模拟垂直翻转（上下翻）
         // 进度 0-0.5: 正面缩窄，0.5-1: 背面展开
-        let scaleX = 1;
+        let scaleY = 1;
         let color;
 
         if (p < 0.5) {
-          // 前半段：从当前色翻转到边缘
-          scaleX = 1 - p * 1.6;
+          // 前半段：从当前色翻到边缘
+          scaleY = 1 - p * 1.6;
           color = fromColor;
         } else {
           // 后半段：从边缘展开到新色
-          scaleX = (p - 0.5) * 1.6 + 0.2;
+          scaleY = (p - 0.5) * 1.6 + 0.2;
           color = toColor;
         }
 
-        scaleX = Math.max(0.05, Math.min(1, scaleX));
+        scaleY = Math.max(0.05, Math.min(1, scaleY));
 
-        const drawW = TILE_SIZE * scaleX;
-        const drawX = x + (TILE_SIZE - drawW) / 2;
+        const drawH = TILE_SIZE * scaleY;
+        const drawY = y + (TILE_SIZE - drawH) / 2;
 
-        // 只画网格线（边框），保持"细网格"感
+        // 翻转中的方块，填充一点颜色增加立体感
         if (p > 0 && p < 1) {
-          // 翻转中的方块，填充一点颜色增加立体感
           gridCtx.fillStyle = color.replace(/[\d.]+\)$/, (parseFloat(color.match(/[\d.]+\)$/)?.[0] || 0.07) * 1.5).toFixed(3) + ')');
-          gridCtx.fillRect(drawX + 1, y + 1, drawW - 2, TILE_SIZE - 2);
+          gridCtx.fillRect(x + 1, drawY + 1, TILE_SIZE - 2, drawH - 2);
         }
 
         // 网格线（四边）
         gridCtx.strokeStyle = color;
         gridCtx.lineWidth = 1;
-        gridCtx.strokeRect(drawX + 0.5, y + 0.5, drawW - 1, TILE_SIZE - 1);
+        gridCtx.strokeRect(x + 0.5, drawY + 0.5, TILE_SIZE - 1, drawH - 1);
       }
     }
 
