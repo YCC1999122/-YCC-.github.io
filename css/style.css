@@ -86,7 +86,25 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   color: #fff;
 }
 
-/* ===== 百叶窗滚动遮罩（3D翻转细条） ===== */
+/* ===== 全局网格背景 ===== */
+.global-grid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+  transition: opacity 0.8s ease;
+}
+
+/* ===== 百叶窗滚动遮罩（3D翻转细条 + 网格纹理） ===== */
 .shutter-overlay {
   position: fixed;
   top: 0;
@@ -96,7 +114,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   pointer-events: none;
   z-index: 9990;
   overflow: hidden;
-  perspective: 2000px;
+  perspective: 3000px;
 }
 
 .shutter-slats {
@@ -111,7 +129,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   position: relative;
   transform-style: preserve-3d;
   transform: rotateY(0deg);
-  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
   opacity: 0;
 }
 
@@ -128,103 +146,158 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 .slat-front {
-  background: var(--shutter-front, rgba(139, 92, 246, 0.15));
-  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  background-color: var(--shutter-front, rgba(139, 92, 246, 0.2));
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .slat-back {
-  background: var(--shutter-back, rgba(6, 182, 212, 0.15));
+  background-color: var(--shutter-back, rgba(6, 182, 212, 0.2));
   transform: rotateY(180deg);
-  border-left: 1px solid rgba(255, 255, 255, 0.04);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* 错峰翻转 - 波浪式 */
+/* 波浪式错峰翻转 */
 .shutter-overlay.active .slat:nth-child(1)  { transition-delay: 0s; }
-.shutter-overlay.active .slat:nth-child(2)  { transition-delay: 0.025s; }
-.shutter-overlay.active .slat:nth-child(3)  { transition-delay: 0.05s; }
-.shutter-overlay.active .slat:nth-child(4)  { transition-delay: 0.075s; }
-.shutter-overlay.active .slat:nth-child(5)  { transition-delay: 0.1s; }
-.shutter-overlay.active .slat:nth-child(6)  { transition-delay: 0.125s; }
-.shutter-overlay.active .slat:nth-child(7)  { transition-delay: 0.15s; }
-.shutter-overlay.active .slat:nth-child(8)  { transition-delay: 0.175s; }
-.shutter-overlay.active .slat:nth-child(9)  { transition-delay: 0.2s; }
-.shutter-overlay.active .slat:nth-child(10) { transition-delay: 0.225s; }
-.shutter-overlay.active .slat:nth-child(11) { transition-delay: 0.25s; }
-.shutter-overlay.active .slat:nth-child(12) { transition-delay: 0.275s; }
-.shutter-overlay.active .slat:nth-child(13) { transition-delay: 0.3s; }
-.shutter-overlay.active .slat:nth-child(14) { transition-delay: 0.325s; }
-.shutter-overlay.active .slat:nth-child(15) { transition-delay: 0.35s; }
-.shutter-overlay.active .slat:nth-child(16) { transition-delay: 0.375s; }
-.shutter-overlay.active .slat:nth-child(17) { transition-delay: 0.4s; }
-.shutter-overlay.active .slat:nth-child(18) { transition-delay: 0.425s; }
-.shutter-overlay.active .slat:nth-child(19) { transition-delay: 0.45s; }
-.shutter-overlay.active .slat:nth-child(20) { transition-delay: 0.475s; }
+.shutter-overlay.active .slat:nth-child(2)  { transition-delay: 0.02s; }
+.shutter-overlay.active .slat:nth-child(3)  { transition-delay: 0.04s; }
+.shutter-overlay.active .slat:nth-child(4)  { transition-delay: 0.06s; }
+.shutter-overlay.active .slat:nth-child(5)  { transition-delay: 0.08s; }
+.shutter-overlay.active .slat:nth-child(6)  { transition-delay: 0.10s; }
+.shutter-overlay.active .slat:nth-child(7)  { transition-delay: 0.12s; }
+.shutter-overlay.active .slat:nth-child(8)  { transition-delay: 0.14s; }
+.shutter-overlay.active .slat:nth-child(9)  { transition-delay: 0.16s; }
+.shutter-overlay.active .slat:nth-child(10) { transition-delay: 0.18s; }
+.shutter-overlay.active .slat:nth-child(11) { transition-delay: 0.20s; }
+.shutter-overlay.active .slat:nth-child(12) { transition-delay: 0.22s; }
+.shutter-overlay.active .slat:nth-child(13) { transition-delay: 0.24s; }
+.shutter-overlay.active .slat:nth-child(14) { transition-delay: 0.26s; }
+.shutter-overlay.active .slat:nth-child(15) { transition-delay: 0.28s; }
+.shutter-overlay.active .slat:nth-child(16) { transition-delay: 0.30s; }
+.shutter-overlay.active .slat:nth-child(17) { transition-delay: 0.32s; }
+.shutter-overlay.active .slat:nth-child(18) { transition-delay: 0.34s; }
+.shutter-overlay.active .slat:nth-child(19) { transition-delay: 0.36s; }
+.shutter-overlay.active .slat:nth-child(20) { transition-delay: 0.38s; }
+.shutter-overlay.active .slat:nth-child(21) { transition-delay: 0.40s; }
+.shutter-overlay.active .slat:nth-child(22) { transition-delay: 0.42s; }
+.shutter-overlay.active .slat:nth-child(23) { transition-delay: 0.44s; }
+.shutter-overlay.active .slat:nth-child(24) { transition-delay: 0.46s; }
+.shutter-overlay.active .slat:nth-child(25) { transition-delay: 0.48s; }
+.shutter-overlay.active .slat:nth-child(26) { transition-delay: 0.50s; }
+.shutter-overlay.active .slat:nth-child(27) { transition-delay: 0.52s; }
+.shutter-overlay.active .slat:nth-child(28) { transition-delay: 0.54s; }
+.shutter-overlay.active .slat:nth-child(29) { transition-delay: 0.56s; }
+.shutter-overlay.active .slat:nth-child(30) { transition-delay: 0.58s; }
 
-/* ===== 各 Section 主题背景色 ===== */
+/* ===== body 背景色过渡 ===== */
+body {
+  transition: background-color 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ===== 各 Section 主题光晕（叠加在全局背景上） ===== */
 .section {
   position: relative;
-  transition: background 1s ease;
 }
 
-.section::before {
-  content: '';
+.section .section-glow {
   position: absolute;
-  inset: 0;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.25;
   pointer-events: none;
-  opacity: 0.08;
   z-index: 0;
 }
 
-/* Hero - 深紫夜空 */
-#hero {
-  background: radial-gradient(ellipse at 30% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
-              radial-gradient(ellipse at 70% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
-              var(--bg);
+/* Hero - 深紫夜空光晕 */
+#hero .glow-1 {
+  width: 600px; height: 600px;
+  background: rgba(139, 92, 246, 0.25);
+  top: -100px; left: -100px;
+}
+#hero .glow-2 {
+  width: 500px; height: 500px;
+  background: rgba(6, 182, 212, 0.15);
+  bottom: -50px; right: 5%;
 }
 
-/* About - 深青冷调 */
-#about {
-  background: radial-gradient(ellipse at 70% 30%, rgba(6, 182, 212, 0.07) 0%, transparent 55%),
-              radial-gradient(ellipse at 20% 80%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
-              var(--bg);
+/* About - 深青冷调光晕 */
+#about .glow-1 {
+  width: 500px; height: 500px;
+  background: rgba(6, 182, 212, 0.2);
+  top: 20%; right: -100px;
+}
+#about .glow-2 {
+  width: 400px; height: 400px;
+  background: rgba(139, 92, 246, 0.12);
+  bottom: 10%; left: -50px;
 }
 
-/* Skills - 深粉紫 */
-#skills {
-  background: radial-gradient(ellipse at 50% 50%, rgba(244, 114, 182, 0.06) 0%, transparent 50%),
-              radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 45%),
-              var(--bg);
+/* Skills - 深粉紫光晕 */
+#skills .glow-1 {
+  width: 550px; height: 550px;
+  background: rgba(244, 114, 182, 0.15);
+  top: 10%; left: 50%;
+  transform: translateX(-50%);
+}
+#skills .glow-2 {
+  width: 350px; height: 350px;
+  background: rgba(139, 92, 246, 0.15);
+  top: -50px; left: 10%;
 }
 
-/* Projects - 深夜蓝 */
-#projects {
-  background: radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
-              radial-gradient(ellipse at 10% 90%, rgba(139, 92, 246, 0.05) 0%, transparent 45%),
-              var(--bg);
+/* Projects - 深夜蓝光晕 */
+#projects .glow-1 {
+  width: 500px; height: 500px;
+  background: rgba(59, 130, 246, 0.18);
+  top: -50px; right: -50px;
+}
+#projects .glow-2 {
+  width: 400px; height: 400px;
+  background: rgba(139, 92, 246, 0.12);
+  bottom: 5%; left: -80px;
 }
 
-/* Ideas - 暖橙紫 */
-#ideas {
-  background: radial-gradient(ellipse at 30% 70%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
-              radial-gradient(ellipse at 70% 20%, rgba(244, 114, 182, 0.05) 0%, transparent 45%),
-              var(--bg);
+/* Ideas - 暖橙紫光晕 */
+#ideas .glow-1 {
+  width: 450px; height: 450px;
+  background: rgba(245, 158, 11, 0.12);
+  bottom: 10%; left: 10%;
+}
+#ideas .glow-2 {
+  width: 400px; height: 400px;
+  background: rgba(244, 114, 182, 0.12);
+  top: 5%; right: 10%;
 }
 
-/* Notes - 墨绿深调 */
-#notes {
-  background: radial-gradient(ellipse at 60% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
-              radial-gradient(ellipse at 20% 80%, rgba(6, 182, 212, 0.04) 0%, transparent 45%),
-              var(--bg);
+/* Notes - 墨绿深调光晕 */
+#notes .glow-1 {
+  width: 480px; height: 480px;
+  background: rgba(16, 185, 129, 0.15);
+  top: 15%; right: 15%;
+}
+#notes .glow-2 {
+  width: 350px; height: 350px;
+  background: rgba(6, 182, 212, 0.1);
+  bottom: 10%; left: 5%;
 }
 
-/* Contact - 紫青渐变 */
-#contact {
-  background: radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 55%),
-              radial-gradient(ellipse at 50% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
-              var(--bg);
+/* Contact - 紫青渐变光晕 */
+#contact .glow-1 {
+  width: 550px; height: 550px;
+  background: rgba(139, 92, 246, 0.2);
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+}
+#contact .glow-2 {
+  width: 450px; height: 450px;
+  background: rgba(6, 182, 212, 0.12);
+  bottom: -50px; right: 10%;
 }
 
 /* ===== 鼠标尾迹画布 ===== */

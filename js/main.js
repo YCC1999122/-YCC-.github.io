@@ -124,82 +124,118 @@ document.addEventListener('DOMContentLoaded', function () {
   animateTrail();
 
   // ==========================================
-  // 2. 百叶窗滚动过渡效果（3D翻转）
+  // 2. 百叶窗滚动过渡效果（3D翻转 + 背景色同步过渡）
   // ==========================================
   const shutterOverlay = document.getElementById('shutterOverlay');
   const slatFronts = document.querySelectorAll('.slat-front');
   const slatBacks = document.querySelectorAll('.slat-back');
-  const sections2 = document.querySelectorAll('.section');
-  let currentSectionIndex = 0;
+  const globalGridBg = document.getElementById('globalGridBg');
+  const sectionList = document.querySelectorAll('.section');
+  let currentSectionIdx = 0;
   let isShuttering = false;
-  let lastScrollY = 0;
+  let lastScrollPos = 0;
 
-  // 每个 section 对应的百叶窗颜色（主题色）
-  const sectionThemes = [
-    { front: 'rgba(139, 92, 246, 0.35)', back: 'rgba(6, 182, 212, 0.3)' },   // Hero - 紫青
-    { front: 'rgba(6, 182, 212, 0.3)', back: 'rgba(244, 114, 182, 0.25)' },  // About - 青粉
-    { front: 'rgba(244, 114, 182, 0.25)', back: 'rgba(59, 130, 246, 0.28)' }, // Skills - 粉蓝
-    { front: 'rgba(59, 130, 246, 0.28)', back: 'rgba(245, 158, 11, 0.22)' }, // Projects - 蓝橙
-    { front: 'rgba(245, 158, 11, 0.22)', back: 'rgba(16, 185, 129, 0.22)' }, // Ideas - 橙绿
-    { front: 'rgba(16, 185, 129, 0.22)', back: 'rgba(139, 92, 246, 0.35)' }, // Notes - 绿紫
-    { front: 'rgba(139, 92, 246, 0.35)', back: 'rgba(6, 182, 212, 0.3)' }    // Contact - 紫青
+  // 每个 section 对应的主题色（用于百叶窗和 body 背景过渡）
+  const themeColors = [
+    { bg: '#0a0a0f', accent: '#8b5cf6', accent2: '#06b6d4' },  // Hero - 深紫
+    { bg: '#0a0d10', accent: '#06b6d4', accent2: '#8b5cf6' },  // About - 深青
+    { bg: '#0d0a12', accent: '#f472b6', accent2: '#8b5cf6' },  // Skills - 深粉
+    { bg: '#0a0c14', accent: '#3b82f6', accent2: '#8b5cf6' },  // Projects - 深蓝
+    { bg: '#0f0b0a', accent: '#f59e0b', accent2: '#f472b6' },  // Ideas - 暖橙
+    { bg: '#0a100d', accent: '#10b981', accent2: '#06b6d4' },  // Notes - 墨绿
+    { bg: '#0a0a0f', accent: '#8b5cf6', accent2: '#06b6d4' }   // Contact - 紫青
   ];
 
+  // 给每个 section 注入光晕元素
+  sectionList.forEach((section) => {
+    const glow1 = document.createElement('div');
+    glow1.className = 'section-glow glow-1';
+    const glow2 = document.createElement('div');
+    glow2.className = 'section-glow glow-2';
+    section.insertBefore(glow1, section.firstChild);
+    section.insertBefore(glow2, section.firstChild);
+  });
+
+  // 设置百叶窗正反面颜色
   function setShutterColors(frontColor, backColor) {
     slatFronts.forEach(face => {
-      face.style.background = frontColor;
+      face.style.backgroundColor = frontColor;
     });
     slatBacks.forEach(face => {
-      face.style.background = backColor;
+      face.style.backgroundColor = backColor;
     });
+  }
+
+  // 设置全局网格颜色
+  function setGridColor(color) {
+    if (globalGridBg) {
+      globalGridBg.style.backgroundImage =
+        `linear-gradient(${color} 1px, transparent 1px),` +
+        `linear-gradient(90deg, ${color} 1px, transparent 1px)`;
+    }
   }
 
   function handleShutterScroll() {
     const scrollY = window.scrollY;
-    const scrollDir = scrollY > lastScrollY ? 'down' : 'up';
-    lastScrollY = scrollY;
+    const scrollDir = scrollY > lastScrollPos ? 'down' : 'up';
+    lastScrollPos = scrollY;
 
-    // 检测当前进入的 section
-    const viewportMid = scrollY + window.innerHeight * 0.5;
+    // 检测当前进入的 section（用 60% 的位置来触发，更自然）
+    const triggerLine = scrollY + window.innerHeight * 0.55;
 
-    let newSectionIndex = -1;
-    sections2.forEach((section, index) => {
+    let newIdx = -1;
+    sectionList.forEach((section, index) => {
       const top = section.offsetTop;
       const bottom = top + section.offsetHeight;
-      if (viewportMid >= top && viewportMid < bottom) {
-        newSectionIndex = index;
+      if (triggerLine >= top && triggerLine < bottom) {
+        newIdx = index;
       }
     });
 
-    if (newSectionIndex !== -1 && newSectionIndex !== currentSectionIndex && !isShuttering) {
-      const oldIndex = currentSectionIndex;
-      currentSectionIndex = newSectionIndex;
-      triggerShutter(oldIndex, newSectionIndex, scrollDir);
+    if (newIdx !== -1 && newIdx !== currentSectionIdx && !isShuttering) {
+      const oldIdx = currentSectionIdx;
+      currentSectionIdx = newIdx;
+      triggerShutter(oldIdx, newIdx, scrollDir);
     }
   }
 
-  function triggerShutter(fromIndex, toIndex, direction) {
+  function triggerShutter(fromIdx, toIdx, direction) {
     if (isShuttering) return;
     isShuttering = true;
 
-    const theme = sectionThemes[toIndex] || sectionThemes[0];
-    // 正面显示"来的方向"的颜色，背面显示"要去的方向"的颜色
-    setShutterColors(theme.front, theme.back);
+    const fromTheme = themeColors[fromIdx] || themeColors[0];
+    const toTheme = themeColors[toIdx] || themeColors[0];
+
+    // 正面 = 离开的页面颜色，背面 = 进入的页面颜色
+    const frontColor = hexToRgba(fromTheme.accent, 0.28);
+    const backColor = hexToRgba(toTheme.accent, 0.28);
+    setShutterColors(frontColor, backColor);
 
     // 触发翻转动画
     shutterOverlay.classList.add('active');
 
-    // 动画中途（翻转到90度左右时）更新背景已经不需要了，
-    // 因为 section 本身有背景色，百叶窗只是过渡遮罩
+    // 翻转到一半时，切换 body 背景色（和百叶窗背面同步）
+    setTimeout(() => {
+      document.body.style.backgroundColor = toTheme.bg;
+      setGridColor(hexToRgba(toTheme.accent, 0.04));
+    }, 450);
 
-    // 动画结束后移除
+    // 动画结束，移除百叶窗
     setTimeout(() => {
       shutterOverlay.classList.remove('active');
-      // 等过渡完全结束后解锁
+      // 解锁
       setTimeout(() => {
         isShuttering = false;
       }, 900);
-    }, 1000);
+    }, 1100);
+  }
+
+  // hex 转 rgba
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 
   // 节流滚动监听
@@ -335,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const scrollPos = window.scrollY + 120;
     let currentSection = '';
 
-    sections2.forEach(section => {
+    sectionList.forEach(section => {
       const top = section.offsetTop;
       const height = section.offsetHeight;
       if (scrollPos >= top && scrollPos < top + height) {
