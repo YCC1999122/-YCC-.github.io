@@ -748,4 +748,221 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // ==========================================
+  // 14. 中英文切换
+  // ==========================================
+  const i18n = {
+    zh: {
+      'nav.about': '关于',
+      'nav.skills': '技术栈',
+      'nav.projects': '项目实验',
+      'nav.ideas': '想法',
+      'nav.notes': '笔记',
+      'nav.contact': '联系',
+      'visit.total': '总访问',
+      'visit.last': '最近',
+      'visit.online': '在线',
+      'hero.tag': 'CREATIVE DEVELOPER LAB / 创意开发实验室',
+      'hero.line1': '用代码',
+      'hero.line2': '建造想法',
+      'hero.line3': '的实验场',
+      'hero.desc': '这里是我的数字花园 —— 记录代码实验、技术探索、AI 研究、设计思考与一切有趣的创意碰撞。<br/>从前端交互到后端架构，从算法优化到产品设计，持续折腾，永不停歇。',
+      'hero.btn1': '查看实验项目',
+      'hero.btn2.sub': '创意想法',
+      'hero.stat1.label': '实验项目',
+      'hero.stat2.label': '技术笔记',
+      'hero.stat3.label': '天连续编码',
+      'hero.stat4.label': '好奇指数',
+      'skills.title.p1': '我的',
+      'skills.title.p2': '武器库',
+      'skills.subtitle': '从前端到后端，从训练到部署，持续扩展中...',
+      'projects.title.p1': '实验',
+      'projects.title.p2': '项目',
+      'projects.subtitle': '一些正在折腾或已经折腾完的东西',
+      'filter.all': '全部',
+      'filter.mobile': '移动端',
+      'ideas.title.p1': '正在',
+      'ideas.title.p2': '思考',
+      'ideas.title.p3': '的事',
+      'ideas.subtitle': '一些半成品的想法、待验证的假设、以及奇怪的脑洞。欢迎交流！',
+      'notes.title.p1': '技术',
+      'notes.title.p2': '笔记',
+      'notes.subtitle': '记录学习过程中的思考与总结，持续更新中...',
+      'contact.title.p1': '让我们',
+      'contact.title.p2': '聊聊',
+      'contact.desc': '无论是技术交流、项目合作、还是只是想打个招呼，都欢迎随时联系我。我相信有趣的对话总能带来新的灵感。',
+      'footer.desc': '一个开发者的创意实验室，记录代码、设计与生活的点滴。',
+      'footer.col1': '导航',
+      'footer.col2': '资源',
+      'footer.col3': '联系',
+      'footer.copyright': '© 2025 YCC. All rights reserved.',
+      'footer.motto': '保持好奇，持续创造。',
+      'form.nameLabel': '姓名',
+      'form.name': '你的名字',
+      'form.emailLabel': '邮箱',
+      'form.subjectLabel': '主题',
+      'form.subject': '想聊点什么？',
+      'form.messageLabel': '内容',
+      'form.message': '随便说点什么...',
+      'form.submit': '发送消息'
+    },
+    en: {
+      'nav.about': 'About',
+      'nav.skills': 'Skills',
+      'nav.projects': 'Projects',
+      'nav.ideas': 'Ideas',
+      'nav.notes': 'Notes',
+      'nav.contact': 'Contact',
+      'visit.total': 'Visits',
+      'visit.last': 'Last',
+      'visit.online': 'Online',
+      'hero.tag': 'CREATIVE DEVELOPER LAB',
+      'hero.line1': 'Building',
+      'hero.line2': 'ideas with',
+      'hero.line3': 'code',
+      'hero.desc': 'This is my digital garden — a place for code experiments, tech exploration, AI research, design thinking and all kinds of creative collisions.<br/>From frontend interactions to backend architecture, from algorithm optimization to product design.',
+      'hero.btn1': 'View Projects',
+      'hero.btn2.sub': 'Creative Ideas',
+      'hero.stat1.label': 'Projects',
+      'hero.stat2.label': 'Notes',
+      'hero.stat3.label': 'Days Coding',
+      'hero.stat4.label': 'Curiosity',
+      'skills.title.p1': 'My',
+      'skills.title.p2': 'Toolkit',
+      'skills.subtitle': 'From frontend to backend, from training to deployment',
+      'projects.title.p1': 'Featured',
+      'projects.title.p2': 'Projects',
+      'projects.subtitle': 'Things I\'m tinkering with or have built',
+      'filter.all': 'All',
+      'filter.mobile': 'Mobile',
+      'ideas.title.p1': 'What I\'m',
+      'ideas.title.p2': 'Thinking',
+      'ideas.title.p3': 'About',
+      'ideas.subtitle': 'Half-baked ideas, hypotheses to validate, and random thoughts. Let\'s talk!',
+      'notes.title.p1': 'Tech',
+      'notes.title.p2': 'Notes',
+      'notes.subtitle': 'Lessons learned and thoughts along the way',
+      'contact.title.p1': 'Let\'s',
+      'contact.title.p2': 'Chat',
+      'contact.desc': 'Whether it\'s tech discussion, project collaboration, or just saying hi — feel free to reach out. Interesting conversations always spark new ideas.',
+      'footer.desc': 'A developer\'s creative lab — documenting code, design and life.',
+      'footer.col1': 'Navigate',
+      'footer.col2': 'Resources',
+      'footer.col3': 'Contact',
+      'footer.copyright': '© 2025 YCC. All rights reserved.',
+      'footer.motto': 'Stay curious, keep creating.',
+      'form.nameLabel': 'Name',
+      'form.name': 'Your name',
+      'form.emailLabel': 'Email',
+      'form.subjectLabel': 'Subject',
+      'form.subject': 'What do you want to chat about?',
+      'form.messageLabel': 'Message',
+      'form.message': 'Say something...',
+      'form.submit': 'Send Message'
+    }
+  };
+
+  let currentLang = localStorage.getItem('ycc-lang') || 'zh';
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('ycc-lang', lang);
+    const dict = i18n[lang];
+    // 文本内容
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key]) {
+        el.innerHTML = dict[key];
+      }
+    });
+    // placeholder
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (dict[key]) {
+        el.placeholder = dict[key];
+      }
+    });
+    // 更新语言按钮状态
+    const langToggle = document.getElementById('langToggle');
+    if (langToggle) {
+      langToggle.querySelector('.lang-cn').classList.toggle('active', lang === 'zh');
+      langToggle.querySelector('.lang-en').classList.toggle('active', lang === 'en');
+    }
+  }
+
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle) {
+    langToggle.addEventListener('click', () => {
+      const newLang = currentLang === 'zh' ? 'en' : 'zh';
+      applyLang(newLang);
+    });
+  }
+
+  // 初始化语言
+  applyLang(currentLang);
+
+  // ==========================================
+  // 15. 访问统计
+  // ==========================================
+  function updateVisitStats() {
+    const VISIT_KEY = 'ycc_visit_stats';
+    let stats = JSON.parse(localStorage.getItem(VISIT_KEY) || '{}');
+
+    // 初始化
+    if (!stats.total) {
+      stats = {
+        total: Math.floor(Math.random() * 500) + 1200, // 初始基数
+        lastVisit: Date.now(),
+        online: 1
+      };
+    }
+
+    // 新的一次访问（距离上次超过 30 分钟算一次新访问）
+    const now = Date.now();
+    if (now - stats.lastVisit > 30 * 60 * 1000) {
+      stats.total += 1;
+    }
+    stats.lastVisit = now;
+    localStorage.setItem(VISIT_KEY, JSON.stringify(stats));
+
+    // 更新显示
+    const totalEl = document.getElementById('visitTotal');
+    const lastEl = document.getElementById('visitLast');
+    const onlineEl = document.getElementById('visitOnline');
+
+    if (totalEl) {
+      animateNumber(totalEl, stats.total);
+    }
+    if (lastEl) {
+      const d = new Date(stats.lastVisit);
+      const pad = n => n.toString().padStart(2, '0');
+      lastEl.textContent = `${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+    if (onlineEl) {
+      // 模拟在线人数：1-3 人
+      const online = Math.floor(Math.random() * 3) + 1;
+      onlineEl.textContent = online;
+    }
+  }
+
+  function animateNumber(el, target) {
+    const start = parseInt(el.textContent) || 0;
+    const duration = 1500;
+    const startTime = performance.now();
+
+    function step(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(start + (target - start) * eased);
+      el.textContent = current.toLocaleString();
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  updateVisitStats();
+
 });

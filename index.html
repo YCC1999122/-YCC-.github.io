@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YCC's Lab — 创意·代码·探索</title>
   <meta name="description" content="一个开发者的创意实验室：项目实验、技术笔记、AI 探索、设计想法与生活记录。" />
-  <link rel="stylesheet" href="css/style.css?v=4.1" />
+  <link rel="stylesheet" href="css/style.css?v=4.2" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
@@ -69,18 +69,44 @@
         <span class="logo-text">YCC's <em>Lab</em></span>
       </a>
       <ul class="nav-menu" id="navMenu">
-        <li><a href="#about" class="nav-link"><span class="nav-num">01</span>关于</a></li>
-        <li><a href="#skills" class="nav-link"><span class="nav-num">02</span>技术栈</a></li>
-        <li><a href="#projects" class="nav-link"><span class="nav-num">03</span>项目实验</a></li>
-        <li><a href="#ideas" class="nav-link"><span class="nav-num">04</span>想法</a></li>
-        <li><a href="#notes" class="nav-link"><span class="nav-num">05</span>笔记</a></li>
-        <li><a href="#contact" class="nav-link"><span class="nav-num">06</span>联系</a></li>
+        <li><a href="#about" class="nav-link"><span class="nav-num">01</span><span data-i18n="nav.about">关于</span></a></li>
+        <li><a href="#skills" class="nav-link"><span class="nav-num">02</span><span data-i18n="nav.skills">技术栈</span></a></li>
+        <li><a href="#projects" class="nav-link"><span class="nav-num">03</span><span data-i18n="nav.projects">项目实验</span></a></li>
+        <li><a href="#ideas" class="nav-link"><span class="nav-num">04</span><span data-i18n="nav.ideas">想法</span></a></li>
+        <li><a href="#notes" class="nav-link"><span class="nav-num">05</span><span data-i18n="nav.notes">笔记</span></a></li>
+        <li><a href="#contact" class="nav-link"><span class="nav-num">06</span><span data-i18n="nav.contact">联系</span></a></li>
       </ul>
-      <button class="nav-toggle" id="navToggle" aria-label="菜单">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="nav-actions">
+        <button class="lang-toggle" id="langToggle" aria-label="切换语言">
+          <span class="lang-cn active">中</span>
+          <span class="lang-divider">/</span>
+          <span class="lang-en">EN</span>
+        </button>
+        <button class="nav-toggle" id="navToggle" aria-label="菜单">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </nav>
+
+  <!-- 访问统计（左上角） -->
+  <div class="visit-stats" id="visitStats">
+    <div class="visit-item">
+      <span class="visit-icon">👁</span>
+      <span class="visit-label" data-i18n="visit.total">总访问</span>
+      <span class="visit-num" id="visitTotal">0</span>
+    </div>
+    <div class="visit-item">
+      <span class="visit-icon">🕒</span>
+      <span class="visit-label" data-i18n="visit.last">最近</span>
+      <span class="visit-num visit-time" id="visitLast">--</span>
+    </div>
+    <div class="visit-item">
+      <span class="visit-icon">🟢</span>
+      <span class="visit-label" data-i18n="visit.online">在线</span>
+      <span class="visit-num" id="visitOnline">1</span>
+    </div>
+  </div>
 
   <!-- ========== Hero 首屏 ========== -->
   <section class="hero" id="hero">
@@ -92,14 +118,14 @@
       <div class="hero-left">
         <div class="hero-tag">
           <span class="pulse-dot"></span>
-          CREATIVE DEVELOPER LAB / 创意开发实验室
+          <span data-i18n="hero.tag">CREATIVE DEVELOPER LAB / 创意开发实验室</span>
         </div>
         <h1 class="hero-title">
-          <span class="line"><span class="line-inner">用代码</span></span>
-          <span class="line"><span class="line-inner gradient-text">建造想法</span></span>
-          <span class="line"><span class="line-inner">的实验场</span></span>
+          <span class="line"><span class="line-inner" data-i18n="hero.line1">用代码</span></span>
+          <span class="line"><span class="line-inner gradient-text" data-i18n="hero.line2">建造想法</span></span>
+          <span class="line"><span class="line-inner" data-i18n="hero.line3">的实验场</span></span>
         </h1>
-        <p class="hero-desc">
+        <p class="hero-desc" data-i18n="hero.desc">
           这里是我的数字花园 —— 记录代码实验、技术探索、AI 研究、
           设计思考与一切有趣的创意碰撞。<br/>
           从前端交互到后端架构，从算法优化到产品设计，
@@ -108,31 +134,31 @@
         <div class="hero-actions">
           <a href="#projects" class="btn btn-primary">
             <span class="btn-text-deco">[</span>
-            查看实验项目
+            <span data-i18n="hero.btn1">查看实验项目</span>
             <span class="btn-arrow">→</span>
             <span class="btn-text-deco">]</span>
           </a>
           <a href="#ideas" class="btn btn-ghost">
             <span class="btn-glitch">IDEAS</span>
-            <span class="btn-glitch-sub">创意想法</span>
+            <span class="btn-glitch-sub" data-i18n="hero.btn2.sub">创意想法</span>
           </a>
         </div>
         <div class="hero-stats-row">
           <div class="mini-stat">
             <span class="mini-num" data-count="42">0</span>
-            <span class="mini-label">实验项目</span>
+            <span class="mini-label" data-i18n="hero.stat1.label">实验项目</span>
           </div>
           <div class="mini-stat">
             <span class="mini-num" data-count="128">0</span>
-            <span class="mini-label">技术笔记</span>
+            <span class="mini-label" data-i18n="hero.stat2.label">技术笔记</span>
           </div>
           <div class="mini-stat">
             <span class="mini-num" data-count="365">0</span>
-            <span class="mini-label">天连续编码</span>
+            <span class="mini-label" data-i18n="hero.stat3.label">天连续编码</span>
           </div>
           <div class="mini-stat">
             <span class="mini-num">∞</span>
-            <span class="mini-label">好奇指数</span>
+            <span class="mini-label" data-i18n="hero.stat4.label">好奇指数</span>
           </div>
         </div>
       </div>
@@ -249,9 +275,9 @@
         <span class="label-text">/ TECH STACK</span>
       </div>
       <h2 class="section-title big left">
-        我的 <span class="gradient-text">武器库</span>
+        <span data-i18n="skills.title.p1">我的</span> <span class="gradient-text" data-i18n="skills.title.p2">武器库</span>
       </h2>
-      <p class="section-sub left">从前端到后端，从训练到部署，持续扩展中...</p>
+      <p class="section-sub left" data-i18n="skills.subtitle">从前端到后端，从训练到部署，持续扩展中...</p>
 
       <div class="skills-bento">
         <!-- 前端 -->
@@ -331,13 +357,13 @@
       </div>
       <div class="section-header-row">
         <h2 class="section-title big left">
-          实验<span class="gradient-text">项目</span>
+          <span data-i18n="projects.title.p1">实验</span><span class="gradient-text" data-i18n="projects.title.p2">项目</span>
         </h2>
         <div class="project-filter">
-          <button class="filter-btn active" data-filter="all">全部</button>
+          <button class="filter-btn active" data-filter="all" data-i18n="filter.all">全部</button>
           <button class="filter-btn" data-filter="web">Web</button>
           <button class="filter-btn" data-filter="ai">AI</button>
-          <button class="filter-btn" data-filter="mobile">移动端</button>
+          <button class="filter-btn" data-filter="mobile" data-i18n="filter.mobile">移动端</button>
           <button class="filter-btn" data-filter="tool">工具</button>
           <button class="filter-btn" data-filter="design">设计</button>
         </div>
@@ -538,9 +564,9 @@
         <span class="label-text">/ IDEAS</span>
       </div>
       <h2 class="section-title big left">
-        正在<span class="gradient-text">思考</span>的事
+        <span data-i18n="ideas.title.p1">正在</span><span class="gradient-text" data-i18n="ideas.title.p2">思考</span><span data-i18n="ideas.title.p3">的事</span>
       </h2>
-      <p class="section-sub left">一些半成品的想法、待验证的假设、以及奇怪的脑洞。欢迎交流！</p>
+      <p class="section-sub left" data-i18n="ideas.subtitle">一些半成品的想法、待验证的假设、以及奇怪的脑洞。欢迎交流！</p>
 
       <div class="ideas-grid">
         <div class="idea-card tilt-card">
@@ -649,9 +675,9 @@
         <span class="label-text">/ NOTES</span>
       </div>
       <h2 class="section-title big left">
-        技术<span class="gradient-text">笔记</span>
+        <span data-i18n="notes.title.p1">技术</span><span class="gradient-text" data-i18n="notes.title.p2">笔记</span>
       </h2>
-      <p class="section-sub left">记录学习过程中的思考与总结，持续更新中...</p>
+      <p class="section-sub left" data-i18n="notes.subtitle">记录学习过程中的思考与总结，持续更新中...</p>
 
       <div class="notes-grid">
         <a href="#" class="note-card tilt-card">
@@ -745,9 +771,9 @@
       <div class="contact-wrap">
         <div class="contact-left">
           <h2 class="section-title big left">
-            让我们<span class="gradient-text">聊聊</span>
+            <span data-i18n="contact.title.p1">让我们</span><span class="gradient-text" data-i18n="contact.title.p2">聊聊</span>
           </h2>
-          <p class="contact-desc">
+          <p class="contact-desc" data-i18n="contact.desc">
             无论是技术交流、项目合作、还是只是想打个招呼，
             都欢迎随时联系我。我相信有趣的对话总能带来新的灵感。
           </p>
@@ -796,25 +822,25 @@
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>姓名</label>
-                <input type="text" name="name" placeholder="你的名字" required />
+                <label data-i18n="form.nameLabel">姓名</label>
+                <input type="text" name="name" placeholder="你的名字" data-i18n-placeholder="form.name" required />
               </div>
               <div class="form-group">
-                <label>邮箱</label>
+                <label data-i18n="form.emailLabel">邮箱</label>
                 <input type="email" name="email" placeholder="your@email.com" required />
               </div>
             </div>
             <div class="form-group">
-              <label>主题</label>
-              <input type="text" name="subject" placeholder="想聊点什么？" />
+              <label data-i18n="form.subjectLabel">主题</label>
+              <input type="text" name="subject" placeholder="想聊点什么？" data-i18n-placeholder="form.subject" />
             </div>
             <div class="form-group">
-              <label>内容</label>
-              <textarea name="message" rows="5" placeholder="随便说点什么..." required></textarea>
+              <label data-i18n="form.messageLabel">内容</label>
+              <textarea name="message" rows="5" placeholder="随便说点什么..." data-i18n-placeholder="form.message" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary btn-full">
               <span class="btn-text-deco">[</span>
-              发送消息
+              <span data-i18n="form.submit">发送消息</span>
               <span class="btn-arrow">→</span>
               <span class="btn-text-deco">]</span>
             </button>
@@ -866,6 +892,6 @@
     <span>↑</span>
   </button>
 
-  <script src="js/main.js?v=4.1"></script>
+  <script src="js/main.js?v=4.2"></script>
 </body>
 </html>

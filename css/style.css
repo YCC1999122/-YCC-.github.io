@@ -432,9 +432,10 @@ body {
 
 .btn-primary {
   background: transparent;
-  color: #fff;
+  color: var(--text);
   border: 1px solid var(--primary-light);
   position: relative;
+  z-index: 1;
 }
 
 .btn-primary::before {
@@ -447,6 +448,11 @@ body {
   background: var(--gradient-1);
   transition: left 0.4s cubic-bezier(0.77, 0, 0.175, 1);
   z-index: -1;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  border-color: transparent;
 }
 
 .btn-primary:hover::before {
@@ -670,6 +676,46 @@ body {
   opacity: 1;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 1px;
+}
+
+.lang-toggle:hover {
+  border-color: var(--primary-light);
+  color: var(--text);
+}
+
+.lang-toggle span {
+  transition: var(--transition);
+}
+
+.lang-toggle .active {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.lang-divider {
+  opacity: 0.4;
+}
+
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -684,6 +730,65 @@ body {
   background: var(--text);
   border-radius: 2px;
   transition: var(--transition);
+}
+
+/* ===== 访问统计 ===== */
+.visit-stats {
+  position: fixed;
+  top: calc(var(--navbar-height) + 20px);
+  left: 24px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  animation: fadeInLeft 0.8s ease-out 1s both;
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.visit-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.visit-icon {
+  font-size: 13px;
+}
+
+.visit-label {
+  font-size: 11px;
+  opacity: 0.7;
+  letter-spacing: 2px;
+}
+
+.visit-num {
+  color: var(--text);
+  font-weight: 700;
+  font-family: var(--font-tech);
+  font-size: 13px;
+  margin-left: auto;
+}
+
+.visit-time {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  opacity: 0.9;
 }
 
 /* ===== Hero 首屏 ===== */
@@ -2206,6 +2311,15 @@ body {
 
   .container {
     padding: 0 20px;
+  }
+
+  .visit-stats {
+    display: none;
+  }
+
+  .lang-toggle {
+    padding: 5px 10px;
+    font-size: 11px;
   }
 
   .nav-menu {
