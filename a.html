@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATLAB数据分析仪表板 | YCC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.0/dist/chartjs-plugin-zoom.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --matlab-blue: #0076a8;
+            --matlab-dark: #0a1929;
+            --matlab-light: #1a2b40;
+            --matlab-accent: #4dbeee;
+            --matlab-green: #77ac30;
+            --matlab-orange: #d95319;
+            --matlab-yellow: #edb120;
+            --matlab-text: #d9e1f2;
+            --matlab-border: #2a3f5f;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--matlab-dark), #0c1e34);
+            color: var(--matlab-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .matlab-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 25, 41, 0.95);
+            border-radius: 12px;
+            padding: 15px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--matlab-border);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .matlab-icon {
+            font-size: 32px;
+            color: var(--matlab-accent);
+            margin-right: 15px;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--matlab-accent), var(--matlab-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: #8ca0c7;
+        }
+
+        .author-section {
+            display: flex;
+            align-items: center;
+            background: rgba(26, 43, 64, 0.7);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            border: 1px solid var(--matlab-border);
+        }
+
+        .author-section i {
+            color: var(--matlab-orange);
+            margin-right: 8px;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .control-panel {
+            background: rgba(10, 25, 41, 0.95);
+            border-radius: 12px;
+            padding: 25px 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--matlab-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--matlab-border);
+        }
+
+        .panel-title i {
+            font-size: 22px;
+            color: var(--matlab-green);
+            margin-right: 10px;
+        }
+
+        .panel-title h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .group-title {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--matlab-accent);
+            display: flex;
+            align-items: center;
+        }
+
+        .group-title i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .slider-container {
+            background: rgba(26, 43, 64, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .slider-container:hover {
+            background: rgba(26, 43, 64, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #a0b4d9;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, var(--matlab-blue), var(--matlab-green));
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(77, 190, 238, 0.8);
+            transition: var(--transition);
+            border: 2px solid var(--matlab-accent);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--matlab-accent);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #8ca0c7;
+        }
+
+        .input-group input, .input-group select {
+            background: rgba(26, 43, 64, 0.6);
+            border: 1px solid var(--matlab-border);
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: var(--matlab-text);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--matlab-accent);
+            box-shadow: 0 0 0 2px rgba(77, 190, 238, 0.3);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .matlab-button {
+            background: linear-gradient(to right, var(--matlab-blue), var(--matlab-green));
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .matlab-button i {
+            margin-right: 8px;
+        }
+
+        .matlab-button.secondary {
+            background: rgba(26, 43, 64, 0.8);
+            border: 1px solid var(--matlab-blue);
+        }
+
+        .matlab-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 118, 168, 0.4);
+        }
+
+        .matlab-button.secondary:hover {
+            box-shadow: 0 5px 15px rgba(26, 43, 64, 0.4);
+        }
+
+        .visualization-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: auto 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 160px);
+        }
+
+        .chart-card {
+            background: rgba(10, 25, 41, 0.95);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--matlab-border);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 118, 168, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--matlab-accent);
+        }
+
+        .card-header i {
+            font-size: 20px;
+            color: var(--matlab-yellow);
+            background: rgba(237, 177, 32, 0.1);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .chart-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(26, 43, 64, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--matlab-border);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background: rgba(26, 43, 64, 0.8);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0;
+            background: linear-gradient(to right, var(--matlab-accent), var(--matlab-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            color: #8ca0c7;
+        }
+
+        .summary-card {
+            background: rgba(26, 43, 64, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid var(--matlab-border);
+        }
+
+        .summary-card p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: #b0c4e8;
+        }
+
+        .summary-card ul {
+            margin: 15px 0 15px 25px;
+            color: #b0c4e8;
+        }
+
+        .summary-card li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            color: #8ca0c7;
+            font-size: 14px;
+            background: rgba(10, 25, 41, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--matlab-border);
+        }
+
+        /* 动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .pulse {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--matlab-green);
+            margin-right: 8px;
+            box-shadow: 0 0 0 0 rgba(119, 172, 48, 0.7);
+            transform: scale(1);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(119, 172, 48, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(119, 172, 48, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(119, 172, 48, 0);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .visualization-panel {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="matlab-header">
+        <div class="logo-section">
+            <i class="fas fa-project-diagram matlab-icon floating"></i>
+            <div class="logo-text">
+                <h1>MATLAB数据分析仪表板</h1>
+                <p>高级数据可视化和分析平台</p>
+            </div>
+        </div>
+        <div class="author-section">
+            <i class="fas fa-user"></i>
+            <span>设计者: YCC | 版本 1.0</span>
+        </div>
+    </div>
+    
+    <div class="dashboard-container">
+        <!-- 左侧控制面板 -->
+        <div class="control-panel">
+            <div class="panel-title">
+                <i class="fas fa-sliders-h"></i>
+                <h2>数据分析控制面板</h2>
+            </div>
+            
+            <div class="control-group">
+                <div class="group-title">
+                    <i class="fas fa-wave-square"></i>
+                    <span>信号参数控制</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>采样频率</span>
+                        <span id="sampleRateValue">1000 Hz</span>
+                    </div>
+                    <input type="range" min="100" max="5000" value="1000" class="slider" id="sampleRate">
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>滤波强度</span>
+                        <span id="filterValue">65%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="65" class="slider" id="filterStrength">
+                </div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>振幅增益</span>
+                        <span id="amplitudeValue">1.2x</span>
+                    </div>
+                    <input type="range" min="0" max="30" value="12" class="slider" id="amplitudeGain">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <div class="group-title">
+                    <i class="fas fa-cog"></i>
+                    <span>分析设置</span>
+                </div>
+                <div class="input-group">
+                    <label>数据源选择</label>
+                    <select>
+                        <option>实时传感器数据流</option>
+                        <option>历史数据库</option>
+                        <option>CSV文件导入</option>
+                        <option>API数据接口</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>时间范围</label>
+                    <input type="text" value="2023年7月1日 - 2023年7月30日">
+                </div>
+                
+                <div class="input-group">
+                    <label>分析算法</label>
+                    <select>
+                        <option>快速傅里叶变换 (FFT)</option>
+                        <option>小波分析</option>
+                        <option>自回归模型</option>
+                        <option>机器学习预测</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <div class="group-title">
+                    <i class="fas fa-play-circle"></i>
+                    <span>操作控制</span>
+                </div>
+                <div class="button-group">
+                    <button class="matlab-button">
+                        <i class="fas fa-play"></i> 开始分析
+                    </button>
+                    <button class="matlab-button secondary">
+                        <i class="fas fa-sync-alt"></i> 重置参数
+                    </button>
+                </div>
+                <div class="button-group">
+                    <button class="matlab-button secondary">
+                        <i class="fas fa-download"></i> 导出数据
+                    </button>
+                    <button class="matlab-button secondary">
+                        <i class="fas fa-save"></i> 保存配置
+                    </button>
+                </div>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="label">CPU使用率</div>
+                    <div class="value">42%</div>
+                    <div class="label"><span class="pulse"></span> 运行正常</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">内存占用</div>
+                    <div class="value">1.8GB</div>
+                    <div class="label"><i class="fas fa-memory"></i> 64% 使用率</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">处理速度</div>
+                    <div class="value">1.5ms</div>
+                    <div class="label"><i class="fas fa-bolt"></i> 极速响应</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 右侧可视化面板 -->
+        <div class="visualization-panel">
+            <div class="chart-card full-width">
+                <div class="card-header">
+                    <h3>实时信号分析</h3>
+                    <i class="fas fa-wave-square"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="realtimeChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>频谱分析</h3>
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="spectrumChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>数据分布</h3>
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>三维曲面图</h3>
+                    <i class="fas fa-chart-area"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="surfaceChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>统计分析</h3>
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="summary-card">
+                    <p>基于当前参数的分析结果：</p>
+                    <ul>
+                        <li>信号信噪比: <strong>42.6 dB</strong></li>
+                        <li>主频率分量: <strong>120 Hz</strong></li>
+                        <li>谐波失真: <strong>2.8%</strong></li>
+                        <li>数据方差: <strong>0.045</strong></li>
+                    </ul>
+                    <p>分析结论: 信号质量良好，在120Hz处有显著峰值，建议检查设备共振情况。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 MATLAB数据分析仪表板 | 高级信号处理系统 | 设计者: Dr. Alan Turing</p>
+    </div>
+
+    <script>
+        // 初始化图表和交互
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置滑块事件监听器
+            const sliders = document.querySelectorAll('.slider');
+            sliders.forEach(slider => {
+                slider.addEventListener('input', function() {
+                    if (this.id === 'sampleRate') {
+                        document.getElementById('sampleRateValue').textContent = `${this.value} Hz`;
+                    } else if (this.id === 'filterStrength') {
+                        document.getElementById('filterValue').textContent = `${this.value}%`;
+                    } else if (this.id === 'amplitudeGain') {
+                        const value = (this.value / 10).toFixed(1);
+                        document.getElementById('amplitudeValue').textContent = `${value}x`;
+                    }
+                    updateCharts();
+                });
+            });
+            
+            // 绘制实时信号图
+            const realtimeCtx = document.getElementById('realtimeChart').getContext('2d');
+            const realtimeData = {
+                labels: Array.from({length: 200}, (_, i) => i),
+                datasets: [{
+                    label: '信号波形',
+                    data: Array.from({length: 200}, () => Math.random() * 2 - 1),
+                    borderColor: '#4dbeee',
+                    backgroundColor: 'rgba(77, 190, 238, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0
+                }]
+            };
+            
+            const realtimeChart = new Chart(realtimeCtx, {
+                type: 'line',
+                data: realtimeData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        zoom: {
+                            pan: {
+                                enabled: true,
+                                mode: 'x',
+                                modifierKey: 'ctrl'
+                            },
+                            zoom: {
+                                wheel: {
+                                    enabled: true
+                                },
+                                pinch: {
+                                    enabled: true
+                                },
+                                mode: 'x'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: -2,
+                            max: 2,
+                            grid: {
+                                color: 'rgba(42, 63, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#8ca0c7'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(42, 63, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#8ca0c7'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 绘制频谱图
+            const spectrumCtx = document.getElementById('spectrumChart').getContext('2d');
+            const spectrumData = {
+                labels: Array.from({length: 100}, (_, i) => i * 10),
+                datasets: [{
+                    label: '频谱密度',
+                    data: Array.from({length: 100}, (_, i) => {
+                        const x = i / 10;
+                        return Math.exp(-Math.pow(x-5, 2)) * 100 + 
+                               Math.exp(-Math.pow(x-12, 2)) * 60 + 
+                               Math.random() * 5;
+                    }),
+                    backgroundColor: 'rgba(119, 172, 48, 0.7)',
+                    borderColor: 'rgba(119, 172, 48, 1)',
+                    borderWidth: 1
+                }]
+            };
+            
+            new Chart(spectrumCtx, {
+                type: 'bar',
+                data: spectrumData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(42, 63, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#8ca0c7'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#8ca0c7'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 绘制分布图
+            const distCtx = document.getElementById('distributionChart').getContext('2d');
+            new Chart(distCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['正常数据', '警告数据', '错误数据', '缺失数据'],
+                    datasets: [{
+                        data: [75, 15, 7, 3],
+                        backgroundColor: [
+                            'rgba(77, 190, 238, 0.8)',
+                            'rgba(237, 177, 32, 0.8)',
+                            'rgba(217, 83, 25, 0.8)',
+                            'rgba(128, 128, 128, 0.8)'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#8ca0c7',
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 绘制3D曲面图（模拟）
+            const surfaceCtx = document.getElementById('surfaceChart').getContext('2d');
+            draw3DSurface(surfaceCtx);
+            
+            // 模拟实时数据更新
+            setInterval(() => {
+                const newData = [...realtimeChart.data.datasets[0].data.slice(1), 
+                                Math.sin(Date.now() / 200) * 1.5 + (Math.random() - 0.5) * 0.3];
+                realtimeChart.data.datasets[0].data = newData;
+                realtimeChart.update();
+            }, 50);
+            
+            // 更新所有图表
+            function updateCharts() {
+                // 这里可以添加根据滑块值更新图表的逻辑
+                realtimeChart.update();
+            }
+            
+            // 3D曲面图绘制函数
+            function draw3DSurface(ctx) {
+                const width = ctx.canvas.width;
+                const height = ctx.canvas.height;
+                
+                // 创建渐变背景
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, 'rgba(10, 25, 41, 0.9)');
+                gradient.addColorStop(1, 'rgba(26, 43, 64, 0.9)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                
+                // 绘制网格
+                ctx.strokeStyle = 'rgba(42, 63, 95, 0.5)';
+                ctx.lineWidth = 1;
+                
+                // 水平线
+                for (let y = 0; y <= height; y += 20) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                // 垂直线
+                for (let x = 0; x <= width; x += 20) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+                
+                // 绘制3D曲面（伪3D）
+                ctx.strokeStyle = 'rgba(77, 190, 238, 0.8)';
+                ctx.lineWidth = 2;
+                
+                for (let x = 0; x < width; x += 5) {
+                    const dx = x / width * Math.PI * 2;
+                    for (let y = 0; y < height; y += 5) {
+                        const dy = y / height * Math.PI * 2;
+                        const z = Math.sin(dx * 2) * Math.cos(dy * 3) * 20;
+                        
+                        const depth = 1 - (z + 20) / 40;
+                        const r = Math.floor(77 * depth);
+                        const g = Math.floor(190 * depth);
+                        const b = Math.floor(238 * depth);
+                        
+                        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${0.5 + depth * 0.3})`;
+                        ctx.fillRect(x, y - z, 4, 4);
+                    }
+                }
+                
+                // 添加标题
+                ctx.fillStyle = '#4dbeee';
+                ctx.font = '14px "Segoe UI", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('三维数据曲面图 (伪3D渲染)', width/2, 20);
+            }
+        });
+    </script>
+</body>
+</html>
