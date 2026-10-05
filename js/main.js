@@ -1035,7 +1035,211 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // ==========================================
-  // 17. 音乐播放器 + 网格可视化
+  // 17. 左侧悬浮飘动标签
+  // ==========================================
+  const tagsCanvas = document.getElementById('floatTagsCanvas');
+  if (tagsCanvas) {
+    const tagsCtx = tagsCanvas.getContext('2d');
+
+    // 关键词标签库（多分类）
+    const tagPool = [
+      // —— AI / 机器学习 ——
+      { text: 'AI', size: 'lg', category: 'ai' },
+      { text: '深度学习', size: 'lg', category: 'ai' },
+      { text: '大语言模型', size: 'md', category: 'ai' },
+      { text: '计算机视觉', size: 'md', category: 'ai' },
+      { text: '神经网络', size: 'sm', category: 'ai' },
+      { text: 'Transformer', size: 'sm', category: 'ai' },
+      { text: '扩散模型', size: 'sm', category: 'ai' },
+      { text: '强化学习', size: 'sm', category: 'ai' },
+      { text: 'Agent', size: 'md', category: 'ai' },
+      { text: '智能体', size: 'sm', category: 'ai' },
+      { text: '知识库', size: 'sm', category: 'ai' },
+      { text: 'RAG', size: 'sm', category: 'ai' },
+      { text: '多模态', size: 'sm', category: 'ai' },
+      { text: 'Prompt', size: 'sm', category: 'ai' },
+      { text: '模型微调', size: 'sm', category: 'ai' },
+
+      // —— 算法 / 数据 ——
+      { text: '算法设计', size: 'md', category: 'algo' },
+      { text: '分类', size: 'sm', category: 'algo' },
+      { text: '聚类', size: 'sm', category: 'algo' },
+      { text: '预测', size: 'sm', category: 'algo' },
+      { text: '规划', size: 'sm', category: 'algo' },
+      { text: '大数据', size: 'md', category: 'algo' },
+      { text: '数据挖掘', size: 'sm', category: 'algo' },
+      { text: '数据分析', size: 'sm', category: 'algo' },
+      { text: '可视化', size: 'sm', category: 'algo' },
+      { text: '爬虫', size: 'sm', category: 'algo' },
+      { text: '数据库', size: 'sm', category: 'algo' },
+      { text: '数据结构', size: 'sm', category: 'algo' },
+      { text: '数学建模', size: 'sm', category: 'algo' },
+      { text: '概率论', size: 'sm', category: 'algo' },
+      { text: '图论', size: 'sm', category: 'algo' },
+
+      // —— 开发 / 工程 ——
+      { text: '全栈开发', size: 'md', category: 'dev' },
+      { text: '前端', size: 'sm', category: 'dev' },
+      { text: '后端', size: 'sm', category: 'dev' },
+      { text: '交互设计', size: 'sm', category: 'dev' },
+      { text: '架构设计', size: 'sm', category: 'dev' },
+      { text: '微服务', size: 'sm', category: 'dev' },
+      { text: '云原生', size: 'sm', category: 'dev' },
+      { text: 'DevOps', size: 'sm', category: 'dev' },
+      { text: '开源', size: 'sm', category: 'dev' },
+      { text: '性能优化', size: 'sm', category: 'dev' },
+      { text: '工程化', size: 'sm', category: 'dev' },
+
+      // —— 应用场景 ——
+      { text: '智能监控', size: 'sm', category: 'app' },
+      { text: '健康管理', size: 'sm', category: 'app' },
+      { text: '远程控制', size: 'sm', category: 'app' },
+      { text: '自动驾驶', size: 'sm', category: 'app' },
+      { text: '智慧医疗', size: 'sm', category: 'app' },
+      { text: '金融科技', size: 'sm', category: 'app' },
+      { text: '推荐系统', size: 'sm', category: 'app' },
+      { text: '语义理解', size: 'sm', category: 'app' },
+      { text: '图像生成', size: 'sm', category: 'app' },
+      { text: '语音识别', size: 'sm', category: 'app' },
+
+      // —— 研究 / 论文 ——
+      { text: '论文研读', size: 'sm', category: 'research' },
+      { text: '创新实验', size: 'sm', category: 'research' },
+      { text: '前沿探索', size: 'sm', category: 'research' },
+      { text: '技术展望', size: 'sm', category: 'research' },
+      { text: '原型设计', size: 'sm', category: 'research' },
+      { text: '创意实现', size: 'md', category: 'research' },
+
+      // —— 生活 / 兴趣 ——
+      { text: '摄影', size: 'md', category: 'life' },
+      { text: '旅行', size: 'md', category: 'life' },
+      { text: '乒乓球', size: 'sm', category: 'life' },
+      { text: '羽毛球', size: 'sm', category: 'life' },
+      { text: '跑步', size: 'sm', category: 'life' },
+      { text: '游泳', size: 'sm', category: 'life' },
+      { text: '骑行', size: 'sm', category: 'life' },
+      { text: '登山', size: 'sm', category: 'life' },
+      { text: '电影', size: 'sm', category: 'life' },
+      { text: '音乐', size: 'sm', category: 'life' },
+      { text: '阅读', size: 'sm', category: 'life' },
+      { text: '写作', size: 'sm', category: 'life' },
+      { text: '烹饪', size: 'sm', category: 'life' },
+      { text: '手冲咖啡', size: 'sm', category: 'life' },
+      { text: '独立游戏', size: 'sm', category: 'life' },
+      { text: 'RPG', size: 'sm', category: 'life' },
+      { text: 'FPS', size: 'sm', category: 'life' },
+      { text: 'MOBA', size: 'sm', category: 'life' },
+      { text: '策略游戏', size: 'sm', category: 'life' },
+      { text: '沙盒游戏', size: 'sm', category: 'life' },
+    ];
+
+    // 分类对应颜色
+    const tagColors = {
+      ai:       { fill: 'rgba(139, 92, 246, 0.9)',  stroke: 'rgba(139, 92, 246, 0.4)' },
+      algo:     { fill: 'rgba(8, 145, 178, 0.9)',   stroke: 'rgba(8, 145, 178, 0.4)' },
+      dev:      { fill: 'rgba(219, 39, 119, 0.9)',  stroke: 'rgba(219, 39, 119, 0.4)' },
+      app:      { fill: 'rgba(5, 150, 105, 0.9)',   stroke: 'rgba(5, 150, 105, 0.4)' },
+      research: { fill: 'rgba(217, 119, 6, 0.9)',   stroke: 'rgba(217, 119, 6, 0.4)' },
+      life:     { fill: 'rgba(107, 114, 128, 0.9)', stroke: 'rgba(107, 114, 128, 0.4)' },
+    };
+
+    const sizeMap = { lg: 20, md: 15, sm: 12 };
+
+    let tags = [];
+    let tagW = 0, tagH = 0;
+
+    function initTags() {
+      const canvas = tagsCanvas;
+      tagW = canvas.offsetWidth;
+      tagH = canvas.offsetHeight;
+      canvas.width = tagW * window.devicePixelRatio;
+      canvas.height = tagH * window.devicePixelRatio;
+      tagsCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      // 随机选取 35-45 个标签
+      const count = Math.min(tagPool.length, 35 + Math.floor(Math.random() * 10));
+      const shuffled = [...tagPool].sort(() => Math.random() - 0.5).slice(0, count);
+
+      tags = shuffled.map((tag, i) => {
+        const fontSize = sizeMap[tag.size] || 14;
+        return {
+          text: tag.text,
+          category: tag.category,
+          fontSize: fontSize,
+          x: Math.random() * tagW,
+          y: Math.random() * tagH,
+          vx: (Math.random() - 0.5) * 0.3,  // 水平速度，很慢
+          vy: (Math.random() - 0.5) * 0.15, // 垂直速度，更慢
+          phase: Math.random() * Math.PI * 2, // 摆动相位
+          swaySpeed: 0.005 + Math.random() * 0.01, // 摆动速度
+          swayAmp: 8 + Math.random() * 15,       // 摆动幅度
+          opacity: 0.4 + Math.random() * 0.5,
+          rot: (Math.random() - 0.5) * 0.15, // 轻微倾斜
+        };
+      });
+    }
+
+    function drawTags() {
+      tagsCtx.clearRect(0, 0, tagW, tagH);
+
+      const time = performance.now() * 0.001;
+
+      tags.forEach(tag => {
+        // 基础移动
+        tag.x += tag.vx;
+        tag.y += tag.vy;
+
+        // 叠加正弦摆动（上下飘动）
+        const swayY = Math.sin(time * tag.swaySpeed * 60 + tag.phase) * tag.swayAmp * 0.3;
+        const swayX = Math.cos(time * tag.swaySpeed * 30 + tag.phase * 1.3) * tag.swayAmp * 0.2;
+
+        // 边界反弹
+        if (tag.x < 20 || tag.x > tagW - 20) tag.vx *= -1;
+        if (tag.y < 30 || tag.y > tagH - 30) tag.vy *= -1;
+
+        const drawX = tag.x + swayX;
+        const drawY = tag.y + swayY;
+
+        const colors = tagColors[tag.category] || tagColors.ai;
+
+        tagsCtx.save();
+        tagsCtx.translate(drawX, drawY);
+        tagsCtx.rotate(tag.rot);
+        tagsCtx.globalAlpha = tag.opacity;
+
+        // 文字描边（增加立体感）
+        tagsCtx.font = `600 ${tag.fontSize}px "Noto Sans SC", "ZCOOL XiaoWei", sans-serif`;
+        tagsCtx.textAlign = 'center';
+        tagsCtx.textBaseline = 'middle';
+
+        // 外发光
+        tagsCtx.shadowColor = colors.fill;
+        tagsCtx.shadowBlur = 8;
+
+        tagsCtx.fillStyle = colors.fill;
+        tagsCtx.fillText(tag.text, 0, 0);
+
+        tagsCtx.shadowBlur = 0;
+        tagsCtx.restore();
+      });
+
+      requestAnimationFrame(drawTags);
+    }
+
+    // 初始化
+    initTags();
+    drawTags();
+
+    // 窗口变化重排
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(initTags, 300);
+    });
+  }
+
+  // ==========================================
+  // 18. 音乐播放器 + 网格可视化
   // ==========================================
   const musicPlayer = document.getElementById('musicPlayer');
   const musicToggle = document.getElementById('musicToggle');

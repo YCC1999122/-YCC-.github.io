@@ -98,6 +98,25 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   pointer-events: none;
 }
 
+/* ===== 左侧悬浮标签 ===== */
+.float-tags-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+@media (max-width: 1024px) {
+  .float-tags-canvas {
+    width: 100%;
+    opacity: 0.3;
+  }
+}
+
 /* ===== 百叶窗（简化保留，轻量版） ===== */
 .shutter-overlay {
   position: fixed;
