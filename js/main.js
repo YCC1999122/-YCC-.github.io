@@ -5,6 +5,117 @@ document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   // ==========================================
+  // 0. 无限循环滚动（无缝循环）
+  // ==========================================
+  let originalHeight = 0;
+  let beforeCloneHeight = 0;
+  let isLoopEnabled = true;
+
+  function initInfiniteLoop() {
+    const main = document.querySelector('main') || document.body;
+
+    // 收集所有原始 section（先不考虑副本）
+    const sections = Array.from(document.querySelectorAll('.section'));
+
+    // 计算原始内容总高度
+    originalHeight = sections.reduce((sum, s) => sum + s.offsetHeight, 0);
+
+    // 创建前置副本（最后几页放在最前面，往上滚用）
+    const beforeFrag = document.createDocumentFragment();
+    sections.forEach(s => {
+      const clone = s.cloneNode(true);
+      clone.setAttribute('data-clone', 'before');
+      clone.id = s.id + '-clone-before';
+      beforeFrag.appendChild(clone);
+    });
+
+    // 创建后置副本（所有页放在最后面，往下滚用）
+    const afterFrag = document.createDocumentFragment();
+    sections.forEach(s => {
+      const clone = s.cloneNode(true);
+      clone.setAttribute('data-clone', 'after');
+      clone.id = s.id + '-clone-after';
+      afterFrag.appendChild(clone);
+    });
+
+    // 插入到 DOM
+    const firstSection = sections[0];
+    const lastSection = sections[sections.length - 1];
+
+    firstSection.parentNode.insertBefore(beforeFrag, firstSection);
+    lastSection.parentNode.insertBefore(afterFrag, lastSection.nextSibling);
+
+    // 计算前置副本高度（用第一个原始 section 的 offsetTop 更准确）
+    const realFirstSection = document.querySelector('.section:not([data-clone])');
+    if (realFirstSection) {
+      beforeCloneHeight = realFirstSection.offsetTop;
+    }
+
+    // 初始滚动到原始内容的顶部
+    window.scrollTo(0, beforeCloneHeight);
+  }
+
+  // 无缝跳转检测
+  let isJumping = false;
+  function checkLoopPosition() {
+    if (!isLoopEnabled || isJumping) return;
+
+    const scrollY = window.scrollY;
+    const viewportH = window.innerHeight;
+    const realSections = document.querySelectorAll('.section:not([data-clone])');
+    const firstReal = realSections[0];
+    const lastReal = realSections[realSections.length - 1];
+
+    if (!firstReal || !lastReal) return;
+
+    const realTop = firstReal.offsetTop;
+    const realBottom = lastReal.offsetTop + lastReal.offsetHeight;
+
+    // 往下滚：进入后置副本较深时，跳回前面对应位置
+    if (scrollY > realBottom + viewportH * 0.3) {
+      const offset = scrollY - realBottom;
+      isJumping = true;
+      window.scrollTo(0, realTop + offset - beforeCloneHeight);
+      requestAnimationFrame(() => {
+        isJumping = false;
+      });
+      return;
+    }
+
+    // 往上滚：进入前置副本较深时，跳到后面对应位置
+    if (scrollY < realTop - viewportH * 0.3) {
+      const offset = realTop - scrollY;
+      isJumping = true;
+      window.scrollTo(0, realBottom - offset + beforeCloneHeight);
+      requestAnimationFrame(() => {
+        isJumping = false;
+      });
+      return;
+    }
+  }
+
+  // 获取当前滚动在"原始内容"中的等效 Y 坐标（归一化到 0 ~ originalHeight）
+  function getAdjustedScrollY() {
+    const realSections = document.querySelectorAll('.section:not([data-clone])');
+    if (!realSections.length) return window.scrollY;
+    const realTop = realSections[0].offsetTop;
+    const realBottom = realSections[realSections.length - 1].offsetTop + realSections[realSections.length - 1].offsetHeight;
+    const realHeight = realBottom - realTop;
+
+    let y = window.scrollY - realTop;
+    // 归一化到原始内容范围内
+    while (y < 0) y += realHeight;
+    while (y >= realHeight) y -= realHeight;
+    return y;
+  }
+
+  // 滚动监听（用 rAF 节流）
+  function loopScrollChecker() {
+    checkLoopPosition();
+    requestAnimationFrame(loopScrollChecker);
+  }
+
+  // ==========================================
   // 1. 流星尾迹鼠标效果
   // ==========================================
   const trailCanvas = document.getElementById('trailCanvas');
@@ -128,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ==========================================
   const gridCanvas = document.getElementById('gridCanvas');
   const gridCtx = gridCanvas.getContext('2d');
-  const sectionList = document.querySelectorAll('.section');
+  const sectionList = document.querySelectorAll('.section:not([data-clone])');
 
   // 浅色主题各 section 的颜色
   const themeColors = [
@@ -213,17 +324,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 计算两个 section 之间的滚动进度 (0-1)
   function getScrollProgress() {
-    const scrollY = window.scrollY;
+    const scrollY = typeof getAdjustedScrollY === 'function' ? getAdjustedScrollY() : window.scrollY;
     const viewportH = window.innerHeight;
+
+    // 第一个原始 section 的 offsetTop 作为基准（用于将绝对坐标转为相对坐标）
+    const firstRealSection = sectionList[0];
+    const baseTop = firstRealSection ? firstRealSection.offsetTop : 0;
 
     // 找到当前跨越的边界
     for (let i = 0; i < sectionList.length - 1; i++) {
-      const sectionBottom = sectionList[i].offsetTop + sectionList[i].offsetHeight;
-      const nextSectionBottom = sectionList[i + 1].offsetTop + sectionList[i + 1].offsetHeight;
+      // 将 section 的绝对 offsetTop 转为相对于原始内容顶部的坐标
+      const sectionTopRel = sectionList[i].offsetTop - baseTop;
+      const sectionBottomRel = sectionTopRel + sectionList[i].offsetHeight;
+      const nextSectionTopRel = sectionList[i + 1].offsetTop - baseTop;
+      const nextSectionBottomRel = nextSectionTopRel + sectionList[i + 1].offsetHeight;
 
       // 当视窗中间在两个 section 之间时
       const midPoint = scrollY + viewportH * 0.5;
-      const boundary = sectionList[i + 1].offsetTop;
+      const boundary = nextSectionTopRel;
 
       // 以边界为中心，前后各半屏作为过渡区域
       const transitionZone = viewportH * 0.8;
@@ -244,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentIdx = 0;
     const midPoint = scrollY + viewportH * 0.5;
     for (let i = 0; i < sectionList.length; i++) {
-      const top = sectionList[i].offsetTop;
+      const top = sectionList[i].offsetTop - baseTop;
       const bottom = top + sectionList[i].offsetHeight;
       if (midPoint >= top && midPoint < bottom) {
         currentIdx = i;
@@ -515,11 +633,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 导航高亮
-    const scrollPos = window.scrollY + 120;
+    const adjustedY = typeof getAdjustedScrollY === 'function' ? getAdjustedScrollY() : window.scrollY;
+    const scrollPos = adjustedY + 120;
     let currentSection = '';
+    const baseTop = sectionList[0] ? sectionList[0].offsetTop : 0;
 
     sectionList.forEach(section => {
-      const top = section.offsetTop;
+      const top = section.offsetTop - baseTop;
       const height = section.offsetHeight;
       if (scrollPos >= top && scrollPos < top + height) {
         currentSection = section.getAttribute('id');
@@ -702,7 +822,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (backToTop) {
     backToTop.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const firstReal = document.querySelector('.section:not([data-clone])');
+      const targetTop = firstReal ? firstReal.offsetTop : 0;
+      window.scrollTo({ top: targetTop, behavior: 'smooth' });
     });
   }
 
@@ -738,7 +860,10 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
+      const href = this.getAttribute('href');
+      // 优先选择原始 section（非克隆副本）
+      const target = document.querySelector('.section:not([data-clone])' + href)
+                  || document.querySelector(href);
       if (target) {
         target.scrollIntoView({
           behavior: 'smooth',
@@ -1548,5 +1673,11 @@ document.addEventListener('DOMContentLoaded', function () {
     window.drawGrid = enhancedDrawGrid;
     requestAnimationFrame(enhancedDrawGrid);
   }
+
+  // 初始化循环滚动（等布局稳定后）
+  setTimeout(() => {
+    initInfiniteLoop();
+    loopScrollChecker();
+  }, 100);
 
 });
