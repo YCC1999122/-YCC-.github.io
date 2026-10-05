@@ -4,72 +4,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
-  // ==========================================
-  // 0. 向下无限循环滚动（仅内容页循环，第一页不动）
-  // ==========================================
-  let isJumping = false;
-  let loopContentHeight = 0; // 2-7页总高度
-  let contentStartTop = 0;   // 第2页顶部位置
-  let contentEndTop = 0;     // 第7页底部位置
-
-  function initInfiniteLoop() {
-    // 只循环内容页（.section，即第2-7页），Hero（第1页）不动
-    const contentSections = Array.from(document.querySelectorAll('.section:not([data-clone])'));
-    if (contentSections.length < 2) return;
-
-    const firstContent = contentSections[0]; // about (第2页)
-    const lastContent = contentSections[contentSections.length - 1]; // contact (第7页)
-
-    contentStartTop = firstContent.offsetTop;
-    contentEndTop = lastContent.offsetTop + lastContent.offsetHeight;
-    loopContentHeight = contentEndTop - contentStartTop;
-
-    // 创建后置副本（2-7页复制一份放到最后）
-    const afterFrag = document.createDocumentFragment();
-    contentSections.forEach(s => {
-      const clone = s.cloneNode(true);
-      clone.setAttribute('data-clone', 'after');
-      clone.id = s.id + '-clone-after';
-      afterFrag.appendChild(clone);
-    });
-
-    lastContent.parentNode.insertBefore(afterFrag, lastContent.nextSibling);
-  }
-
-  // 无缝跳转检测：只有向下循环
-  function checkLoopPosition() {
-    if (isJumping) return;
-
-    const scrollY = window.scrollY;
-    const viewportH = window.innerHeight;
-
-    // 往下滚：超过原始内容底部 + 半个视口时，跳回第2页对应位置
-    if (scrollY > contentEndTop + viewportH * 0.3) {
-      const offset = scrollY - contentEndTop;
-      isJumping = true;
-      window.scrollTo(0, contentStartTop + offset);
-      requestAnimationFrame(() => {
-        isJumping = false;
-      });
-    }
-    // 往上滚：不循环，自然停在顶部
-  }
-
-  // 获取归一化的滚动位置（用于网格翻砖/主题切换）
-  function getAdjustedScrollY() {
-    const scrollY = window.scrollY;
-    // 在 Hero 区域（第1页）直接返回
-    if (scrollY < contentStartTop) return scrollY;
-    // 在内容区域，归一化到 contentStartTop ~ contentEndTop 之间
-    let y = contentStartTop + ((scrollY - contentStartTop) % loopContentHeight);
-    return y;
-  }
-
-  // 滚动监听（用 rAF 节流）
-  function loopScrollChecker() {
-    checkLoopPosition();
-    requestAnimationFrame(loopScrollChecker);
-  }
 
   // ==========================================
   // 1. 流星尾迹鼠标效果
@@ -195,10 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ==========================================
   const gridCanvas = document.getElementById('gridCanvas');
   const gridCtx = gridCanvas.getContext('2d');
-  // 包含 hero + 所有内容 section（排除副本）
-  const heroSection = document.querySelector('.hero');
-  const contentSections = document.querySelectorAll('.section:not([data-clone])');
-  const sectionList = heroSection ? [heroSection, ...contentSections] : [...contentSections];
+  const sectionList = document.querySelectorAll('section');
 
   // 浅色主题各 section 的颜色
   const themeColors = [
@@ -283,24 +214,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 计算两个 section 之间的滚动进度 (0-1)
   function getScrollProgress() {
-    const scrollY = typeof getAdjustedScrollY === 'function' ? getAdjustedScrollY() : window.scrollY;
+    const scrollY = window.scrollY;
     const viewportH = window.innerHeight;
-
-    // 第一个原始 section 的 offsetTop 作为基准（用于将绝对坐标转为相对坐标）
-    const firstRealSection = sectionList[0];
-    const baseTop = firstRealSection ? firstRealSection.offsetTop : 0;
 
     // 找到当前跨越的边界
     for (let i = 0; i < sectionList.length - 1; i++) {
-      // 将 section 的绝对 offsetTop 转为相对于原始内容顶部的坐标
-      const sectionTopRel = sectionList[i].offsetTop - baseTop;
-      const sectionBottomRel = sectionTopRel + sectionList[i].offsetHeight;
-      const nextSectionTopRel = sectionList[i + 1].offsetTop - baseTop;
-      const nextSectionBottomRel = nextSectionTopRel + sectionList[i + 1].offsetHeight;
+      const sectionTop = sectionList[i].offsetTop;
+      const sectionBottom = sectionTop + sectionList[i].offsetHeight;
+      const nextSectionTop = sectionList[i + 1].offsetTop;
+      const nextSectionBottom = nextSectionTop + sectionList[i + 1].offsetHeight;
 
       // 当视窗中间在两个 section 之间时
       const midPoint = scrollY + viewportH * 0.5;
-      const boundary = nextSectionTopRel;
+      const boundary = nextSectionTop;
 
       // 以边界为中心，前后各半屏作为过渡区域
       const transitionZone = viewportH * 0.8;
@@ -321,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentIdx = 0;
     const midPoint = scrollY + viewportH * 0.5;
     for (let i = 0; i < sectionList.length; i++) {
-      const top = sectionList[i].offsetTop - baseTop;
+      const top = sectionList[i].offsetTop;
       const bottom = top + sectionList[i].offsetHeight;
       if (midPoint >= top && midPoint < bottom) {
         currentIdx = i;
@@ -592,13 +518,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 导航高亮
-    const adjustedY = typeof getAdjustedScrollY === 'function' ? getAdjustedScrollY() : window.scrollY;
-    const scrollPos = adjustedY + 120;
+    const scrollPos = window.scrollY + 120;
     let currentSection = '';
-    const baseTop = sectionList[0] ? sectionList[0].offsetTop : 0;
 
     sectionList.forEach(section => {
-      const top = section.offsetTop - baseTop;
+      const top = section.offsetTop;
       const height = section.offsetHeight;
       if (scrollPos >= top && scrollPos < top + height) {
         currentSection = section.getAttribute('id');
@@ -781,9 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (backToTop) {
     backToTop.addEventListener('click', () => {
-      const firstReal = document.querySelector('.section:not([data-clone])');
-      const targetTop = firstReal ? firstReal.offsetTop : 0;
-      window.scrollTo({ top: targetTop, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -820,9 +742,7 @@ document.addEventListener('DOMContentLoaded', function () {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
       const href = this.getAttribute('href');
-      // 优先选择原始 section（非克隆副本）
-      const target = document.querySelector('.section:not([data-clone])' + href)
-                  || document.querySelector(href);
+      const target = document.querySelector(href);
       if (target) {
         target.scrollIntoView({
           behavior: 'smooth',
@@ -1247,28 +1167,66 @@ document.addEventListener('DOMContentLoaded', function () {
       canvas.height = tagH * window.devicePixelRatio;
       tagsCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-      // 全部标签都显示，分布有层次：
-      // 左上区域 → 大标签（xl/lg）
-      // 中间区域 → 中标签（md）
-      // 右下区域 → 小标签（sm），密集
-      tags = tagPool.map((tag, i) => {
-        const fontSize = sizeMap[tag.size] || 16;
+      // 按尺寸从大到小排序，大的先放
+      const sortedTags = [...tagPool].sort((a, b) => {
+        const rank = { xl: 4, lg: 3, md: 2, sm: 1 };
+        return rank[b.size] - rank[a.size];
+      });
 
-        // 根据尺寸分配位置
-        let baseX, baseY;
+      const placed = []; // 已放置的标签 {x, y, w, h}
+
+      tags = sortedTags.map((tag) => {
+        const fontSize = sizeMap[tag.size] || 16;
+        // 估算标签尺寸（文字宽度）
+        const estWidth = fontSize * tag.text.length * 0.7 + 10;
+        const estHeight = fontSize * 1.4;
+
+        // 优先区域：大标签左上，小标签右下
+        let minX, maxX, minY, maxY;
         if (tag.size === 'xl') {
-          baseX = 0.05 + Math.random() * 0.35;
-          baseY = 0.03 + Math.random() * 0.25;
+          minX = 0.05; maxX = 0.4; minY = 0.03; maxY = 0.25;
         } else if (tag.size === 'lg') {
-          baseX = 0.05 + Math.random() * 0.55;
-          baseY = 0.05 + Math.random() * 0.45;
+          minX = 0.05; maxX = 0.55; minY = 0.05; maxY = 0.45;
         } else if (tag.size === 'md') {
-          baseX = 0.08 + Math.random() * 0.72;
-          baseY = 0.15 + Math.random() * 0.55;
+          minX = 0.08; maxX = 0.75; minY = 0.15; maxY = 0.7;
         } else {
-          baseX = 0.15 + Math.random() * 0.8;
-          baseY = 0.3 + Math.random() * 0.65;
+          minX = 0.15; maxX = 0.92; minY = 0.3; maxY = 0.9;
         }
+
+        // 尝试找一个不重叠的位置（最多 80 次）
+        let bestX = 0, bestY = 0, bestDist = -1;
+        for (let attempt = 0; attempt < 80; attempt++) {
+          const tryX = (minX + Math.random() * (maxX - minX)) * tagW;
+          const tryY = (minY + Math.random() * (maxY - minY)) * tagH;
+
+          // 检查与已放置标签的距离
+          let minDist = Infinity;
+          let overlaps = false;
+          for (const p of placed) {
+            const dx = tryX - p.x;
+            const dy = tryY - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const minSafeDist = (estWidth + p.w) * 0.5 + 8; // 安全距离
+            if (dist < minSafeDist) { overlaps = true; break; }
+            if (dist < minDist) minDist = dist;
+          }
+
+          if (!overlaps) {
+            bestX = tryX;
+            bestY = tryY;
+            break;
+          } else if (minDist > bestDist) {
+            bestDist = minDist;
+            bestX = tryX;
+            bestY = tryY;
+          }
+        }
+
+        // 记录放置位置
+        placed.push({ x: bestX, y: bestY, w: estWidth, h: estHeight });
+
+        const baseX = bestX / tagW;
+        const baseY = bestY / tagH;
 
         return {
           text: tag.text,
@@ -1277,15 +1235,19 @@ document.addEventListener('DOMContentLoaded', function () {
           size: tag.size,
           baseX: baseX,
           baseY: baseY,
-          x: baseX * tagW,
-          y: baseY * tagH,
-          vx: (Math.random() - 0.5) * (tag.size === 'xl' ? 0.08 : tag.size === 'lg' ? 0.12 : tag.size === 'md' ? 0.18 : 0.25),
-          vy: (Math.random() - 0.5) * (tag.size === 'xl' ? 0.05 : tag.size === 'lg' ? 0.08 : tag.size === 'md' ? 0.1 : 0.15),
+          x: bestX,
+          y: bestY,
+          // 飘动速度：大的慢，小的稍快
+          vx: (Math.random() - 0.5) * (tag.size === 'xl' ? 0.1 : tag.size === 'lg' ? 0.15 : tag.size === 'md' ? 0.22 : 0.3),
+          vy: (Math.random() - 0.5) * (tag.size === 'xl' ? 0.06 : tag.size === 'lg' ? 0.1 : tag.size === 'md' ? 0.14 : 0.2),
           phase: Math.random() * Math.PI * 2,
-          swaySpeed: 0.003 + Math.random() * 0.006,
-          swayAmp: tag.size === 'xl' ? 6 : tag.size === 'lg' ? 8 : tag.size === 'md' ? 10 : 8,
-          baseOpacity: tag.size === 'xl' ? 0.85 : tag.size === 'lg' ? 0.72 : tag.size === 'md' ? 0.58 : 0.4,
-          rot: (Math.random() - 0.5) * 0.08,
+          swaySpeed: 0.002 + Math.random() * 0.005,
+          swayAmp: tag.size === 'xl' ? 5 : tag.size === 'lg' ? 7 : tag.size === 'md' ? 9 : 7,
+          baseOpacity: tag.size === 'xl' ? 0.85 : tag.size === 'lg' ? 0.72 : tag.size === 'md' ? 0.58 : 0.42,
+          rot: (Math.random() - 0.5) * 0.06,
+          // 估算尺寸（碰撞用）
+          estW: estWidth,
+          estH: estHeight,
         };
       });
     }
@@ -1333,6 +1295,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const time = performance.now() * 0.001;
       const state = window.scrollThemeState || { fromIdx: 0, toIdx: 0, progress: 0 };
+
+      // 碰撞推开（每帧做轻度分离，防止标签重叠）
+      for (let i = 0; i < tags.length; i++) {
+        for (let j = i + 1; j < tags.length; j++) {
+          const a = tags[i], b = tags[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const minDist = (a.estW + b.estW) * 0.45 + 4; // 最小安全距离
+
+          if (dist < minDist && dist > 0.1) {
+            const overlap = (minDist - dist) * 0.15; // 推开力度
+            const nx = dx / dist;
+            const ny = dy / dist;
+            // 大标签推的力度小，小标签被推开
+            const ratioA = b.fontSize / (a.fontSize + b.fontSize);
+            const ratioB = a.fontSize / (a.fontSize + b.fontSize);
+            a.x -= nx * overlap * ratioA;
+            a.y -= ny * overlap * ratioA;
+            b.x += nx * overlap * ratioB;
+            b.y += ny * overlap * ratioB;
+            // 交换一点速度方向，增加动感
+            const tempVx = a.vx * 0.3;
+            a.vx = b.vx * 0.3;
+            b.vx = tempVx;
+          }
+        }
+      }
 
       tags.forEach(tag => {
         tag.x += tag.vx;
@@ -1633,10 +1623,5 @@ document.addEventListener('DOMContentLoaded', function () {
     requestAnimationFrame(enhancedDrawGrid);
   }
 
-  // 初始化循环滚动（等布局稳定后）
-  setTimeout(() => {
-    initInfiniteLoop();
-    loopScrollChecker();
-  }, 100);
 
 });
