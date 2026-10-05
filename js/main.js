@@ -5,107 +5,63 @@ document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   // ==========================================
-  // 0. 无限循环滚动（无缝循环）
+  // 0. 向下无限循环滚动（仅内容页循环，第一页不动）
   // ==========================================
-  let originalHeight = 0;
-  let beforeCloneHeight = 0;
-  let isLoopEnabled = true;
+  let isJumping = false;
+  let loopContentHeight = 0; // 2-7页总高度
+  let contentStartTop = 0;   // 第2页顶部位置
+  let contentEndTop = 0;     // 第7页底部位置
 
   function initInfiniteLoop() {
-    const main = document.querySelector('main') || document.body;
+    // 只循环内容页（.section，即第2-7页），Hero（第1页）不动
+    const contentSections = Array.from(document.querySelectorAll('.section:not([data-clone])'));
+    if (contentSections.length < 2) return;
 
-    // 收集所有原始 section（先不考虑副本）
-    const sections = Array.from(document.querySelectorAll('.section'));
+    const firstContent = contentSections[0]; // about (第2页)
+    const lastContent = contentSections[contentSections.length - 1]; // contact (第7页)
 
-    // 计算原始内容总高度
-    originalHeight = sections.reduce((sum, s) => sum + s.offsetHeight, 0);
+    contentStartTop = firstContent.offsetTop;
+    contentEndTop = lastContent.offsetTop + lastContent.offsetHeight;
+    loopContentHeight = contentEndTop - contentStartTop;
 
-    // 创建前置副本（最后几页放在最前面，往上滚用）
-    const beforeFrag = document.createDocumentFragment();
-    sections.forEach(s => {
-      const clone = s.cloneNode(true);
-      clone.setAttribute('data-clone', 'before');
-      clone.id = s.id + '-clone-before';
-      beforeFrag.appendChild(clone);
-    });
-
-    // 创建后置副本（所有页放在最后面，往下滚用）
+    // 创建后置副本（2-7页复制一份放到最后）
     const afterFrag = document.createDocumentFragment();
-    sections.forEach(s => {
+    contentSections.forEach(s => {
       const clone = s.cloneNode(true);
       clone.setAttribute('data-clone', 'after');
       clone.id = s.id + '-clone-after';
       afterFrag.appendChild(clone);
     });
 
-    // 插入到 DOM
-    const firstSection = sections[0];
-    const lastSection = sections[sections.length - 1];
-
-    firstSection.parentNode.insertBefore(beforeFrag, firstSection);
-    lastSection.parentNode.insertBefore(afterFrag, lastSection.nextSibling);
-
-    // 计算前置副本高度（用第一个原始 section 的 offsetTop 更准确）
-    const realFirstSection = document.querySelector('.section:not([data-clone])');
-    if (realFirstSection) {
-      beforeCloneHeight = realFirstSection.offsetTop;
-    }
-
-    // 初始滚动到原始内容的顶部
-    window.scrollTo(0, beforeCloneHeight);
+    lastContent.parentNode.insertBefore(afterFrag, lastContent.nextSibling);
   }
 
-  // 无缝跳转检测
-  let isJumping = false;
+  // 无缝跳转检测：只有向下循环
   function checkLoopPosition() {
-    if (!isLoopEnabled || isJumping) return;
+    if (isJumping) return;
 
     const scrollY = window.scrollY;
     const viewportH = window.innerHeight;
-    const realSections = document.querySelectorAll('.section:not([data-clone])');
-    const firstReal = realSections[0];
-    const lastReal = realSections[realSections.length - 1];
 
-    if (!firstReal || !lastReal) return;
-
-    const realTop = firstReal.offsetTop;
-    const realBottom = lastReal.offsetTop + lastReal.offsetHeight;
-
-    // 往下滚：进入后置副本较深时，跳回前面对应位置
-    if (scrollY > realBottom + viewportH * 0.3) {
-      const offset = scrollY - realBottom;
+    // 往下滚：超过原始内容底部 + 半个视口时，跳回第2页对应位置
+    if (scrollY > contentEndTop + viewportH * 0.3) {
+      const offset = scrollY - contentEndTop;
       isJumping = true;
-      window.scrollTo(0, realTop + offset - beforeCloneHeight);
+      window.scrollTo(0, contentStartTop + offset);
       requestAnimationFrame(() => {
         isJumping = false;
       });
-      return;
     }
-
-    // 往上滚：进入前置副本较深时，跳到后面对应位置
-    if (scrollY < realTop - viewportH * 0.3) {
-      const offset = realTop - scrollY;
-      isJumping = true;
-      window.scrollTo(0, realBottom - offset + beforeCloneHeight);
-      requestAnimationFrame(() => {
-        isJumping = false;
-      });
-      return;
-    }
+    // 往上滚：不循环，自然停在顶部
   }
 
-  // 获取当前滚动在"原始内容"中的等效 Y 坐标（归一化到 0 ~ originalHeight）
+  // 获取归一化的滚动位置（用于网格翻砖/主题切换）
   function getAdjustedScrollY() {
-    const realSections = document.querySelectorAll('.section:not([data-clone])');
-    if (!realSections.length) return window.scrollY;
-    const realTop = realSections[0].offsetTop;
-    const realBottom = realSections[realSections.length - 1].offsetTop + realSections[realSections.length - 1].offsetHeight;
-    const realHeight = realBottom - realTop;
-
-    let y = window.scrollY - realTop;
-    // 归一化到原始内容范围内
-    while (y < 0) y += realHeight;
-    while (y >= realHeight) y -= realHeight;
+    const scrollY = window.scrollY;
+    // 在 Hero 区域（第1页）直接返回
+    if (scrollY < contentStartTop) return scrollY;
+    // 在内容区域，归一化到 contentStartTop ~ contentEndTop 之间
+    let y = contentStartTop + ((scrollY - contentStartTop) % loopContentHeight);
     return y;
   }
 
@@ -239,7 +195,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // ==========================================
   const gridCanvas = document.getElementById('gridCanvas');
   const gridCtx = gridCanvas.getContext('2d');
-  const sectionList = document.querySelectorAll('.section:not([data-clone])');
+  // 包含 hero + 所有内容 section（排除副本）
+  const heroSection = document.querySelector('.hero');
+  const contentSections = document.querySelectorAll('.section:not([data-clone])');
+  const sectionList = heroSection ? [heroSection, ...contentSections] : [...contentSections];
 
   // 浅色主题各 section 的颜色
   const themeColors = [
