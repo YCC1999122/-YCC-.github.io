@@ -2275,6 +2275,151 @@ body {
   letter-spacing: 3px !important;
 }
 
+/* ===== 咕咕嘎嘎小企鹅 ===== */
+.gugu-gaga {
+  position: fixed;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.gugu-gaga:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+
+.gugu-body {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  border: 3px solid #fff;
+  animation: gugu-breathe 2.5s ease-in-out infinite;
+}
+
+.gugu-body img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gugu-gaga.walking .gugu-body {
+  animation: gugu-walk 0.4s ease-in-out infinite;
+}
+
+.gugu-gaga.jumping .gugu-body {
+  animation: gugu-jump 0.5s ease-out;
+}
+
+@keyframes gugu-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@keyframes gugu-walk {
+  0%, 100% { transform: scale(1, 1) translateY(0); }
+  25% { transform: scale(1.02, 0.98) translateY(-3px); }
+  50% { transform: scale(0.98, 1.02) translateY(0); }
+  75% { transform: scale(1.02, 0.98) translateY(-3px); }
+}
+
+@keyframes gugu-jump {
+  0% { transform: scale(1, 1) translateY(0); }
+  30% { transform: scale(0.9, 1.15) translateY(-50px); }
+  50% { transform: scale(1.1, 0.9) translateY(-50px); }
+  70% { transform: scale(0.95, 1.05) translateY(-20px); }
+  100% { transform: scale(1, 1) translateY(0); }
+}
+
+/* 对话气泡 */
+.gugu-bubble {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #fff;
+  border-radius: 18px;
+  padding: 8px 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  margin-bottom: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.gugu-bubble.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.gugu-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: #fff;
+}
+
+.gugu-bubble-text {
+  font-family: var(--font-cn);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 1px;
+}
+
+/* 阴影 */
+.gugu-gaga::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  filter: blur(4px);
+  z-index: -1;
+  animation: gugu-shadow 2.5s ease-in-out infinite;
+}
+
+@keyframes gugu-shadow {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+  50% { transform: translateX(-50%) scale(0.9); opacity: 0.2; }
+}
+
+.gugu-gaga.jumping::before {
+  animation: gugu-shadow-jump 0.5s ease-out;
+}
+
+@keyframes gugu-shadow-jump {
+  0% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+  50% { transform: translateX(-50%) scale(0.5); opacity: 0.1; }
+  100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+}
+
+@media (max-width: 768px) {
+  .gugu-body {
+    width: 80px;
+    height: 80px;
+  }
+
+  .gugu-bubble-text {
+    font-size: 13px;
+  }
+}
+
 /* ===== 回到顶部 ===== */
 .back-to-top {
   position: fixed;

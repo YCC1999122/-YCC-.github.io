@@ -1623,5 +1623,215 @@ document.addEventListener('DOMContentLoaded', function () {
     requestAnimationFrame(enhancedDrawGrid);
   }
 
+  // ==========================================
+  // 19. 咕咕嘎嘎小企鹅
+  // ==========================================
+  const gugu = document.getElementById('guguGaga');
+  const guguBody = document.getElementById('guguBody');
+  const guguBubble = document.getElementById('guguBubble');
+  const guguBubbleText = guguBubble?.querySelector('.gugu-bubble-text');
+
+  if (gugu && guguBody) {
+    // 咕咕嘎嘎语录（全是咕呱相关）
+    const guguQuotes = [
+      '咕呱~',
+      '咕咕嘎嘎！',
+      '咕咕~咕呱~',
+      '嘎嘎咕！',
+      '咕...咕...',
+      '嘎嘎嘎~',
+      '咕咕咕！',
+      '呱~',
+      '咕咕嘎嘎咕咕~',
+      '咕呱咕呱！',
+    ];
+
+    // 音频上下文（用 Web Audio 合成企鹅叫声）
+    let guguAudioCtx = null;
+
+    function initGuguAudio() {
+      if (guguAudioCtx) return;
+      try {
+        guguAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        console.warn('Audio not supported');
+      }
+    }
+
+    // 合成"咕呱"声（用振荡器模拟）
+    function playGuguSound(type) {
+      if (!guguAudioCtx) initGuguAudio();
+      if (!guguAudioCtx) return;
+      if (guguAudioCtx.state === 'suspended') guguAudioCtx.resume();
+
+      const now = guguAudioCtx.currentTime;
+      const osc = guguAudioCtx.createOscillator();
+      const gain = guguAudioCtx.createGain();
+
+      osc.connect(gain);
+      gain.connect(guguAudioCtx.destination);
+
+      // 不同的叫声类型
+      if (type === 'gu') {
+        // 咕：低频短促
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(420, now);
+        osc.frequency.exponentialRampToValueAtTime(380, now + 0.1);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.25, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      } else if (type === 'ga') {
+        // 嘎：高频稍长
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(580, now);
+        osc.frequency.exponentialRampToValueAtTime(520, now + 0.12);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.22, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } else if (type === 'jump') {
+        // 跳跃：上扬音
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(700, now + 0.15);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.2, now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      } else {
+        // 完整的咕咕嘎嘎
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(420, now);
+        osc.frequency.setValueAtTime(400, now + 0.1);
+        osc.frequency.setValueAtTime(560, now + 0.2);
+        osc.frequency.setValueAtTime(520, now + 0.35);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.25, now + 0.02);
+        gain.gain.setValueAtTime(0.2, now + 0.15);
+        gain.gain.setValueAtTime(0.22, now + 0.22);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.start(now);
+        osc.stop(now + 0.55);
+      }
+    }
+
+    // 显示对话气泡
+    let bubbleTimer = null;
+    function showBubble(text) {
+      if (!guguBubbleText || !guguBubble) return;
+      guguBubbleText.textContent = text;
+      guguBubble.classList.add('show');
+      clearTimeout(bubbleTimer);
+      bubbleTimer = setTimeout(() => {
+        guguBubble.classList.remove('show');
+      }, 2000);
+    }
+
+    // 走动逻辑：在屏幕底部来回走
+    let guguX = window.innerWidth / 2;
+    let guguDir = 1; // 1 右，-1 左
+    let guguSpeed = 0.8;
+    let isWalking = true;
+    let walkTimer = null;
+
+    function updateGuguPosition() {
+      if (!isWalking) {
+        walkTimer = requestAnimationFrame(updateGuguPosition);
+        return;
+      }
+
+      guguX += guguSpeed * guguDir;
+
+      // 边界检测（留 80px 边距）
+      const margin = 80;
+      if (guguX > window.innerWidth - margin) {
+        guguDir = -1;
+        guguBody.style.transform = 'scaleX(-1)'; // 转身
+      } else if (guguX < margin) {
+        guguDir = 1;
+        guguBody.style.transform = 'scaleX(1)';
+      }
+
+      gugu.style.left = guguX + 'px';
+      gugu.style.transform = 'translateX(-50%)';
+
+      // 随机跳跃（1% 概率每帧）
+      if (Math.random() < 0.003) {
+        guguJump();
+      }
+
+      // 随机说话（0.5% 概率每帧）
+      if (Math.random() < 0.002) {
+        const quote = guguQuotes[Math.floor(Math.random() * guguQuotes.length)];
+        showBubble(quote);
+        const soundType = Math.random() > 0.5 ? 'gu' : 'ga';
+        playGuguSound(soundType);
+      }
+
+      walkTimer = requestAnimationFrame(updateGuguPosition);
+    }
+
+    // 跳跃
+    function guguJump() {
+      if (gugu.classList.contains('jumping')) return;
+      gugu.classList.add('jumping');
+      playGuguSound('jump');
+      setTimeout(() => {
+        gugu.classList.remove('jumping');
+      }, 500);
+    }
+
+    // 点击互动
+    gugu.addEventListener('click', () => {
+      initGuguAudio();
+
+      // 随机反应
+      const reaction = Math.random();
+
+      if (reaction < 0.4) {
+        // 跳跃 + 叫
+        guguJump();
+        setTimeout(() => {
+          const quote = guguQuotes[Math.floor(Math.random() * guguQuotes.length)];
+          showBubble(quote);
+          playGuguSound('full');
+        }, 200);
+      } else if (reaction < 0.7) {
+        // 说话
+        const quote = guguQuotes[Math.floor(Math.random() * guguQuotes.length)];
+        showBubble(quote);
+        playGuguSound(Math.random() > 0.5 ? 'gu' : 'ga');
+      } else {
+        // 转身
+        guguDir *= -1;
+        guguBody.style.transform = guguDir > 0 ? 'scaleX(1)' : 'scaleX(-1)';
+        showBubble('咕~');
+        playGuguSound('gu');
+      }
+    });
+
+    // 悬停反应
+    gugu.addEventListener('mouseenter', () => {
+      showBubble('咕呱？');
+    });
+
+    // 窗口大小变化时限制范围
+    window.addEventListener('resize', () => {
+      const margin = 80;
+      if (guguX > window.innerWidth - margin) guguX = window.innerWidth - margin;
+      if (guguX < margin) guguX = margin;
+    });
+
+    // 开始走动（延迟一下，等页面加载完）
+    setTimeout(() => {
+      gugu.classList.add('walking');
+      updateGuguPosition();
+    }, 1000);
+  }
+
 
 });
