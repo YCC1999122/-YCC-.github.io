@@ -1041,109 +1041,116 @@ document.addEventListener('DOMContentLoaded', function () {
   if (tagsCanvas) {
     const tagsCtx = tagsCanvas.getContext('2d');
 
-    // 关键词标签库（多分类）
+    // 关键词标签库（6 大类，80+ 词）
     const tagPool = [
       // —— AI / 机器学习 ——
-      { text: 'AI', size: 'lg', category: 'ai' },
-      { text: '深度学习', size: 'lg', category: 'ai' },
-      { text: '大语言模型', size: 'md', category: 'ai' },
-      { text: '计算机视觉', size: 'md', category: 'ai' },
-      { text: '神经网络', size: 'sm', category: 'ai' },
-      { text: 'Transformer', size: 'sm', category: 'ai' },
-      { text: '扩散模型', size: 'sm', category: 'ai' },
-      { text: '强化学习', size: 'sm', category: 'ai' },
-      { text: 'Agent', size: 'md', category: 'ai' },
-      { text: '智能体', size: 'sm', category: 'ai' },
-      { text: '知识库', size: 'sm', category: 'ai' },
-      { text: 'RAG', size: 'sm', category: 'ai' },
-      { text: '多模态', size: 'sm', category: 'ai' },
-      { text: 'Prompt', size: 'sm', category: 'ai' },
+      { text: 'AI', size: 'xl', category: 'ai' },
+      { text: '深度学习', size: 'xl', category: 'ai' },
+      { text: '大语言模型', size: 'lg', category: 'ai' },
+      { text: '计算机视觉', size: 'lg', category: 'ai' },
+      { text: '神经网络', size: 'md', category: 'ai' },
+      { text: 'Transformer', size: 'md', category: 'ai' },
+      { text: '扩散模型', size: 'md', category: 'ai' },
+      { text: '强化学习', size: 'md', category: 'ai' },
+      { text: 'Agent 智能体', size: 'lg', category: 'ai' },
+      { text: '知识库', size: 'md', category: 'ai' },
+      { text: 'RAG 检索', size: 'md', category: 'ai' },
+      { text: '多模态', size: 'md', category: 'ai' },
+      { text: 'Prompt 工程', size: 'md', category: 'ai' },
       { text: '模型微调', size: 'sm', category: 'ai' },
+      { text: '语义理解', size: 'sm', category: 'ai' },
+      { text: '图像生成', size: 'sm', category: 'ai' },
+      { text: '语音识别', size: 'sm', category: 'ai' },
+      { text: '机器翻译', size: 'sm', category: 'ai' },
+      { text: '风格迁移', size: 'sm', category: 'ai' },
+      { text: '目标检测', size: 'sm', category: 'ai' },
 
       // —— 算法 / 数据 ——
-      { text: '算法设计', size: 'md', category: 'algo' },
+      { text: '算法设计', size: 'lg', category: 'algo' },
       { text: '分类', size: 'sm', category: 'algo' },
       { text: '聚类', size: 'sm', category: 'algo' },
       { text: '预测', size: 'sm', category: 'algo' },
       { text: '规划', size: 'sm', category: 'algo' },
-      { text: '大数据', size: 'md', category: 'algo' },
-      { text: '数据挖掘', size: 'sm', category: 'algo' },
-      { text: '数据分析', size: 'sm', category: 'algo' },
-      { text: '可视化', size: 'sm', category: 'algo' },
+      { text: '大数据', size: 'lg', category: 'algo' },
+      { text: '数据挖掘', size: 'md', category: 'algo' },
+      { text: '数据分析', size: 'md', category: 'algo' },
+      { text: '可视化', size: 'md', category: 'algo' },
       { text: '爬虫', size: 'sm', category: 'algo' },
       { text: '数据库', size: 'sm', category: 'algo' },
       { text: '数据结构', size: 'sm', category: 'algo' },
-      { text: '数学建模', size: 'sm', category: 'algo' },
+      { text: '数学建模', size: 'md', category: 'algo' },
       { text: '概率论', size: 'sm', category: 'algo' },
       { text: '图论', size: 'sm', category: 'algo' },
+      { text: '运筹优化', size: 'sm', category: 'algo' },
+      { text: '统计学习', size: 'sm', category: 'algo' },
+      { text: '特征工程', size: 'sm', category: 'algo' },
 
       // —— 开发 / 工程 ——
-      { text: '全栈开发', size: 'md', category: 'dev' },
-      { text: '前端', size: 'sm', category: 'dev' },
-      { text: '后端', size: 'sm', category: 'dev' },
-      { text: '交互设计', size: 'sm', category: 'dev' },
-      { text: '架构设计', size: 'sm', category: 'dev' },
+      { text: '全栈开发', size: 'lg', category: 'dev' },
+      { text: '前端', size: 'md', category: 'dev' },
+      { text: '后端', size: 'md', category: 'dev' },
+      { text: '交互设计', size: 'md', category: 'dev' },
+      { text: '架构设计', size: 'md', category: 'dev' },
       { text: '微服务', size: 'sm', category: 'dev' },
       { text: '云原生', size: 'sm', category: 'dev' },
       { text: 'DevOps', size: 'sm', category: 'dev' },
       { text: '开源', size: 'sm', category: 'dev' },
       { text: '性能优化', size: 'sm', category: 'dev' },
       { text: '工程化', size: 'sm', category: 'dev' },
+      { text: 'API 设计', size: 'sm', category: 'dev' },
+      { text: '测试驱动', size: 'sm', category: 'dev' },
+      { text: '代码重构', size: 'sm', category: 'dev' },
 
       // —— 应用场景 ——
-      { text: '智能监控', size: 'sm', category: 'app' },
-      { text: '健康管理', size: 'sm', category: 'app' },
+      { text: '智能监控', size: 'md', category: 'app' },
+      { text: '健康管理', size: 'md', category: 'app' },
       { text: '远程控制', size: 'sm', category: 'app' },
-      { text: '自动驾驶', size: 'sm', category: 'app' },
-      { text: '智慧医疗', size: 'sm', category: 'app' },
-      { text: '金融科技', size: 'sm', category: 'app' },
+      { text: '自动驾驶', size: 'md', category: 'app' },
+      { text: '智慧医疗', size: 'md', category: 'app' },
+      { text: '金融科技', size: 'md', category: 'app' },
       { text: '推荐系统', size: 'sm', category: 'app' },
-      { text: '语义理解', size: 'sm', category: 'app' },
-      { text: '图像生成', size: 'sm', category: 'app' },
-      { text: '语音识别', size: 'sm', category: 'app' },
+      { text: '智能客服', size: 'sm', category: 'app' },
+      { text: '工业质检', size: 'sm', category: 'app' },
+      { text: '智慧城市', size: 'sm', category: 'app' },
 
-      // —— 研究 / 论文 ——
-      { text: '论文研读', size: 'sm', category: 'research' },
-      { text: '创新实验', size: 'sm', category: 'research' },
-      { text: '前沿探索', size: 'sm', category: 'research' },
+      // —— 研究 / 创意 ——
+      { text: '论文研读', size: 'md', category: 'research' },
+      { text: '创新实验', size: 'md', category: 'research' },
+      { text: '前沿探索', size: 'md', category: 'research' },
       { text: '技术展望', size: 'sm', category: 'research' },
       { text: '原型设计', size: 'sm', category: 'research' },
-      { text: '创意实现', size: 'md', category: 'research' },
+      { text: '创意实现', size: 'lg', category: 'research' },
+      { text: '开源贡献', size: 'sm', category: 'research' },
+      { text: '技术写作', size: 'sm', category: 'research' },
+      { text: '知识沉淀', size: 'sm', category: 'research' },
 
       // —— 生活 / 兴趣 ——
-      { text: '摄影', size: 'md', category: 'life' },
-      { text: '旅行', size: 'md', category: 'life' },
-      { text: '乒乓球', size: 'sm', category: 'life' },
-      { text: '羽毛球', size: 'sm', category: 'life' },
-      { text: '跑步', size: 'sm', category: 'life' },
+      { text: '摄影', size: 'lg', category: 'life' },
+      { text: '旅行', size: 'lg', category: 'life' },
+      { text: '乒乓球', size: 'md', category: 'life' },
+      { text: '羽毛球', size: 'md', category: 'life' },
+      { text: '跑步', size: 'md', category: 'life' },
       { text: '游泳', size: 'sm', category: 'life' },
       { text: '骑行', size: 'sm', category: 'life' },
       { text: '登山', size: 'sm', category: 'life' },
-      { text: '电影', size: 'sm', category: 'life' },
-      { text: '音乐', size: 'sm', category: 'life' },
-      { text: '阅读', size: 'sm', category: 'life' },
+      { text: '电影', size: 'md', category: 'life' },
+      { text: '音乐', size: 'md', category: 'life' },
+      { text: '阅读', size: 'md', category: 'life' },
       { text: '写作', size: 'sm', category: 'life' },
       { text: '烹饪', size: 'sm', category: 'life' },
       { text: '手冲咖啡', size: 'sm', category: 'life' },
-      { text: '独立游戏', size: 'sm', category: 'life' },
+      { text: '独立游戏', size: 'md', category: 'life' },
       { text: 'RPG', size: 'sm', category: 'life' },
       { text: 'FPS', size: 'sm', category: 'life' },
       { text: 'MOBA', size: 'sm', category: 'life' },
       { text: '策略游戏', size: 'sm', category: 'life' },
       { text: '沙盒游戏', size: 'sm', category: 'life' },
+      { text: '开放世界', size: 'sm', category: 'life' },
+      { text: '科幻作品', size: 'sm', category: 'life' },
     ];
 
-    // 分类对应颜色
-    const tagColors = {
-      ai:       { fill: 'rgba(139, 92, 246, 0.9)',  stroke: 'rgba(139, 92, 246, 0.4)' },
-      algo:     { fill: 'rgba(8, 145, 178, 0.9)',   stroke: 'rgba(8, 145, 178, 0.4)' },
-      dev:      { fill: 'rgba(219, 39, 119, 0.9)',  stroke: 'rgba(219, 39, 119, 0.4)' },
-      app:      { fill: 'rgba(5, 150, 105, 0.9)',   stroke: 'rgba(5, 150, 105, 0.4)' },
-      research: { fill: 'rgba(217, 119, 6, 0.9)',   stroke: 'rgba(217, 119, 6, 0.4)' },
-      life:     { fill: 'rgba(107, 114, 128, 0.9)', stroke: 'rgba(107, 114, 128, 0.4)' },
-    };
-
-    const sizeMap = { lg: 20, md: 15, sm: 12 };
+    // 字号映射（整体放大）
+    const sizeMap = { xl: 32, lg: 24, md: 18, sm: 14 };
 
     let tags = [];
     let tagW = 0, tagH = 0;
@@ -1156,67 +1163,134 @@ document.addEventListener('DOMContentLoaded', function () {
       canvas.height = tagH * window.devicePixelRatio;
       tagsCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-      // 随机选取 35-45 个标签
-      const count = Math.min(tagPool.length, 35 + Math.floor(Math.random() * 10));
-      const shuffled = [...tagPool].sort(() => Math.random() - 0.5).slice(0, count);
+      // 全部标签都显示，分布有层次：
+      // 左上区域 → 大标签（xl/lg）
+      // 中间区域 → 中标签（md）
+      // 右下区域 → 小标签（sm），密集
+      tags = tagPool.map((tag, i) => {
+        const fontSize = sizeMap[tag.size] || 16;
 
-      tags = shuffled.map((tag, i) => {
-        const fontSize = sizeMap[tag.size] || 14;
+        // 根据尺寸分配位置
+        let baseX, baseY;
+        if (tag.size === 'xl') {
+          baseX = 0.05 + Math.random() * 0.35;
+          baseY = 0.03 + Math.random() * 0.25;
+        } else if (tag.size === 'lg') {
+          baseX = 0.05 + Math.random() * 0.55;
+          baseY = 0.05 + Math.random() * 0.45;
+        } else if (tag.size === 'md') {
+          baseX = 0.08 + Math.random() * 0.72;
+          baseY = 0.15 + Math.random() * 0.55;
+        } else {
+          baseX = 0.15 + Math.random() * 0.8;
+          baseY = 0.3 + Math.random() * 0.65;
+        }
+
         return {
           text: tag.text,
           category: tag.category,
           fontSize: fontSize,
-          x: Math.random() * tagW,
-          y: Math.random() * tagH,
-          vx: (Math.random() - 0.5) * 0.3,  // 水平速度，很慢
-          vy: (Math.random() - 0.5) * 0.15, // 垂直速度，更慢
-          phase: Math.random() * Math.PI * 2, // 摆动相位
-          swaySpeed: 0.005 + Math.random() * 0.01, // 摆动速度
-          swayAmp: 8 + Math.random() * 15,       // 摆动幅度
-          opacity: 0.4 + Math.random() * 0.5,
-          rot: (Math.random() - 0.5) * 0.15, // 轻微倾斜
+          size: tag.size,
+          baseX: baseX,
+          baseY: baseY,
+          x: baseX * tagW,
+          y: baseY * tagH,
+          vx: (Math.random() - 0.5) * (tag.size === 'xl' ? 0.08 : tag.size === 'lg' ? 0.12 : tag.size === 'md' ? 0.18 : 0.25),
+          vy: (Math.random() - 0.5) * (tag.size === 'xl' ? 0.05 : tag.size === 'lg' ? 0.08 : tag.size === 'md' ? 0.1 : 0.15),
+          phase: Math.random() * Math.PI * 2,
+          swaySpeed: 0.003 + Math.random() * 0.006,
+          swayAmp: tag.size === 'xl' ? 6 : tag.size === 'lg' ? 8 : tag.size === 'md' ? 10 : 8,
+          baseOpacity: tag.size === 'xl' ? 0.85 : tag.size === 'lg' ? 0.72 : tag.size === 'md' ? 0.58 : 0.4,
+          rot: (Math.random() - 0.5) * 0.08,
         };
       });
+    }
+
+    function hexToRgb(hex) {
+      const m = hex.replace('#', '');
+      return {
+        r: parseInt(m.substring(0, 2), 16),
+        g: parseInt(m.substring(2, 4), 16),
+        b: parseInt(m.substring(4, 6), 16)
+      };
+    }
+
+    function lerpColor(c1, c2, t) {
+      return {
+        r: Math.round(c1.r + (c2.r - c1.r) * t),
+        g: Math.round(c1.g + (c2.g - c1.g) * t),
+        b: Math.round(c1.b + (c2.b - c1.b) * t),
+      };
+    }
+
+    // 获取当前主题色（随滚动变化）
+    function getThemeColorForCategory(category, progress) {
+      const fromColor = themeColors[currentThemeIdx]?.accent || '#8b5cf6';
+      const toColor = themeColors[nextThemeIdx]?.accent || '#8b5cf6';
+      const p = progress || 0;
+
+      const fromRgb = hexToRgb(fromColor);
+      const toRgb = hexToRgb(toColor);
+      const lerped = lerpColor(fromRgb, toRgb, p);
+
+      // 不同分类有不同明暗偏移
+      const offsets = { ai: 0, algo: -15, dev: 15, app: -25, research: 25, life: -35 };
+      const offset = offsets[category] ?? 0;
+
+      const r = Math.max(0, Math.min(255, lerped.r + offset));
+      const g = Math.max(0, Math.min(255, lerped.g + offset * 0.5));
+      const b = Math.max(0, Math.min(255, lerped.b + offset * 0.3));
+
+      return { r, g, b };
     }
 
     function drawTags() {
       tagsCtx.clearRect(0, 0, tagW, tagH);
 
       const time = performance.now() * 0.001;
+      const state = window.scrollThemeState || { fromIdx: 0, toIdx: 0, progress: 0 };
 
       tags.forEach(tag => {
-        // 基础移动
         tag.x += tag.vx;
         tag.y += tag.vy;
 
-        // 叠加正弦摆动（上下飘动）
-        const swayY = Math.sin(time * tag.swaySpeed * 60 + tag.phase) * tag.swayAmp * 0.3;
-        const swayX = Math.cos(time * tag.swaySpeed * 30 + tag.phase * 1.3) * tag.swayAmp * 0.2;
+        // 围绕基准点在范围内反弹
+        const rangeX = tag.size === 'xl' ? 30 : tag.size === 'lg' ? 45 : tag.size === 'md' ? 55 : 40;
+        const rangeY = tag.size === 'xl' ? 20 : tag.size === 'lg' ? 30 : tag.size === 'md' ? 40 : 30;
+        const baseX = tag.baseX * tagW;
+        const baseY = tag.baseY * tagH;
 
-        // 边界反弹
-        if (tag.x < 20 || tag.x > tagW - 20) tag.vx *= -1;
-        if (tag.y < 30 || tag.y > tagH - 30) tag.vy *= -1;
+        if (tag.x < baseX - rangeX || tag.x > baseX + rangeX) tag.vx *= -1;
+        if (tag.y < baseY - rangeY || tag.y > baseY + rangeY) tag.vy *= -1;
+
+        // 正弦摆动
+        const swayY = Math.sin(time * tag.swaySpeed * 60 + tag.phase) * tag.swayAmp;
+        const swayX = Math.cos(time * tag.swaySpeed * 30 + tag.phase * 1.5) * tag.swayAmp * 0.5;
 
         const drawX = tag.x + swayX;
         const drawY = tag.y + swayY;
 
-        const colors = tagColors[tag.category] || tagColors.ai;
+        const color = getThemeColorForCategory(tag.category, state.progress);
+
+        // 视口中心附近更亮
+        const distFromCenter = Math.abs(drawY - window.innerHeight * 0.5) / (window.innerHeight * 0.5);
+        const visibilityBoost = Math.max(0, 1 - distFromCenter * 0.6);
+        const finalOpacity = tag.baseOpacity * (0.6 + visibilityBoost * 0.4);
 
         tagsCtx.save();
         tagsCtx.translate(drawX, drawY);
         tagsCtx.rotate(tag.rot);
-        tagsCtx.globalAlpha = tag.opacity;
+        tagsCtx.globalAlpha = finalOpacity;
 
-        // 文字描边（增加立体感）
         tagsCtx.font = `600 ${tag.fontSize}px "Noto Sans SC", "ZCOOL XiaoWei", sans-serif`;
         tagsCtx.textAlign = 'center';
         tagsCtx.textBaseline = 'middle';
 
-        // 外发光
-        tagsCtx.shadowColor = colors.fill;
-        tagsCtx.shadowBlur = 8;
+        const glowSize = tag.size === 'xl' ? 12 : tag.size === 'lg' ? 8 : tag.size === 'md' ? 5 : 3;
+        tagsCtx.shadowColor = `rgba(${color.r}, ${color.g}, ${color.b}, 0.6)`;
+        tagsCtx.shadowBlur = glowSize;
 
-        tagsCtx.fillStyle = colors.fill;
+        tagsCtx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, 0.95)`;
         tagsCtx.fillText(tag.text, 0, 0);
 
         tagsCtx.shadowBlur = 0;
@@ -1226,16 +1300,21 @@ document.addEventListener('DOMContentLoaded', function () {
       requestAnimationFrame(drawTags);
     }
 
-    // 初始化
     initTags();
     drawTags();
 
-    // 窗口变化重排
     let resizeTimer = null;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(initTags, 300);
     });
+
+    // 同步滚动主题状态
+    function updateScrollTheme() {
+      window.scrollThemeState = getScrollProgress();
+      requestAnimationFrame(updateScrollTheme);
+    }
+    updateScrollTheme();
   }
 
   // ==========================================
