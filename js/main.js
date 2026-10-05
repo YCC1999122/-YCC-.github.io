@@ -1624,15 +1624,15 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ==========================================
-  // 19. 咕咕嘎嘎小企鹅（视频帧驱动）
+  // 19. 咕咕嘎嘎小企鹅
   // ==========================================
   const gugu = document.getElementById('guguGaga');
+  const guguSprite = document.getElementById('guguSprite');
   const guguCanvas = document.getElementById('guguCanvas');
-  const guguVideo = document.getElementById('guguVideo');
   const guguBubble = document.getElementById('guguBubble');
   const guguBubbleText = guguBubble?.querySelector('.gugu-bubble-text');
 
-  if (gugu && guguCanvas && guguVideo) {
+  if (gugu && guguCanvas && guguSprite) {
     const gCtx = guguCanvas.getContext('2d');
     const CANVAS_W = guguCanvas.width;
     const CANVAS_H = guguCanvas.height;
@@ -1644,48 +1644,21 @@ document.addEventListener('DOMContentLoaded', function () {
       '咕咕嘎嘎咕咕~', '咕呱咕呱！',
     ];
 
-    // 离屏 canvas 用于抠图（缩小尺寸提升性能）
-    const offscreenCanvas = document.createElement('canvas');
-    const offCtx = offscreenCanvas.getContext('2d');
-    const PROCESS_W = 300; // 处理宽度（缩小后）
-    let videoReady = false;
-    let videoAspect = 1;
+    // ========== 加载并抠图 ==========
+    const poseList = ['idle', 'walk1', 'walk2', 'jump', 'wave'];
+    const poseData = {};
+    let loadedCount = 0;
 
-    guguVideo.addEventListener('loadeddata', () => {
-      videoReady = true;
-      const vw = guguVideo.videoWidth;
-      const vh = guguVideo.videoHeight;
-      videoAspect = vh / vw;
+    function removeWhiteBackground(img) {
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
 
-      // 设置离屏 canvas 尺寸（等比缩小）
-      offscreenCanvas.width = PROCESS_W;
-      offscreenCanvas.height = Math.floor(PROCESS_W * videoAspect);
+      const imageData = ctx.getImageData(0, 0, c.width, c.height);
+      const data = imageData.data;
 
-      // 开始播放视频（初始静音，等用户交互后再开声音）
-      guguVideo.muted = true;
-      guguVideo.playbackRate = 0.7;
-      guguVideo.play().catch(() => {});
-    });
-
-    // 去白色背景绘制
-    function drawVideoFrame() {
-      gCtx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-
-      if (!videoReady || !guguVideo.videoWidth) {
-        requestAnimationFrame(drawVideoFrame);
-        return;
-      }
-
-      const pw = offscreenCanvas.width;
-      const ph = offscreenCanvas.height;
-
-      // 画到离屏 canvas（缩小后）
-      offCtx.clearRect(0, 0, pw, ph);
-      offCtx.drawImage(guguVideo, 0, 0, pw, ph);
-
-      // 去白底
-      const imgData = offCtx.getImageData(0, 0, pw, ph);
-      const data = imgData.data;
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i];
         const g = data[i + 1];
@@ -1696,90 +1669,149 @@ document.addEventListener('DOMContentLoaded', function () {
           data[i + 3] = Math.floor(data[i + 3] * alpha);
         }
       }
-      offCtx.putImageData(imgData, 0, 0);
 
-      // 缩放到目标 canvas（底部对齐）
-      const scale = Math.min(CANVAS_W / pw, CANVAS_H / ph) * 0.95;
-      const drawW = pw * scale;
-      const drawH = ph * scale;
-      const dx = (CANVAS_W - drawW) / 2;
-      const dy = CANVAS_H - drawH - 5;
+      ctx.putImageData(imageData, 0, 0);
 
-      gCtx.drawImage(offscreenCanvas, dx, dy, drawW, drawH);
-
-      requestAnimationFrame(drawVideoFrame);
-    }
-
-    drawVideoFrame();
-
-    // ========== 音频（视频原声） ==========
-    let audioUnlocked = false;
-
-    function unlockAudio() {
-      if (audioUnlocked) return;
-      audioUnlocked = true;
-      // 用户首次交互后解锁音频
-      if (guguVideo.muted) {
-        guguVideo.muted = false;
-        guguVideo.volume = 0; // 先用 volume 控制
+      // 自动裁剪透明边缘
+      const w = c.width, h = c.height;
+      const d = ctx.getImageData(0, 0, w, h).data;
+      let minX = w, minY = h, maxX = 0, maxY = 0;
+      let found = false;
+      for (let y = 0; y < h; y += 2) {
+        for (let x = 0; x < w; x += 2) {
+          if (d[(y * w + x) * 4 + 3] > 30) {
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (x > maxX) maxX = x;
+            if (y > maxY) maxY = y;
+            found = true;
+          }
+        }
       }
+      if (!found) return c;
+
+      const pad = 12;
+      minX = Math.max(0, minX - pad);
+      minY = Math.max(0, minY - pad);
+      maxX = Math.min(w, maxX + pad);
+      maxY = Math.min(h, maxY + pad);
+
+      const out = document.createElement('canvas');
+      out.width = maxX - minX;
+      out.height = maxY - minY;
+      out.getContext('2d').drawImage(c, minX, minY, out.width, out.height, 0, 0, out.width, out.height);
+      return out;
     }
 
-    // 播放一声"咕嘎"（快速淡入淡出）
-    function playGuguSound() {
-      unlockAudio();
-      // 用 volume 做淡入淡出
-      guguVideo.volume = 0;
-      let vol = 0;
-      const fadeIn = setInterval(() => {
-        vol += 0.15;
-        if (vol >= 0.8) {
-          vol = 0.8;
-          clearInterval(fadeIn);
-          // 保持一小段后淡出
-          setTimeout(() => {
-            const fadeOut = setInterval(() => {
-              vol -= 0.1;
-              if (vol <= 0) {
-                vol = 0;
-                guguVideo.volume = 0;
-                clearInterval(fadeOut);
-              } else {
-                guguVideo.volume = vol;
-              }
-            }, 40);
-          }, 250);
+    poseList.forEach(pose => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        poseData[pose] = removeWhiteBackground(img);
+        loadedCount++;
+      };
+      img.src = 'assets/gugu/' + pose + '.jpg';
+    });
+
+    // ========== 渲染系统 ==========
+    let currentPose = 'idle';
+    let targetPose = 'idle';
+    let crossfadeAlpha = 1;
+    const CROSSFADE_SPEED = 0.1;
+
+    let animTime = 0;
+    let walkPhase = 0;
+    let isJumping = false;
+    let jumpProgress = 0;
+
+    function drawGugu() {
+      gCtx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+      if (loadedCount < poseList.length) {
+        requestAnimationFrame(drawGugu);
+        return;
+      }
+
+      animTime += 0.016;
+
+      // 跳跃动画
+      let jumpY = 0, jumpSX = 1, jumpSY = 1;
+      if (isJumping) {
+        jumpProgress += 0.035;
+        if (jumpProgress >= 1) {
+          jumpProgress = 0;
+          isJumping = false;
+          gugu.classList.remove('jumping');
+        } else {
+          const t = jumpProgress;
+          jumpY = -Math.sin(t * Math.PI) * 65;
+          if (t < 0.3) {
+            jumpSX = 1 + (0.3 - t) * 0.5;
+            jumpSY = 1 - (0.3 - t) * 0.25;
+          } else if (t > 0.7) {
+            jumpSX = 1 + (t - 0.7) * 0.5;
+            jumpSY = 1 - (t - 0.7) * 0.25;
+          } else {
+            jumpSX = 0.95;
+            jumpSY = 1.05;
+          }
         }
-        guguVideo.volume = vol;
-      }, 30);
+      }
+
+      // 走路摆动
+      let walkBob = 0;
+      if (!isJumping && (targetPose === 'walk1' || targetPose === 'walk2' || currentPose.startsWith('walk'))) {
+        walkPhase += 0.07;
+        walkBob = Math.sin(walkPhase) * 3;
+      }
+
+      // 呼吸
+      const breathe = Math.sin(animTime * 2) * 0.02 + 1;
+
+      const baseX = CANVAS_W / 2;
+      const baseY = CANVAS_H - 8 + jumpY + walkBob;
+
+      // 交叉淡入淡出
+      if (crossfadeAlpha < 1 && currentPose !== targetPose) {
+        crossfadeAlpha += CROSSFADE_SPEED;
+        if (crossfadeAlpha >= 1) {
+          crossfadeAlpha = 1;
+          currentPose = targetPose;
+        }
+      }
+
+      // 旧帧淡出
+      if (crossfadeAlpha < 1 && poseData[currentPose]) {
+        drawPose(poseData[currentPose], baseX, baseY, 1 - crossfadeAlpha, breathe, jumpSX, jumpSY);
+      }
+
+      // 新帧
+      if (poseData[targetPose]) {
+        drawPose(poseData[targetPose], baseX, baseY, crossfadeAlpha, breathe, jumpSX, jumpSY);
+      }
+
+      requestAnimationFrame(drawGugu);
     }
 
-    // 跳跃叫声
-    function playJumpSound() {
-      unlockAudio();
-      guguVideo.volume = 0;
-      let vol = 0;
-      const fadeIn = setInterval(() => {
-        vol += 0.2;
-        if (vol >= 1) {
-          vol = 1;
-          clearInterval(fadeIn);
-          setTimeout(() => {
-            const fadeOut = setInterval(() => {
-              vol -= 0.12;
-              if (vol <= 0) {
-                vol = 0;
-                guguVideo.volume = 0;
-                clearInterval(fadeOut);
-              } else {
-                guguVideo.volume = vol;
-              }
-            }, 35);
-          }, 150);
-        }
-        guguVideo.volume = vol;
-      }, 25);
+    function drawPose(canvasImg, x, y, alpha, breathe, sx, sy) {
+      const scale = Math.min((CANVAS_W - 30) / canvasImg.width, (CANVAS_H - 40) / canvasImg.height) * 0.95;
+      const drawW = canvasImg.width * scale * sx * breathe;
+      const drawH = canvasImg.height * scale * sy * breathe;
+
+      gCtx.save();
+      gCtx.globalAlpha = alpha;
+      gCtx.translate(x, y);
+      gCtx.drawImage(canvasImg, -drawW / 2, -drawH, drawW, drawH);
+      gCtx.restore();
     }
+
+    function setPose(pose) {
+      if (targetPose === pose) return;
+      targetPose = pose;
+      crossfadeAlpha = 0;
+    }
+
+    drawGugu();
 
     // ========== 对话气泡 ==========
     let bubbleTimer = null;
@@ -1798,12 +1830,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let guguDir = 1;
     let guguSpeed = 1.2;
     let isWalking = true;
-    let isJumping = false;
-    let jumpProgress = 0;
-    let isWaving = false;
+    let walkFrame = 0;
+    let walkFrameCounter = 0;
+    const WALK_FRAME_STEPS = 28;
 
     function updateGugu() {
-      if (isWalking && !isJumping && !isWaving) {
+      if (isWalking && !isJumping) {
         guguX += guguSpeed * guguDir;
 
         const margin = 100;
@@ -1816,64 +1848,56 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         gugu.style.left = guguX + 'px';
+        guguSprite.style.transform = '';
+
+        // 走路帧切换
+        walkFrameCounter++;
+        if (walkFrameCounter >= WALK_FRAME_STEPS) {
+          walkFrameCounter = 0;
+          walkFrame = 1 - walkFrame;
+          setPose(walkFrame === 0 ? 'walk1' : 'walk2');
+        }
 
         // 随机跳跃
-        if (Math.random() < 0.001) {
+        if (Math.random() < 0.0012) {
           guguJump();
         }
 
         // 随机说话
-        if (Math.random() < 0.0015) {
+        if (Math.random() < 0.002) {
           const quote = guguQuotes[Math.floor(Math.random() * guguQuotes.length)];
           showBubble(quote);
-          playGuguSound();
         }
       }
 
-      // 跳跃动画
+      // 跳跃时控制 sprite 的 transform
       if (isJumping) {
-        jumpProgress += 0.03;
-        if (jumpProgress >= 1) {
-          isJumping = false;
-          jumpProgress = 0;
-          guguSprite.style.transform = '';
-          gugu.classList.remove('jumping');
-        } else {
-          const t = jumpProgress;
-          const jumpY = Math.sin(t * Math.PI) * 60;
-          let sx = 1, sy = 1;
-          if (t < 0.3) {
-            sx = 1 + (0.3 - t) * 0.4;
-            sy = 1 - (0.3 - t) * 0.25;
-          } else if (t > 0.7) {
-            sx = 1 + (t - 0.7) * 0.4;
-            sy = 1 - (t - 0.7) * 0.25;
-          } else {
-            sx = 0.95;
-            sy = 1.05;
-          }
-          const facingLeft = gugu.classList.contains('facing-left');
-          const flipScale = facingLeft ? -1 : 1;
-          guguSprite.style.transform = `translateY(${-jumpY}px) scale(${sx * flipScale}, ${sy})`;
-        }
+        const facingLeft = gugu.classList.contains('facing-left');
+        const flip = facingLeft ? -1 : 1;
+        const t = jumpProgress;
+        const jy = Math.sin(t * Math.PI) * 65;
+        let sx = 1, sy = 1;
+        if (t < 0.3) { sx = 1 + (0.3 - t) * 0.5; sy = 1 - (0.3 - t) * 0.25; }
+        else if (t > 0.7) { sx = 1 + (t - 0.7) * 0.5; sy = 1 - (t - 0.7) * 0.25; }
+        else { sx = 0.95; sy = 1.05; }
+        guguSprite.style.transform = `translateY(${-jy}px) scale(${sx * flip}, ${sy})`;
       }
 
       requestAnimationFrame(updateGugu);
     }
 
-    const guguSprite = document.getElementById('guguSprite');
-
     // ========== 跳跃 ==========
     function guguJump() {
-      if (isJumping) return;
+      if (isJumping || loadedCount < poseList.length) return;
       isJumping = true;
       jumpProgress = 0;
+      setPose('jump');
       gugu.classList.add('jumping');
-      playJumpSound();
     }
 
     // ========== 点击互动 ==========
     gugu.addEventListener('click', () => {
+      if (loadedCount < poseList.length) return;
       const reaction = Math.random();
 
       if (reaction < 0.4) {
@@ -1882,21 +1906,28 @@ document.addEventListener('DOMContentLoaded', function () {
           const quote = guguQuotes[Math.floor(Math.random() * guguQuotes.length)];
           showBubble(quote);
         }, 200);
-      } else if (reaction < 0.75) {
+      } else if (reaction < 0.7) {
         const quote = guguQuotes[Math.floor(Math.random() * guguQuotes.length)];
         showBubble(quote);
-        playGuguSound();
+      } else if (reaction < 0.85) {
+        // 挥手
+        setPose('wave');
+        showBubble('咕咕~');
+        setTimeout(() => {
+          walkFrame = 0;
+          walkFrameCounter = 0;
+          setPose('walk1');
+        }, 1200);
       } else {
         // 转身
         guguDir *= -1;
         gugu.classList.toggle('facing-left');
         showBubble('咕~');
-        playGuguSound();
       }
     });
 
     gugu.addEventListener('mouseenter', () => {
-      if (!isJumping) {
+      if (!isJumping && loadedCount >= poseList.length) {
         showBubble('咕呱？');
       }
     });
@@ -1910,6 +1941,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 启动
     setTimeout(() => {
       gugu.classList.add('walking');
+      setPose('walk1');
       updateGugu();
     }, 1000);
   }
