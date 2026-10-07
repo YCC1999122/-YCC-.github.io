@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Research Lab — 创意·设计·探索</title>
     <meta name="description" content="面向创意与技术的开放研究平台：AI 探索、创意设计、数据洞察、全栈开发、交互体验、硬件创新与游戏实验。" />
-  <link rel="stylesheet" href="css/style.css?v=7.5" />
+  <link rel="stylesheet" href="css/style.css?v=8.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
@@ -576,41 +576,48 @@
           </div>
         </article>
 
-        <!-- 项目 5：西瓜影城 APP -->
-        <article class="project-card tilt-card" data-category="mobile">
-          <a href="projects/cinema-app/index.html" class="project-visual pv-5">
+        <!-- 项目 5：视频播放器 -->
+        <article class="project-card tilt-card" data-category="tool">
+          <a href="projects/video-player/index.html" class="project-visual pv-5">
             <div class="pv-thumb">
               <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
-                <rect x="100" y="5" width="120" height="190" rx="16" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
-                <rect x="135" y="10" width="50" height="10" rx="5" fill="rgba(0,0,0,0.3)" />
                 <defs>
-                  <linearGradient id="cinemaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="rgba(239,68,68,0.8)" />
-                    <stop offset="100%" stop-color="rgba(249,115,22,0.7)" />
+                  <linearGradient id="playerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#1e293b" />
+                    <stop offset="100%" stop-color="#0f172a" />
+                  </linearGradient>
+                  <linearGradient id="videoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3" />
+                    <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="#ec4899" stop-opacity="0.3" />
                   </linearGradient>
                 </defs>
-                <rect x="108" y="25" width="104" height="160" rx="8" fill="rgba(255,255,255,0.95)" />
-                <rect x="108" y="25" width="104" height="35" rx="8" fill="url(#cinemaGrad)" />
-                <text x="125" y="47" fill="white" font-size="12" font-weight="bold">🍉 西瓜影城</text>
-                <rect x="115" y="68" width="90" height="16" rx="8" fill="rgba(0,0,0,0.06)" />
-                <rect x="115" y="92" width="90" height="35" rx="4" fill="rgba(59,130,246,0.3)" />
-                <rect x="125" y="100" width="50" height="8" rx="2" fill="rgba(255,255,255,0.8)" />
-                <rect x="125" y="112" width="30" height="6" rx="2" fill="rgba(255,255,255,0.6)" />
-                <rect x="115" y="135" width="28" height="12" rx="6" fill="rgba(239,68,68,0.8)" />
-                <rect x="147" y="135" width="28" height="12" rx="6" fill="rgba(0,0,0,0.06)" />
-                <rect x="179" y="135" width="26" height="12" rx="6" fill="rgba(0,0,0,0.06)" />
-                <rect x="115" y="153" width="42" height="28" rx="3" fill="rgba(251,191,36,0.5)" />
-                <rect x="162" y="153" width="42" height="28" rx="3" fill="rgba(168,85,247,0.5)" />
-                <rect x="108" y="172" width="104" height="13" rx="0 0 8px 8px" fill="rgba(255,255,255,0.9)" />
-                <rect x="120" y="176" width="15" height="8" rx="2" fill="rgba(239,68,68,0.6)" />
-                <rect x="148" y="176" width="15" height="8" rx="2" fill="rgba(0,0,0,0.2)" />
-                <rect x="176" y="176" width="15" height="8" rx="2" fill="rgba(0,0,0,0.2)" />
-                <rect x="204" y="176" width="15" height="8" rx="2" fill="rgba(0,0,0,0.2)" />
+                <!-- 播放器外框 -->
+                <rect x="10" y="20" width="300" height="160" rx="8" fill="url(#playerGrad)" />
+                <!-- 视频画面 -->
+                <rect x="20" y="30" width="280" height="120" rx="4" fill="url(#videoGrad)" />
+                <!-- 画面装饰元素 -->
+                <circle cx="100" cy="70" r="25" fill="rgba(139,92,246,0.3)" />
+                <circle cx="200" cy="90" r="35" fill="rgba(59,130,246,0.2)" />
+                <rect x="60" y="100" width="80" height="30" rx="4" fill="rgba(236,72,153,0.2)" />
+                <!-- 中央播放按钮 -->
+                <circle cx="160" cy="90" r="22" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+                <polygon points="152,78 152,102 172,90" fill="white" />
+                <!-- 底部控制栏 -->
+                <rect x="20" y="155" width="280" height="20" rx="0 0 4px 4px" fill="rgba(0,0,0,0.3)" />
+                <!-- 进度条 -->
+                <rect x="30" y="162" width="120" height="3" rx="1.5" fill="rgba(255,255,255,0.2)" />
+                <rect x="30" y="162" width="70" height="3" rx="1.5" fill="#6d28d9" />
+                <circle cx="100" cy="163.5" r="4" fill="white" />
+                <!-- 控制按钮 -->
+                <circle cx="40" cy="163.5" r="3" fill="white" />
+                <polygon points="38,160.5 38,166.5 43,163.5" fill="white" />
+                <circle cx="305" cy="163.5" r="3" fill="rgba(255,255,255,0.6)" />
               </svg>
             </div>
             <div class="pv-label">
-              <span class="pv-label-tag">移动端 APP</span>
-              <span class="pv-label-name">西瓜影城 APP</span>
+              <span class="pv-label-tag">影音工具</span>
+              <span class="pv-label-name">视频播放器</span>
             </div>
             <div class="pv-overlay">
               <span class="pv-view-btn">查看演示 →</span>
@@ -618,13 +625,13 @@
           </a>
           <div class="project-body">
             <div class="project-meta">
-              <span class="project-type">移动端 APP</span>
+              <span class="project-type">影音工具</span>
               <span class="project-date">2024</span>
             </div>
-            <h3 class="project-title">西瓜影城 APP</h3>
-            <p class="project-desc">电影购票与资讯应用，支持热映电影浏览、详情查看、选座购票、影院查询。西瓜红橙主题，清爽活泼的交互体验。</p>
+            <h3 class="project-title">网页视频播放器</h3>
+            <p class="project-desc">轻量级网页视频播放器，支持播放列表、进度控制、音量调节、全屏模式。自定义皮肤，键盘快捷键操作。</p>
             <div class="project-stack">
-              <span>移动端</span><span>UI 设计</span><span>选座购票</span><span>交互原型</span>
+              <span>HTML5 Video</span><span>播放器</span><span>播放列表</span><span>快捷键</span>
             </div>
           </div>
         </article>
@@ -714,100 +721,95 @@
       <p class="section-sub left" data-i18n="ideas.subtitle">一些半成品的想法、待验证的假设、以及奇怪的脑洞。欢迎交流！</p>
 
       <div class="ideas-grid">
-        <div class="idea-card tilt-card">
+        <!-- 分类 1：游戏创意设计 -->
+        <a href="projects/ideas/game-design/index.html" class="idea-card tilt-card category-card">
+          <div class="idea-category-icon">🎮</div>
           <div class="idea-header">
             <span class="idea-status wip">🚧 探索中</span>
-            <span class="idea-category">AI × 教育</span>
+            <span class="idea-category" data-i18n="ideas.cat.game">游戏创意</span>
           </div>
-          <h3 class="idea-title">AI 编程导师系统</h3>
-          <p class="idea-desc">
-            能不能做一个像「私人编程教练」一样的 AI？不只是回答问题，
-            而是能根据学习者的水平，循序渐进地出练习题、review 代码、
-            指出思维误区。就像有个耐心的老师随时在身边。
+          <h3 class="idea-title" data-i18n="ideas.cat.game.title">游戏创意设计</h3>
+          <p class="idea-desc" data-i18n="ideas.cat.game.desc">
+            从像素冒险到塔防策略，从解谜探索到 Roguelike。
+            记录游戏原型构思、玩法设计、关卡策划的全过程。
           </p>
           <div class="idea-tags">
-            <span>LLM</span><span>教育科技</span><span>自适应学习</span>
+            <span>3 个创意</span><span>原型设计</span><span>玩法机制</span>
           </div>
-        </div>
+          <div class="idea-arrow">→</div>
+        </a>
 
-        <div class="idea-card tilt-card">
-          <div class="idea-header">
-            <span class="idea-status seed">💡 想法阶段</span>
-            <span class="idea-category">工具 × 效率</span>
-          </div>
-          <h3 class="idea-title">开发者第二大脑</h3>
-          <p class="idea-desc">
-            每天读代码、写代码、查文档，知识散落在各处。
-            能不能做一个工具，自动收集我看过的代码片段、技术文章、
-            bug 解决方案，然后自动关联、形成知识网络？
-          </p>
-          <div class="idea-tags">
-            <span>知识管理</span><span>RAG</span><span>开发者工具</span>
-          </div>
-        </div>
-
-        <div class="idea-card tilt-card">
-          <div class="idea-header">
-            <span class="idea-status done">✅ 已验证</span>
-            <span class="idea-category">可视化</span>
-          </div>
-          <h3 class="idea-title">代码 commit 可视化</h3>
-          <p class="idea-desc">
-            把一个项目的 Git 提交历史做成动态可视化，看代码是如何一行行生长出来的，
-            哪些文件最活跃，贡献者的协作模式是什么样。像看城市建设一样看代码演化。
-          </p>
-          <div class="idea-tags">
-            <span>数据可视化</span><span>Canvas</span><span>Git 分析</span>
-          </div>
-        </div>
-
-        <div class="idea-card tilt-card">
+        <!-- 分类 2：炫酷效果设计 -->
+        <a href="projects/ideas/effects-design/index.html" class="idea-card tilt-card category-card">
+          <div class="idea-category-icon">✨</div>
           <div class="idea-header">
             <span class="idea-status wip">🚧 探索中</span>
-            <span class="idea-category">AI × 创意</span>
+            <span class="idea-category" data-i18n="ideas.cat.effects">视觉效果</span>
           </div>
-          <h3 class="idea-title">AI 协作创作实验</h3>
-          <p class="idea-desc">
-            人和 AI 一起创作会是什么感觉？不是 AI 生成我来改，
-            而是像两个艺术家对话一样，你一句我一句，
-            最后出来一个谁都单独想不出来的东西。
+          <h3 class="idea-title" data-i18n="ideas.cat.effects.title">炫酷效果设计</h3>
+          <p class="idea-desc" data-i18n="ideas.cat.effects.desc">
+            Canvas 粒子、流体模拟、音频可视化、文字动效...
+            用代码创造令人惊叹的视觉体验。
           </p>
           <div class="idea-tags">
-            <span>生成式 AI</span><span>创意工具</span><span>交互设计</span>
+            <span>4 个创意</span><span>Canvas</span><span>WebGL</span>
           </div>
-        </div>
+          <div class="idea-arrow">→</div>
+        </a>
 
-        <div class="idea-card tilt-card">
+        <!-- 分类 3：算法设计 -->
+        <a href="projects/ideas/algorithm-design/index.html" class="idea-card tilt-card category-card">
+          <div class="idea-category-icon">⚙️</div>
           <div class="idea-header">
             <span class="idea-status seed">💡 想法阶段</span>
-            <span class="idea-category">游戏化</span>
+            <span class="idea-category" data-i18n="ideas.cat.algo">算法设计</span>
           </div>
-          <h3 class="idea-title">把生活变成 RPG</h3>
-          <p class="idea-desc">
-            学习、健身、工作... 为什么坚持一件事这么难？
-            如果把日常任务变成 RPG 里的任务，完成获得经验值升级，
-            解锁技能树，会不会更容易坚持下去？
+          <h3 class="idea-title" data-i18n="ideas.cat.algo.title">算法可视化</h3>
+          <p class="idea-desc" data-i18n="ideas.cat.algo.desc">
+            让抽象的算法变得看得见摸得着。
+            寻路、排序、神经网络... 每一步都清清楚楚。
           </p>
           <div class="idea-tags">
-            <span>游戏化设计</span><span>习惯养成</span><span>自我量化</span>
+            <span>3 个创意</span><span>可视化</span><span>交互学习</span>
           </div>
-        </div>
+          <div class="idea-arrow">→</div>
+        </a>
 
-        <div class="idea-card tilt-card">
+        <!-- 分类 4：工具开发 -->
+        <a href="projects/ideas/tool-development/index.html" class="idea-card tilt-card category-card">
+          <div class="idea-category-icon">🛠️</div>
           <div class="idea-header">
-            <span class="idea-status future">🔮 远期设想</span>
-            <span class="idea-category">AI × 科研</span>
+            <span class="idea-status done">✅ 部分完成</span>
+            <span class="idea-category" data-i18n="ideas.cat.tool">工具开发</span>
           </div>
-          <h3 class="idea-title">AI 辅助论文阅读</h3>
-          <p class="idea-desc">
-            论文太多读不完？让 AI 帮你读，然后用通俗的话讲给你听，
-            还能对比不同论文的观点、找出争议点、甚至推荐相关研究。
-            让站在巨人肩膀上变得更容易。
+          <h3 class="idea-title" data-i18n="ideas.cat.tool.title">实用工具集</h3>
+          <p class="idea-desc" data-i18n="ideas.cat.tool.desc">
+            解决开发和设计中的痛点问题，
+            从 JSON 编辑器到配色生成器，小而美的效率工具。
           </p>
           <div class="idea-tags">
-            <span>NLP</span><span>学术工具</span><span>知识图谱</span>
+            <span>4 个创意</span><span>效率工具</span><span>纯前端</span>
           </div>
-        </div>
+          <div class="idea-arrow">→</div>
+        </a>
+
+        <!-- 分类 5：页面开发 -->
+        <a href="projects/ideas/web-page-dev/index.html" class="idea-card tilt-card category-card">
+          <div class="idea-category-icon">🌐</div>
+          <div class="idea-header">
+            <span class="idea-status seed">💡 模板储备</span>
+            <span class="idea-category" data-i18n="ideas.cat.web">页面开发</span>
+          </div>
+          <h3 class="idea-title" data-i18n="ideas.cat.web.title">页面模板库</h3>
+          <p class="idea-desc" data-i18n="ideas.cat.web.desc">
+            仪表盘、电商、博客、后台...
+            常用网页模板设计，拿来即用，灵活扩展。
+          </p>
+          <div class="idea-tags">
+            <span>3 个创意</span><span>响应式</span><span>模板</span>
+          </div>
+          <div class="idea-arrow">→</div>
+        </a>
       </div>
     </div>
   </section>
@@ -1133,6 +1135,6 @@
     </div>
   </div>
 
-  <script src="js/main.js?v=7.5"></script>
+  <script src="js/main.js?v=8.0"></script>
 </body>
 </html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="pageTitle">游戏创意设计 / Game Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f8f9fc;
+    color: #1a1a2e;
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* Back Link */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #6366f1;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 32px;
+    transition: all 0.3s ease;
+  }
+  .back-link:hover {
+    color: #4f46e5;
+    transform: translateX(-3px);
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .main-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    color: #6b7280;
+    font-weight: 400;
+  }
+
+  /* Project Grid */
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 28px;
+    margin-bottom: 56px;
+  }
+
+  /* Card */
+  .project-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .project-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15), 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .card-cover {
+    height: 180px;
+    background: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-cover svg {
+    width: 120px;
+    height: 120px;
+    filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.2));
+  }
+
+  .card-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .status-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    align-self: flex-start;
+  }
+  .status-exploring {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+  }
+  .status-idea {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+  }
+  .status-validated {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  .project-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+  }
+  .project-desc {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .tech-tag {
+    padding: 3px 10px;
+    background: rgba(99, 102, 241, 0.08);
+    color: #6366f1;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .view-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+  }
+  .view-btn:hover {
+    transform: translateX(3px);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  }
+
+  /* Footer hint */
+  .more-hint {
+    text-align: center;
+    padding: 32px 0;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+  .more-hint::before,
+  .more-hint::after {
+    content: '';
+    display: inline-block;
+    width: 30px;
+    height: 1px;
+    background: #e5e7eb;
+    vertical-align: middle;
+    margin: 0 12px;
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 24px 16px; }
+    .header { margin-bottom: 40px; }
+    .project-grid { gap: 20px; }
+    .card-cover { height: 150px; }
+    .card-cover svg { width: 90px; height: 90px; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="../../index.html" class="back-link" data-i18n="backHome">← 返回首页</a>
+
+    <header class="header">
+      <h1 class="main-title" data-i18n="categoryTitle">游戏创意设计</h1>
+      <p class="subtitle" data-i18n="categorySubtitle">Game Design · 从像素世界到星际战场，一切从想法开始</p>
+    </header>
+
+    <div class="project-grid">
+      <!-- Game 1 -->
+      <article class="project-card">
+        <div class="card-cover">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="30" width="80" height="60" rx="4" fill="#6366f1" opacity="0.2"/>
+            <rect x="25" y="35" width="10" height="10" fill="#6366f1"/>
+            <rect x="40" y="35" width="10" height="10" fill="#6366f1" opacity="0.6"/>
+            <rect x="55" y="35" width="10" height="10" fill="#ec4899"/>
+            <rect x="70" y="35" width="10" height="10" fill="#6366f1" opacity="0.6"/>
+            <rect x="85" y="35" width="10" height="10" fill="#6366f1" opacity="0.4"/>
+            <rect x="25" y="50" width="10" height="10" fill="#6366f1" opacity="0.4"/>
+            <rect x="40" y="50" width="10" height="10" fill="#10b981"/>
+            <rect x="55" y="50" width="10" height="10" fill="#f59e0b"/>
+            <rect x="70" y="50" width="10" height="10" fill="#ec4899"/>
+            <rect x="85" y="50" width="10" height="10" fill="#6366f1" opacity="0.6"/>
+            <rect x="25" y="65" width="10" height="10" fill="#6366f1" opacity="0.6"/>
+            <rect x="40" y="65" width="10" height="10" fill="#6366f1"/>
+            <rect x="55" y="65" width="10" height="10" fill="#ec4899" opacity="0.6"/>
+            <rect x="70" y="65" width="10" height="10" fill="#10b981"/>
+            <rect x="85" y="65" width="10" height="10" fill="#6366f1" opacity="0.2"/>
+            <circle cx="55" cy="55" r="3" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="status-tag status-exploring" data-i18n="statusExploring">探索中</span>
+          <h3 class="project-name" data-i18n="game1Name">像素冒险记</h3>
+          <p class="project-desc" data-i18n="game1Desc">2D 横版像素风冒险游戏，程序化生成地图，roguelike 元素</p>
+          <div class="tech-tags">
+            <span class="tech-tag">Canvas</span>
+            <span class="tech-tag">Procedural</span>
+            <span class="tech-tag">Roguelike</span>
+          </div>
+          <a href="game-1/index.html" class="view-btn" data-i18n="viewDetails">查看详情 →</a>
+        </div>
+      </article>
+
+      <!-- Game 2 -->
+      <article class="project-card">
+        <div class="card-cover" style="background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="60" r="40" fill="#3b82f6" opacity="0.15"/>
+            <circle cx="60" cy="60" r="30" fill="#3b82f6" opacity="0.2"/>
+            <circle cx="60" cy="60" r="20" fill="#3b82f6" opacity="0.25"/>
+            <polygon points="60,25 68,45 88,45 72,57 78,77 60,65 42,77 48,57 32,45 52,45" fill="#f59e0b" opacity="0.8"/>
+            <rect x="35" y="75" width="10" height="10" rx="2" fill="#ef4444"/>
+            <rect x="55" y="80" width="10" height="10" rx="2" fill="#10b981"/>
+            <rect x="75" y="75" width="10" height="10" rx="2" fill="#8b5cf6"/>
+            <line x1="40" y1="75" x2="60" y2="50" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="80" y1="75" x2="60" y2="50" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="3,3"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="status-tag status-idea" data-i18n="statusIdea">想法阶段</span>
+          <h3 class="project-name" data-i18n="game2Name">星界防线</h3>
+          <p class="project-desc" data-i18n="game2Desc">塔防 + 卡牌策略结合，太空主题，自由建造防御线</p>
+          <div class="tech-tags">
+            <span class="tech-tag">Three.js</span>
+            <span class="tech-tag">Strategy</span>
+            <span class="tech-tag">Card</span>
+          </div>
+          <a href="game-2/index.html" class="view-btn" data-i18n="viewDetails">查看详情 →</a>
+        </div>
+      </article>
+
+      <!-- Game 3 -->
+      <article class="project-card">
+        <div class="card-cover" style="background: linear-gradient(135deg, #fef3c7 0%, #fce7f3 100%);">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="35" cy="40" r="12" fill="#f59e0b" opacity="0.9"/>
+            <line x1="35" y1="40" x2="90" y2="70" stroke="#fbbf24" stroke-width="3" opacity="0.6"/>
+            <line x1="35" y1="40" x2="85" y2="85" stroke="#fbbf24" stroke-width="2" opacity="0.4"/>
+            <line x1="35" y1="40" x2="75" y2="95" stroke="#fbbf24" stroke-width="2" opacity="0.3"/>
+            <rect x="55" y="60" width="8" height="35" rx="2" fill="#6366f1" opacity="0.7"/>
+            <rect x="75" y="70" width="8" height="30" rx="2" fill="#8b5cf6" opacity="0.7"/>
+            <path d="M90 70 L105 55 L105 85 Z" fill="#1a1a2e" opacity="0.3"/>
+            <path d="M85 85 L100 70 L100 100 Z" fill="#1a1a2e" opacity="0.2"/>
+            <circle cx="35" cy="40" r="3" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="status-tag status-validated" data-i18n="statusValidated">已验证</span>
+          <h3 class="project-name" data-i18n="game3Name">光影之间</h3>
+          <p class="project-desc" data-i18n="game3Desc">解谜游戏，利用光线折射和阴影变化解开机关</p>
+          <div class="tech-tags">
+            <span class="tech-tag">WebGL</span>
+            <span class="tech-tag">Physics</span>
+            <span class="tech-tag">Puzzle</span>
+          </div>
+          <a href="game-3/index.html" class="view-btn" data-i18n="viewDetails">查看详情 →</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="more-hint" data-i18n="moreHint">更多创意孵化中...</div>
+  </div>
+</body>
+</html>

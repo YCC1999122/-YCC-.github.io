@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="title">光影之间 | Between Light & Shadow</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f8f9fc;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-border: rgba(255, 255, 255, 0.8);
+    --text-primary: #1a1d2e;
+    --text-secondary: #5a5f7a;
+    --text-tertiary: #8b90a8;
+    --accent: #f59e0b;
+    --accent-light: #fbbf24;
+    --accent-bg: rgba(245, 158, 11, 0.1);
+    --shadow-sm: 0 2px 8px rgba(245, 158, 11, 0.06);
+    --shadow-md: 0 8px 24px rgba(245, 158, 11, 0.08);
+    --shadow-lg: 0 16px 48px rgba(245, 158, 11, 0.12);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+  }
+
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    margin-bottom: 32px;
+  }
+  .back-link:hover {
+    color: var(--accent);
+    background: var(--accent-bg);
+  }
+
+  .game-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .game-title {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #f59e0b 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .game-subtitle {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    font-weight: 400;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .hero-section { margin-bottom: 48px; }
+  .hero-canvas-wrapper {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .hero-canvas {
+    width: 100%;
+    height: 360px;
+    border-radius: var(--radius-md);
+    display: block;
+  }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .section-subtitle {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  .intro-section { margin-bottom: 48px; }
+  .intro-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .intro-card p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .intro-card p:last-child { margin-bottom: 0; }
+
+  .features-section { margin-bottom: 48px; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+    background: var(--accent-bg);
+  }
+  .feature-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .feature-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .tech-section { margin-bottom: 48px; }
+  .tech-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tech-tag {
+    padding: 8px 16px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .tech-tag:hover {
+    background: var(--accent);
+    color: white;
+  }
+
+  .timeline-section { margin-bottom: 48px; }
+  .timeline-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .timeline {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    right: 24px;
+    height: 3px;
+    background: #e5e7f0;
+    border-radius: 2px;
+  }
+  .timeline-progress {
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+    border-radius: 2px;
+    z-index: 1;
+    width: 30%;
+  }
+  .timeline-item {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+    max-width: 120px;
+  }
+  .timeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: white;
+    border: 3px solid #e5e7f0;
+    color: var(--text-tertiary);
+    transition: all 0.3s ease;
+  }
+  .timeline-item.done .timeline-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .timeline-item.active .timeline-dot {
+    background: white;
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-bg);
+  }
+  .timeline-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .timeline-item.done .timeline-label,
+  .timeline-item.active .timeline-label {
+    color: var(--text-primary);
+  }
+  .timeline-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .cta-section {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+    transition: all 0.3s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .container { padding: 20px 16px 48px; }
+    .game-title { font-size: 32px; }
+    .game-subtitle { font-size: 16px; }
+    .hero-canvas { height: 240px; }
+    .intro-card, .tech-card, .timeline-card { padding: 20px; }
+    .section-title { font-size: 20px; }
+    .timeline { flex-direction: column; gap: 20px; }
+    .timeline::before {
+      top: 16px; bottom: 16px; left: 15px; right: auto;
+      width: 3px; height: auto;
+    }
+    .timeline-progress {
+      top: 16px; left: 15px; width: 3px; height: 30%;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-light) 100%);
+    }
+    .timeline-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      max-width: none; text-align: left;
+    }
+    .timeline-dot { margin: 0; flex-shrink: 0; }
+  }
+
+  .lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+  .lang-toggle:hover {
+    color: var(--accent);
+    box-shadow: var(--shadow-md);
+  }
+</style>
+</head>
+<body>
+
+<button class="lang-toggle" onclick="toggleLang()" data-i18n="langToggle">EN</button>
+
+<div class="container">
+  <a href="../index.html" class="back-link">
+    <span data-i18n="back">← 返回游戏创意</span>
+  </a>
+
+  <header class="game-header">
+    <h1 class="game-title" data-i18n="gameTitle">光影之间</h1>
+    <p class="game-subtitle" data-i18n="gameSubtitle">Between Light & Shadow</p>
+    <span class="status-badge" data-i18n="statusBadge">构思阶段</span>
+  </header>
+
+  <section class="hero-section">
+    <div class="hero-canvas-wrapper">
+      <canvas id="gameCanvas" class="hero-canvas" width="900" height="360"></canvas>
+    </div>
+  </section>
+
+  <section class="intro-section">
+    <h2 class="section-title" data-i18n="introTitle">游戏介绍</h2>
+    <div class="intro-card">
+      <p data-i18n="introP1">《光影之间》是一款以光线折射和阴影变化为核心机制的解谜游戏。玩家将在一座神秘的光影之殿中探索，通过旋转镜面、移动棱镜、调整光源，引导光线照亮隐藏的印记，解开一个又一个精心设计的谜题。</p>
+      <p data-i18n="introP2">游戏拥有真实的物理光线系统，每一束光都会根据物理定律进行反射、折射和散射。镜面反射、棱镜分光、透镜聚焦——你需要运用光学知识，让光线按照你的意愿穿行于黑暗的空间之中。</p>
+      <p data-i18n="introP3">独特的氛围美学是游戏的另一大特色。幽暗的环境、流动的光束、细腻的阴影，配合空灵的背景音乐，打造出一个令人沉浸的光影世界。每一关都是一件光影艺术品，等待你去发现和创造。</p>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <h2 class="section-title" data-i18n="featuresTitle">核心玩法</h2>
+    <p class="section-subtitle" data-i18n="featuresSubtitle">光与影的艺术，用智慧点亮黑暗</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💡</div>
+        <h3 class="feature-title" data-i18n="feat1Title">物理光线系统</h3>
+        <p class="feature-desc" data-i18n="feat1Desc">基于真实物理的光线模拟，反射、折射、散射都遵循光学定律，带来真实的解谜体验。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌑</div>
+        <h3 class="feature-title" data-i18n="feat2Title">阴影机关</h3>
+        <p class="feature-desc" data-i18n="feat2Desc">利用物体投射的阴影触发机关，遮挡特定角度的光线，在黑暗中寻找隐藏的通道。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🪞</div>
+        <h3 class="feature-title" data-i18n="feat3Title">镜面反射</h3>
+        <p class="feature-desc" data-i18n="feat3Desc">旋转和放置镜面，让光线绕过障碍。多面镜子组合，创造出复杂的光之路径。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✨</div>
+        <h3 class="feature-title" data-i18n="feat4Title">氛围美学</h3>
+        <p class="feature-desc" data-i18n="feat4Desc">精致的光影画面，空灵的音乐氛围，每一关都是一件可交互的光影艺术品。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tech-section">
+    <h2 class="section-title" data-i18n="techTitle">技术栈</h2>
+    <div class="tech-card">
+      <div class="tech-tags">
+        <span class="tech-tag">Unity</span>
+        <span class="tech-tag">C#</span>
+        <span class="tech-tag">Ray Tracing</span>
+        <span class="tech-tag">Shader Graph</span>
+        <span class="tech-tag">URP</span>
+        <span class="tech-tag">Physics</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline-section">
+    <h2 class="section-title" data-i18n="timelineTitle">开发进度</h2>
+    <div class="timeline-card">
+      <div class="timeline">
+        <div class="timeline-progress"></div>
+        <div class="timeline-item done">
+          <div class="timeline-dot">✓</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl1Label">构思阶段</div>
+            <div class="timeline-desc" data-i18n="tl1Desc">核心创意设计</div>
+          </div>
+        </div>
+        <div class="timeline-item active">
+          <div class="timeline-dot">●</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl2Label">原型阶段</div>
+            <div class="timeline-desc" data-i18n="tl2Desc">光线系统研发</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">○</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl3Label">开发中</div>
+            <div class="timeline-desc" data-i18n="tl3Desc">关卡与美术制作</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">○</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl4Label">待完成</div>
+            <div class="timeline-desc" data-i18n="tl4Desc">测试与发布</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-section">
+    <a href="../index.html" class="cta-btn">
+      <span data-i18n="ctaBtn">← 返回创意列表</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  // Between Light & Shadow - Light beam reflection puzzle scene
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+
+  // Dark ambient background
+  const bgGrad = ctx.createRadialGradient(W * 0.3, H * 0.2, 100, W * 0.5, H * 0.5, W * 0.7);
+  bgGrad.addColorStop(0, '#1a1530');
+  bgGrad.addColorStop(0.5, '#0f0d1f');
+  bgGrad.addColorStop(1, '#05040a');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle architectural details - stone walls
+  // Left wall
+  const wallGrad = ctx.createLinearGradient(0, 0, 40, 0);
+  wallGrad.addColorStop(0, '#2a2440');
+  wallGrad.addColorStop(1, '#1a1530');
+  ctx.fillStyle = wallGrad;
+  ctx.fillRect(0, 0, 30, H);
+
+  // Right wall
+  const wallGrad2 = ctx.createLinearGradient(W - 40, 0, W, 0);
+  wallGrad2.addColorStop(0, '#1a1530');
+  wallGrad2.addColorStop(1, '#2a2440');
+  ctx.fillStyle = wallGrad2;
+  ctx.fillRect(W - 30, 0, 30, H);
+
+  // Floor
+  const floorGrad = ctx.createLinearGradient(0, H - 40, 0, H);
+  floorGrad.addColorStop(0, '#1a1530');
+  floorGrad.addColorStop(1, '#2a2440');
+  ctx.fillStyle = floorGrad;
+  ctx.fillRect(0, H - 30, W, 30);
+
+  // Ceiling
+  const ceilGrad = ctx.createLinearGradient(0, 0, 0, 30);
+  ceilGrad.addColorStop(0, '#2a2440');
+  ceilGrad.addColorStop(1, '#1a1530');
+  ctx.fillStyle = ceilGrad;
+  ctx.fillRect(0, 0, W, 30);
+
+  // Stone brick patterns
+  ctx.strokeStyle = 'rgba(60, 50, 90, 0.3)';
+  ctx.lineWidth = 1;
+  for (let y = 40; y < H - 40; y += 30) {
+    ctx.beginPath();
+    ctx.moveTo(30, y);
+    ctx.lineTo(W - 30, y);
+    ctx.stroke();
+  }
+  for (let y = 55; y < H - 40; y += 30) {
+    for (let x = 30; x < W - 30; x += 80) {
+      const offset = (y / 30) % 2 === 0 ? 0 : 40;
+      ctx.beginPath();
+      ctx.moveTo(x + offset, y - 15);
+      ctx.lineTo(x + offset, y + 15);
+      ctx.stroke();
+    }
+  }
+
+  // Dust particles in air
+  for (let i = 0; i < 40; i++) {
+    const x = 30 + Math.random() * (W - 60);
+    const y = 40 + Math.random() * (H - 80);
+    const r = Math.random() * 1.5 + 0.5;
+    ctx.fillStyle = `rgba(255, 200, 100, ${Math.random() * 0.15 + 0.05})`;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Light source - top left
+  const lightX = 60;
+  const lightY = 50;
+
+  // Light source housing (window/sconce)
+  ctx.fillStyle = '#3d3055';
+  ctx.strokeStyle = '#5d4a80';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(lightX, lightY, 18, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Inner glow of source
+  const sourceGlow = ctx.createRadialGradient(lightX, lightY, 2, lightX, lightY, 16);
+  sourceGlow.addColorStop(0, '#fffbe6');
+  sourceGlow.addColorStop(0.3, '#fde68a');
+  sourceGlow.addColorStop(1, 'rgba(253, 230, 138, 0)');
+  ctx.fillStyle = sourceGlow;
+  ctx.beginPath();
+  ctx.arc(lightX, lightY, 16, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Core
+  ctx.fillStyle = '#fffbe6';
+  ctx.beginPath();
+  ctx.arc(lightX, lightY, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Mirrors - define positions and angles
+  // Mirror 1: top area, reflects light down-right
+  const m1 = { x: 280, y: 80, angle: Math.PI / 4, length: 50 };
+  // Mirror 2: middle-left, reflects right
+  const m2 = { x: 200, y: 200, angle: -Math.PI / 4, length: 50 };
+  // Mirror 3: middle-right, reflects down-right
+  const m3 = { x: 500, y: 160, angle: Math.PI / 3, length: 50 };
+  // Mirror 4: lower area
+  const m4 = { x: 650, y: 280, angle: -Math.PI / 6, length: 50 };
+
+  function drawMirror(mirror) {
+    const hl = mirror.length / 2;
+    const dx = Math.cos(mirror.angle) * hl;
+    const dy = Math.sin(mirror.angle) * hl;
+
+    const x1 = mirror.x - dx;
+    const y1 = mirror.y - dy;
+    const x2 = mirror.x + dx;
+    const y2 = mirror.y + dy;
+
+    // Mirror frame (back)
+    const nx = -Math.sin(mirror.angle);
+    const ny = Math.cos(mirror.angle);
+    ctx.fillStyle = '#4a3f6a';
+    ctx.strokeStyle = '#6b5a95';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1 + nx * 4, y1 + ny * 4);
+    ctx.lineTo(x2 + nx * 4, y2 + ny * 4);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x1, y1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Mirror surface
+    const mirrorGrad = ctx.createLinearGradient(x1, y1, x2, y2);
+    mirrorGrad.addColorStop(0, '#e8e0ff');
+    mirrorGrad.addColorStop(0.5, '#ffffff');
+    mirrorGrad.addColorStop(1, '#d0c8f0');
+    ctx.strokeStyle = mirrorGrad;
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    // Mirror highlight
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x1 + nx * 1, y1 + ny * 1);
+    ctx.lineTo(x2 + nx * 1, y2 + ny * 1);
+    ctx.stroke();
+
+    // Mount/base
+    ctx.fillStyle = '#3d3055';
+    ctx.beginPath();
+    ctx.arc(mirror.x, mirror.y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#6b5a95';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = '#8b7cc0';
+    ctx.beginPath();
+    ctx.arc(mirror.x, mirror.y, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Draw all mirrors
+  drawMirror(m1);
+  drawMirror(m2);
+  drawMirror(m3);
+  drawMirror(m4);
+
+  // Light beam path with reflections
+  // Start from light source going down-right
+  function drawLightBeam(points) {
+    // Outer glow
+    ctx.strokeStyle = 'rgba(253, 224, 71, 0.15)';
+    ctx.lineWidth = 24;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    ctx.stroke();
+
+    // Mid glow
+    ctx.strokeStyle = 'rgba(253, 224, 71, 0.3)';
+    ctx.lineWidth = 12;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    ctx.stroke();
+
+    // Inner beam
+    ctx.strokeStyle = 'rgba(255, 251, 230, 0.9)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    ctx.stroke();
+
+    // Core
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    ctx.stroke();
+  }
+
+  // Light beam path: source -> m1 -> m2 -> m3 -> m4 -> target
+  const beamPoints = [
+    { x: lightX, y: lightY },
+    { x: m1.x, y: m1.y },
+    { x: m2.x, y: m2.y },
+    { x: m3.x, y: m3.y },
+    { x: m4.x, y: m4.y },
+    { x: 800, y: 200 }
+  ];
+  drawLightBeam(beamPoints);
+
+  // Target/crystal on the right
+  const targetX = 800;
+  const targetY = 200;
+
+  // Target glow (big)
+  const targetGlow = ctx.createRadialGradient(targetX, targetY, 5, targetX, targetY, 80);
+  targetGlow.addColorStop(0, 'rgba(253, 224, 71, 0.4)');
+  targetGlow.addColorStop(0.3, 'rgba(253, 224, 71, 0.2)');
+  targetGlow.addColorStop(1, 'rgba(253, 224, 71, 0)');
+  ctx.fillStyle = targetGlow;
+  ctx.fillRect(targetX - 80, targetY - 80, 160, 160);
+
+  // Target pedestal
+  ctx.fillStyle = '#3d3055';
+  ctx.fillRect(targetX - 25, targetY + 20, 50, 8);
+  ctx.fillStyle = '#2a2240';
+  ctx.fillRect(targetX - 20, targetY + 28, 40, 12);
+
+  // Crystal target
+  ctx.save();
+  ctx.translate(targetX, targetY);
+
+  // Crystal body
+  const crystalGrad = ctx.createLinearGradient(0, -25, 0, 25);
+  crystalGrad.addColorStop(0, '#fef9c3');
+  crystalGrad.addColorStop(0.5, '#fde047');
+  crystalGrad.addColorStop(1, '#eab308');
+  ctx.fillStyle = crystalGrad;
+  ctx.strokeStyle = '#fef9c3';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, -28);
+  ctx.lineTo(15, -5);
+  ctx.lineTo(10, 20);
+  ctx.lineTo(-10, 20);
+  ctx.lineTo(-15, -5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Crystal facets
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, -28);
+  ctx.lineTo(0, 20);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-15, -5);
+  ctx.lineTo(15, -5);
+  ctx.stroke();
+
+  // Crystal highlight
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.beginPath();
+  ctx.moveTo(-5, -20);
+  ctx.lineTo(0, -28);
+  ctx.lineTo(-2, -5);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.restore();
+
+  // Obstacles/blocks that create shadows
+  function drawObstacle(x, y, w, h) {
+    // Block body
+    const obsGrad = ctx.createLinearGradient(x, y, x + w, y + h);
+    obsGrad.addColorStop(0, '#3d3055');
+    obsGrad.addColorStop(1, '#2a2240');
+    ctx.fillStyle = obsGrad;
+    ctx.strokeStyle = '#5d4a80';
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeRect(x, y, w, h);
+
+    // Top highlight
+    ctx.fillStyle = 'rgba(139, 124, 192, 0.3)';
+    ctx.fillRect(x, y, w, 3);
+  }
+
+  // Some obstacles
+  drawObstacle(380, 220, 40, 60);
+  drawObstacle(120, 130, 30, 50);
+  drawObstacle(580, 60, 35, 45);
+
+  // Shadow from obstacle (cast by light)
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+  ctx.beginPath();
+  ctx.moveTo(380, 220);
+  ctx.lineTo(320, 310);
+  ctx.lineTo(420, 340);
+  ctx.lineTo(420, 280);
+  ctx.closePath();
+  ctx.fill();
+
+  // Decorative - ancient symbols on walls
+  ctx.fillStyle = 'rgba(139, 124, 192, 0.2)';
+  ctx.font = '20px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('☀', 70, 130);
+  ctx.fillText('◈', W - 70, 100);
+  ctx.fillText('⬡', 70, H - 80);
+  ctx.fillText('✦', W - 70, H - 70);
+
+  // Level indicator (bottom right)
+  ctx.fillStyle = 'rgba(60, 50, 90, 0.8)';
+  ctx.strokeStyle = '#6b5a95';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(W - 120, H - 60, 100, 36, 6);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#fde047';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('第 7 关 / Level 7', W - 70, H - 42);
+
+  // Reset button (bottom left)
+  ctx.fillStyle = 'rgba(60, 50, 90, 0.8)';
+  ctx.strokeStyle = '#6b5a95';
+  ctx.beginPath();
+  ctx.roundRect(20, H - 60, 80, 36, 6);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#c4b5fd';
+  ctx.font = '12px sans-serif';
+  ctx.fillText('↻ 重置', 60, H - 42);
+</script>
+
+<script>
+  const translations = {
+    zh: {
+      title: '光影之间 | Between Light & Shadow',
+      langToggle: 'EN',
+      back: '← 返回游戏创意',
+      gameTitle: '光影之间',
+      gameSubtitle: 'Between Light & Shadow',
+      statusBadge: '构思阶段',
+      introTitle: '游戏介绍',
+      introP1: '《光影之间》是一款以光线折射和阴影变化为核心机制的解谜游戏。玩家将在一座神秘的光影之殿中探索，通过旋转镜面、移动棱镜、调整光源，引导光线照亮隐藏的印记，解开一个又一个精心设计的谜题。',
+      introP2: '游戏拥有真实的物理光线系统，每一束光都会根据物理定律进行反射、折射和散射。镜面反射、棱镜分光、透镜聚焦——你需要运用光学知识，让光线按照你的意愿穿行于黑暗的空间之中。',
+      introP3: '独特的氛围美学是游戏的另一大特色。幽暗的环境、流动的光束、细腻的阴影，配合空灵的背景音乐，打造出一个令人沉浸的光影世界。每一关都是一件光影艺术品，等待你去发现和创造。',
+      featuresTitle: '核心玩法',
+      featuresSubtitle: '光与影的艺术，用智慧点亮黑暗',
+      feat1Title: '物理光线系统',
+      feat1Desc: '基于真实物理的光线模拟，反射、折射、散射都遵循光学定律，带来真实的解谜体验。',
+      feat2Title: '阴影机关',
+      feat2Desc: '利用物体投射的阴影触发机关，遮挡特定角度的光线，在黑暗中寻找隐藏的通道。',
+      feat3Title: '镜面反射',
+      feat3Desc: '旋转和放置镜面，让光线绕过障碍。多面镜子组合，创造出复杂的光之路径。',
+      feat4Title: '氛围美学',
+      feat4Desc: '精致的光影画面，空灵的音乐氛围，每一关都是一件可交互的光影艺术品。',
+      techTitle: '技术栈',
+      timelineTitle: '开发进度',
+      tl1Label: '构思阶段',
+      tl1Desc: '核心创意设计',
+      tl2Label: '原型阶段',
+      tl2Desc: '光线系统研发',
+      tl3Label: '开发中',
+      tl3Desc: '关卡与美术制作',
+      tl4Label: '待完成',
+      tl4Desc: '测试与发布',
+      ctaBtn: '← 返回创意列表'
+    },
+    en: {
+      title: 'Between Light & Shadow | 光影之间',
+      langToggle: '中文',
+      back: '← Back to Ideas',
+      gameTitle: 'Between Light & Shadow',
+      gameSubtitle: '光影之间',
+      statusBadge: 'Concept',
+      introTitle: 'About the Game',
+      introP1: 'Between Light & Shadow is a puzzle game centered around light refraction and shadow dynamics. Players explore a mysterious Temple of Light, rotating mirrors, moving prisms, and adjusting light sources to guide beams and illuminate hidden sigils, solving meticulously designed puzzles one by one.',
+      introP2: 'The game features a realistic physics-based light system. Every beam of light reflects, refracts, and scatters according to the laws of physics. Mirror reflections, prism dispersion, lens focusing - you will need to apply your knowledge of optics to make light travel through dark spaces as you wish.',
+      introP3: 'The unique atmospheric aesthetic is another highlight. Dim environments, flowing light beams, delicate shadows, and ethereal background music combine to create an immersive world of light and shadow. Each level is an interactive work of light art, waiting to be discovered.',
+      featuresTitle: 'Core Gameplay',
+      featuresSubtitle: 'The art of light and shadow, illuminate darkness with wisdom',
+      feat1Title: 'Physical Light System',
+      feat1Desc: 'Realistic physics-based light simulation. Reflection, refraction, and scattering follow optical laws for an authentic puzzle experience.',
+      feat2Title: 'Shadow Mechanics',
+      feat2Desc: 'Use shadows cast by objects to trigger mechanisms. Block specific light angles and find hidden paths in darkness.',
+      feat3Title: 'Mirror Reflection',
+      feat3Desc: 'Rotate and place mirrors to bend light around obstacles. Combine multiple mirrors to create complex light paths.',
+      feat4Title: 'Atmospheric Aesthetics',
+      feat4Desc: 'Exquisite light and shadow visuals, ethereal music atmosphere. Each level is an interactive light art piece.',
+      techTitle: 'Tech Stack',
+      timelineTitle: 'Development Progress',
+      tl1Label: 'Concept',
+      tl1Desc: 'Core creative design',
+      tl2Label: 'Prototype',
+      tl2Desc: 'Light system R&D',
+      tl3Label: 'In Development',
+      tl3Desc: 'Level & art production',
+      tl4Label: 'To Do',
+      tl4Desc: 'Testing & release',
+      ctaBtn: '← Back to Ideas'
+    }
+  };
+
+  let currentLang = 'zh';
+
+  function toggleLang() {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    applyLang(currentLang);
+    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+  }
+
+  function applyLang(lang) {
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key]) {
+        el.textContent = t[key];
+      }
+    });
+    document.title = t.title;
+  }
+</script>
+
+</body>
+</html>

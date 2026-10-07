@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="title">像素冒险记 | Pixel Adventure</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f8f9fc;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-border: rgba(255, 255, 255, 0.8);
+    --text-primary: #1a1d2e;
+    --text-secondary: #5a5f7a;
+    --text-tertiary: #8b90a8;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --accent-bg: rgba(99, 102, 241, 0.1);
+    --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.06);
+    --shadow-md: 0 8px 24px rgba(99, 102, 241, 0.08);
+    --shadow-lg: 0 16px 48px rgba(99, 102, 241, 0.12);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+  }
+
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  /* Back Link */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    margin-bottom: 32px;
+  }
+  .back-link:hover {
+    color: var(--accent);
+    background: var(--accent-bg);
+  }
+
+  /* Header */
+  .game-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .game-title {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .game-subtitle {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    font-weight: 400;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    margin-bottom: 48px;
+  }
+  .hero-canvas-wrapper {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .hero-canvas {
+    width: 100%;
+    height: 360px;
+    border-radius: var(--radius-md);
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* Section Titles */
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .section-subtitle {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  /* Intro Section */
+  .intro-section {
+    margin-bottom: 48px;
+  }
+  .intro-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .intro-card p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .intro-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Features Grid */
+  .features-section {
+    margin-bottom: 48px;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+    background: var(--accent-bg);
+  }
+  .feature-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .feature-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Tech Stack */
+  .tech-section {
+    margin-bottom: 48px;
+  }
+  .tech-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tech-tag {
+    padding: 8px 16px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .tech-tag:hover {
+    background: var(--accent);
+    color: white;
+  }
+
+  /* Timeline */
+  .timeline-section {
+    margin-bottom: 48px;
+  }
+  .timeline-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .timeline {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    right: 24px;
+    height: 3px;
+    background: #e5e7f0;
+    border-radius: 2px;
+  }
+  .timeline-progress {
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+    border-radius: 2px;
+    z-index: 1;
+    width: 60%;
+  }
+  .timeline-item {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+    max-width: 120px;
+  }
+  .timeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: white;
+    border: 3px solid #e5e7f0;
+    color: var(--text-tertiary);
+    transition: all 0.3s ease;
+  }
+  .timeline-item.done .timeline-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .timeline-item.active .timeline-dot {
+    background: white;
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-bg);
+  }
+  .timeline-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .timeline-item.done .timeline-label,
+  .timeline-item.active .timeline-label {
+    color: var(--text-primary);
+  }
+  .timeline-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  /* Bottom CTA */
+  .cta-section {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    transition: all 0.3s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container { padding: 20px 16px 48px; }
+    .game-title { font-size: 32px; }
+    .game-subtitle { font-size: 16px; }
+    .hero-canvas { height: 240px; }
+    .intro-card, .tech-card, .timeline-card { padding: 20px; }
+    .section-title { font-size: 20px; }
+    .timeline { flex-direction: column; gap: 20px; }
+    .timeline::before {
+      top: 16px;
+      bottom: 16px;
+      left: 15px;
+      right: auto;
+      width: 3px;
+      height: auto;
+    }
+    .timeline-progress {
+      top: 16px;
+      left: 15px;
+      width: 3px;
+      height: 60%;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-light) 100%);
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      max-width: none;
+      text-align: left;
+    }
+    .timeline-dot { margin: 0; flex-shrink: 0; }
+  }
+
+  /* Language toggle */
+  .lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+  .lang-toggle:hover {
+    color: var(--accent);
+    box-shadow: var(--shadow-md);
+  }
+</style>
+</head>
+<body>
+
+<button class="lang-toggle" onclick="toggleLang()" data-i18n="langToggle">EN</button>
+
+<div class="container">
+  <a href="../index.html" class="back-link">
+    <span data-i18n="back">← 返回游戏创意</span>
+  </a>
+
+  <!-- Header -->
+  <header class="game-header">
+    <h1 class="game-title" data-i18n="gameTitle">像素冒险记</h1>
+    <p class="game-subtitle" data-i18n="gameSubtitle">Pixel Adventure</p>
+    <span class="status-badge" data-i18n="statusBadge">开发中</span>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-canvas-wrapper">
+      <canvas id="gameCanvas" class="hero-canvas" width="900" height="360"></canvas>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section">
+    <h2 class="section-title" data-i18n="introTitle">游戏介绍</h2>
+    <div class="intro-card">
+      <p data-i18n="introP1">《像素冒险记》是一款充满怀旧气息的 2D 横版像素风冒险游戏。玩家将扮演一位勇敢的冒险者，穿越由程序算法生成的奇幻世界，在每一次游戏中体验独一无二的地图布局与冒险旅程。</p>
+      <p data-i18n="introP2">游戏融合了 Roguelike 元素，每一次死亡都是新的开始。你可以选择不同的职业——战士、法师、弓箭手——每种职业都有独特的技能树和成长路线。探索隐藏的地下城，收集稀有装备，挑战强大的 Boss。</p>
+      <p data-i18n="introP3">精心绘制的像素艺术风格配合动态光影效果，让经典的像素世界焕发出新的生命力。无论是老派玩家还是新生代玩家，都能在这款游戏中找到属于自己的乐趣。</p>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <h2 class="section-title" data-i18n="featuresTitle">核心玩法</h2>
+    <p class="section-subtitle" data-i18n="featuresSubtitle">四大特色系统，打造独特冒险体验</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3 class="feature-title" data-i18n="feat1Title">程序化生成地图</h3>
+        <p class="feature-desc" data-i18n="feat1Desc">基于噪声算法的随机地图生成，每次游戏都是全新的世界，保证无限重玩价值。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💀</div>
+        <h3 class="feature-title" data-i18n="feat2Title">Roguelike 元素</h3>
+        <p class="feature-desc" data-i18n="feat2Desc">永久死亡机制，每次冒险都是全新挑战。解锁成就获得永久增益，越玩越强。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3 class="feature-title" data-i18n="feat3Title">像素艺术风格</h3>
+        <p class="feature-desc" data-i18n="feat3Desc">16-bit 风格精美像素画面，配合动态光照与粒子效果，复古与现代完美融合。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚔️</div>
+        <h3 class="feature-title" data-i18n="feat4Title">多职业系统</h3>
+        <p class="feature-desc" data-i18n="feat4Desc">战士、法师、弓箭手三大职业，各具特色技能树和装备体系，玩法截然不同。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack -->
+  <section class="tech-section">
+    <h2 class="section-title" data-i18n="techTitle">技术栈</h2>
+    <div class="tech-card">
+      <div class="tech-tags">
+        <span class="tech-tag">Unity</span>
+        <span class="tech-tag">C#</span>
+        <span class="tech-tag">Pixel Art</span>
+        <span class="tech-tag">Procedural Generation</span>
+        <span class="tech-tag">Aseprite</span>
+        <span class="tech-tag">Tiled</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="timeline-section">
+    <h2 class="section-title" data-i18n="timelineTitle">开发进度</h2>
+    <div class="timeline-card">
+      <div class="timeline">
+        <div class="timeline-progress"></div>
+        <div class="timeline-item done">
+          <div class="timeline-dot">✓</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl1Label">构思阶段</div>
+            <div class="timeline-desc" data-i18n="tl1Desc">核心概念设计</div>
+          </div>
+        </div>
+        <div class="timeline-item done">
+          <div class="timeline-dot">✓</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl2Label">原型阶段</div>
+            <div class="timeline-desc" data-i18n="tl2Desc">Demo 玩法验证</div>
+          </div>
+        </div>
+        <div class="timeline-item active">
+          <div class="timeline-dot">●</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl3Label">开发中</div>
+            <div class="timeline-desc" data-i18n="tl3Desc">关卡与系统实现</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">○</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl4Label">待完成</div>
+            <div class="timeline-desc" data-i18n="tl4Desc">测试与发布</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <a href="../index.html" class="cta-btn">
+      <span data-i18n="ctaBtn">← 返回创意列表</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  // Pixel Adventure Scene - Canvas Drawing
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // Sky gradient
+  const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  skyGradient.addColorStop(0, '#87CEEB');
+  skyGradient.addColorStop(0.6, '#B0E0E6');
+  skyGradient.addColorStop(1, '#E0F0FF');
+  ctx.fillStyle = skyGradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Sun
+  ctx.fillStyle = '#FFD93D';
+  ctx.beginPath();
+  ctx.arc(750, 60, 30, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 217, 61, 0.3)';
+  ctx.beginPath();
+  ctx.arc(750, 60, 45, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Clouds - pixel style
+  function drawPixelCloud(x, y, scale) {
+    const s = scale;
+    ctx.fillStyle = '#FFFFFF';
+    // Cloud blocks
+    const blocks = [
+      [2,0],[3,0],[4,0],[5,0],
+      [1,1],[2,1],[3,1],[4,1],[5,1],[6,1],
+      [0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[7,2],
+      [1,3],[2,3],[3,3],[4,3],[5,3],[6,3],
+    ];
+    blocks.forEach(([bx, by]) => {
+      ctx.fillRect(x + bx * s, y + by * s, s, s);
+    });
+  }
+  drawPixelCloud(80, 50, 6);
+  drawPixelCloud(300, 80, 5);
+  drawPixelCloud(550, 40, 7);
+
+  // Far mountains
+  ctx.fillStyle = '#9BA3AF';
+  ctx.beginPath();
+  ctx.moveTo(0, 220);
+  ctx.lineTo(100, 160);
+  ctx.lineTo(180, 200);
+  ctx.lineTo(280, 140);
+  ctx.lineTo(380, 190);
+  ctx.lineTo(500, 150);
+  ctx.lineTo(620, 200);
+  ctx.lineTo(750, 160);
+  ctx.lineTo(850, 190);
+  ctx.lineTo(900, 170);
+  ctx.lineTo(900, 260);
+  ctx.lineTo(0, 260);
+  ctx.closePath();
+  ctx.fill();
+
+  // Near mountains
+  ctx.fillStyle = '#7C8594';
+  ctx.beginPath();
+  ctx.moveTo(0, 260);
+  ctx.lineTo(80, 200);
+  ctx.lineTo(200, 240);
+  ctx.lineTo(350, 180);
+  ctx.lineTo(480, 230);
+  ctx.lineTo(600, 190);
+  ctx.lineTo(750, 240);
+  ctx.lineTo(900, 200);
+  ctx.lineTo(900, 280);
+  ctx.lineTo(0, 280);
+  ctx.closePath();
+  ctx.fill();
+
+  // Ground
+  const groundY = 280;
+  ctx.fillStyle = '#5D8C3E';
+  ctx.fillRect(0, groundY, canvas.width, 80);
+
+  // Ground top grass detail
+  ctx.fillStyle = '#6BA84A';
+  for (let x = 0; x < canvas.width; x += 4) {
+    ctx.fillRect(x, groundY, 2, 4);
+  }
+
+  // Dirt layer
+  ctx.fillStyle = '#8B5A2B';
+  ctx.fillRect(0, groundY + 20, canvas.width, 60);
+
+  // Dirt texture dots
+  ctx.fillStyle = '#6B4423';
+  for (let x = 10; x < canvas.width; x += 30) {
+    for (let y = groundY + 30; y < groundY + 75; y += 18) {
+      ctx.fillRect(x + (y % 15), y, 4, 4);
+    }
+  }
+
+  // Trees - pixel style
+  function drawPixelTree(baseX, baseY, scale) {
+    const s = scale;
+    // Trunk
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(baseX - s, baseY - s * 8, s * 2, s * 8);
+    // Leaves - layered
+    ctx.fillStyle = '#2E7D32';
+    // Bottom layer
+    for (let i = 0; i < 7; i++) {
+      ctx.fillRect(baseX - s * 3 + i * s, baseY - s * 10, s, s * 2);
+    }
+    // Middle layer
+    ctx.fillStyle = '#388E3C';
+    for (let i = 0; i < 5; i++) {
+      ctx.fillRect(baseX - s * 2 + i * s, baseY - s * 14, s, s * 4);
+    }
+    // Top layer
+    ctx.fillStyle = '#43A047';
+    for (let i = 0; i < 3; i++) {
+      ctx.fillRect(baseX - s + i * s, baseY - s * 17, s, s * 3);
+    }
+  }
+  drawPixelTree(120, groundY, 5);
+  drawPixelTree(350, groundY, 4);
+  drawPixelTree(600, groundY, 6);
+  drawPixelTree(800, groundY, 4.5);
+
+  // Bushes
+  function drawBush(x, y, s) {
+    ctx.fillStyle = '#4CAF50';
+    ctx.fillRect(x - s * 2, y - s, s * 4, s);
+    ctx.fillRect(x - s * 1.5, y - s * 2, s * 3, s);
+    ctx.fillRect(x - s, y - s * 2.5, s * 2, s * 0.5);
+  }
+  drawBush(200, groundY, 4);
+  drawBush(500, groundY, 3);
+  drawBush(700, groundY, 4);
+
+  // Pixel Character - Hero
+  const heroX = 440;
+  const heroY = groundY - 4;
+  const ps = 3; // pixel size
+
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.beginPath();
+  ctx.ellipse(heroX, groundY + 2, 12, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Hat
+  ctx.fillStyle = '#C62828';
+  ctx.fillRect(heroX - ps * 3, heroY - ps * 13, ps * 6, ps * 2);
+  ctx.fillRect(heroX - ps * 2, heroY - ps * 14, ps * 4, ps);
+  // Hat brim
+  ctx.fillStyle = '#8B0000';
+  ctx.fillRect(heroX - ps * 4, heroY - ps * 11, ps * 8, ps);
+
+  // Head
+  ctx.fillStyle = '#FFCC80';
+  ctx.fillRect(heroX - ps * 3, heroY - ps * 10, ps * 6, ps * 4);
+  // Eyes
+  ctx.fillStyle = '#2D2D2D';
+  ctx.fillRect(heroX - ps * 2, heroY - ps * 9, ps, ps);
+  ctx.fillRect(heroX + ps, heroY - ps * 9, ps, ps);
+  // Mouth
+  ctx.fillStyle = '#D84315';
+  ctx.fillRect(heroX - ps, heroY - ps * 7, ps * 2, ps * 0.5);
+
+  // Body - green tunic
+  ctx.fillStyle = '#2E7D32';
+  ctx.fillRect(heroX - ps * 3, heroY - ps * 6, ps * 6, ps * 4);
+  // Belt
+  ctx.fillStyle = '#5D4037';
+  ctx.fillRect(heroX - ps * 3, heroY - ps * 3, ps * 6, ps);
+  // Belt buckle
+  ctx.fillStyle = '#FFD700';
+  ctx.fillRect(heroX - ps * 0.5, heroY - ps * 3, ps, ps);
+
+  // Arms
+  ctx.fillStyle = '#FFCC80';
+  ctx.fillRect(heroX - ps * 4, heroY - ps * 6, ps, ps * 3);
+  ctx.fillRect(heroX + ps * 3, heroY - ps * 6, ps, ps * 3);
+
+  // Legs
+  ctx.fillStyle = '#5D4037';
+  ctx.fillRect(heroX - ps * 2.5, heroY - ps * 2, ps * 2, ps * 2);
+  ctx.fillRect(heroX + ps * 0.5, heroY - ps * 2, ps * 2, ps * 2);
+
+  // Boots
+  ctx.fillStyle = '#3E2723';
+  ctx.fillRect(heroX - ps * 3, heroY, ps * 2.5, ps);
+  ctx.fillRect(heroX + ps * 0.5, heroY, ps * 2.5, ps);
+
+  // Sword on back
+  ctx.fillStyle = '#9E9E9E';
+  ctx.fillRect(heroX + ps * 3.5, heroY - ps * 12, ps, ps * 8);
+  ctx.fillStyle = '#FFD700';
+  ctx.fillRect(heroX + ps * 3, heroY - ps * 5, ps * 2, ps);
+
+  // Floating coins
+  function drawCoin(x, y) {
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#FFA000';
+    ctx.beginPath();
+    ctx.arc(x, y, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  drawCoin(heroX + 40, heroY - 30);
+  drawCoin(heroX + 60, heroY - 50);
+  drawCoin(heroX + 50, heroY - 70);
+
+  // Heart floating
+  ctx.fillStyle = '#E91E63';
+  ctx.beginPath();
+  const hx = heroX - 50, hy = heroY - 40;
+  ctx.moveTo(hx, hy + 2);
+  ctx.bezierCurveTo(hx, hy, hx - 5, hy, hx - 5, hy + 3);
+  ctx.bezierCurveTo(hx - 5, hy + 6, hx, hy + 8, hx, hy + 10);
+  ctx.bezierCurveTo(hx, hy + 8, hx + 5, hy + 6, hx + 5, hy + 3);
+  ctx.bezierCurveTo(hx + 5, hy, hx, hy, hx, hy + 2);
+  ctx.fill();
+
+  // Ground flowers
+  function drawFlower(x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x - 2, y - 4, 4, 4);
+    ctx.fillStyle = '#4CAF50';
+    ctx.fillRect(x - 0.5, y, 1, 3);
+  }
+  drawFlower(150, groundY, '#E91E63');
+  drawFlower(250, groundY, '#9C27B0');
+  drawFlower(420, groundY, '#FF9800');
+  drawFlower(650, groundY, '#E91E63');
+  drawFlower(780, groundY, '#9C27B0');
+</script>
+
+<script>
+  // i18n - Bilingual support
+  const translations = {
+    zh: {
+      title: '像素冒险记 | Pixel Adventure',
+      langToggle: 'EN',
+      back: '← 返回游戏创意',
+      gameTitle: '像素冒险记',
+      gameSubtitle: 'Pixel Adventure',
+      statusBadge: '开发中',
+      introTitle: '游戏介绍',
+      introP1: '《像素冒险记》是一款充满怀旧气息的 2D 横版像素风冒险游戏。玩家将扮演一位勇敢的冒险者，穿越由程序算法生成的奇幻世界，在每一次游戏中体验独一无二的地图布局与冒险旅程。',
+      introP2: '游戏融合了 Roguelike 元素，每一次死亡都是新的开始。你可以选择不同的职业——战士、法师、弓箭手——每种职业都有独特的技能树和成长路线。探索隐藏的地下城，收集稀有装备，挑战强大的 Boss。',
+      introP3: '精心绘制的像素艺术风格配合动态光影效果，让经典的像素世界焕发出新的生命力。无论是老派玩家还是新生代玩家，都能在这款游戏中找到属于自己的乐趣。',
+      featuresTitle: '核心玩法',
+      featuresSubtitle: '四大特色系统，打造独特冒险体验',
+      feat1Title: '程序化生成地图',
+      feat1Desc: '基于噪声算法的随机地图生成，每次游戏都是全新的世界，保证无限重玩价值。',
+      feat2Title: 'Roguelike 元素',
+      feat2Desc: '永久死亡机制，每次冒险都是全新挑战。解锁成就获得永久增益，越玩越强。',
+      feat3Title: '像素艺术风格',
+      feat3Desc: '16-bit 风格精美像素画面，配合动态光照与粒子效果，复古与现代完美融合。',
+      feat4Title: '多职业系统',
+      feat4Desc: '战士、法师、弓箭手三大职业，各具特色技能树和装备体系，玩法截然不同。',
+      techTitle: '技术栈',
+      timelineTitle: '开发进度',
+      tl1Label: '构思阶段',
+      tl1Desc: '核心概念设计',
+      tl2Label: '原型阶段',
+      tl2Desc: 'Demo 玩法验证',
+      tl3Label: '开发中',
+      tl3Desc: '关卡与系统实现',
+      tl4Label: '待完成',
+      tl4Desc: '测试与发布',
+      ctaBtn: '← 返回创意列表'
+    },
+    en: {
+      title: 'Pixel Adventure | 像素冒险记',
+      langToggle: '中文',
+      back: '← Back to Ideas',
+      gameTitle: 'Pixel Adventure',
+      gameSubtitle: '像素冒险记',
+      statusBadge: 'In Development',
+      introTitle: 'About the Game',
+      introP1: 'Pixel Adventure is a nostalgic 2D side-scrolling pixel art adventure game. Players take on the role of a brave adventurer, traversing a fantasy world generated by procedural algorithms, experiencing unique map layouts and journey every time you play.',
+      introP2: 'The game incorporates Roguelike elements - every death is a new beginning. Choose from different classes - Warrior, Mage, Archer - each with unique skill trees and progression paths. Explore hidden dungeons, collect rare equipment, and challenge powerful bosses.',
+      introP3: 'Carefully crafted pixel art style combined with dynamic lighting effects breathes new life into the classic pixel world. Both veteran players and new generations can find their own joy in this game.',
+      featuresTitle: 'Core Gameplay',
+      featuresSubtitle: 'Four unique systems for a distinctive adventure experience',
+      feat1Title: 'Procedural Generation',
+      feat1Desc: 'Random map generation based on noise algorithms. Every game is a brand new world, ensuring infinite replay value.',
+      feat2Title: 'Roguelike Elements',
+      feat2Desc: 'Permadeath mechanics make every adventure a fresh challenge. Unlock achievements for permanent buffs.',
+      feat3Title: 'Pixel Art Style',
+      feat3Desc: 'Beautiful 16-bit style pixel graphics with dynamic lighting and particle effects. Retro meets modern.',
+      feat4Title: 'Multi-Class System',
+      feat4Desc: 'Three classes - Warrior, Mage, Archer - each with unique skill trees and equipment systems.',
+      techTitle: 'Tech Stack',
+      timelineTitle: 'Development Progress',
+      tl1Label: 'Concept',
+      tl1Desc: 'Core concept design',
+      tl2Label: 'Prototype',
+      tl2Desc: 'Gameplay demo validation',
+      tl3Label: 'In Development',
+      tl3Desc: 'Level & system implementation',
+      tl4Label: 'To Do',
+      tl4Desc: 'Testing & release',
+      ctaBtn: '← Back to Ideas'
+    }
+  };
+
+  let currentLang = 'zh';
+
+  function toggleLang() {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    applyLang(currentLang);
+    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+  }
+
+  function applyLang(lang) {
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key]) {
+        el.textContent = t[key];
+      }
+    });
+    document.title = t.title;
+  }
+</script>
+
+</body>
+</html>

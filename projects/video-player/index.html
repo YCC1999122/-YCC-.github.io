@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="page.title">视频播放器 / Video Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --bg: #f8f9fc;
+    --bg-2: #f1f3f9;
+    --bg-3: #e8ebf3;
+    --bg-card: rgba(255, 255, 255, 0.75);
+    --bg-glass: rgba(255, 255, 255, 0.6);
+    --text: #1a1a2e;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --primary: #6d28d9;
+    --primary-light: #8b5cf6;
+    --secondary: #0891b2;
+    --accent: #db2777;
+    --success: #059669;
+    --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+    --gradient-2: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    --gradient-3: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+    --border: rgba(0, 0, 0, 0.06);
+    --border-light: rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 60px rgba(109, 40, 217, 0.12);
+    --radius-sm: 6px;
+    --radius: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 28px;
+    --font-body: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+    --font-cn: 'ZCOOL XiaoWei', 'Noto Sans SC', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-tech: 'Orbitron', 'JetBrains Mono', monospace;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* 背景光晕 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: rgba(139, 92, 246, 0.1);
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -200px;
+    right: -200px;
+    width: 500px;
+    height: 500px;
+    background: rgba(6, 182, 212, 0.08);
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== 返回链接 ===== */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: var(--font-cn);
+    letter-spacing: 1px;
+    transition: var(--transition);
+    margin: 24px 0;
+  }
+
+  .back-link:hover {
+    color: var(--primary-light);
+    transform: translateX(-4px);
+  }
+
+  .back-link .arrow {
+    font-size: 18px;
+    transition: var(--transition);
+  }
+
+  /* ===== 页头 ===== */
+  .page-header {
+    text-align: center;
+    padding: 40px 0 50px;
+  }
+
+  .page-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+  }
+
+  .page-label .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--success);
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 8px var(--success); }
+    50% { transform: scale(1.4); box-shadow: 0 0 20px var(--success); }
+  }
+
+  .page-title {
+    font-family: var(--font-cn);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: 3px;
+  }
+
+  .page-title .gradient-text {
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 300% 300%;
+    animation: gradientShift 6s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .page-subtitle {
+    font-family: var(--font-cn);
+    font-size: 17px;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    line-height: 1.8;
+  }
+
+  /* ===== 视频播放器 ===== */
+  .video-player-section {
+    margin-bottom: 40px;
+  }
+
+  .video-player {
+    background: #0f172a;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(15, 23, 42, 0.25);
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+
+  /* 模拟视频画面 */
+  .video-screen {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(139, 92, 246, 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(6, 182, 212, 0.35) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(236, 72, 153, 0.25) 0%, transparent 45%),
+      linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    overflow: hidden;
+  }
+
+  .video-screen::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 15%;
+    width: 200px;
+    height: 200px;
+    background: rgba(139, 92, 246, 0.3);
+    border-radius: 50%;
+    filter: blur(40px);
+    animation: floatShape 8s ease-in-out infinite;
+  }
+
+  .video-screen::after {
+    content: '';
+    position: absolute;
+    bottom: 25%;
+    right: 20%;
+    width: 150px;
+    height: 150px;
+    background: rgba(6, 182, 212, 0.3);
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    filter: blur(30px);
+    animation: floatShape 10s ease-in-out infinite reverse;
+  }
+
+  @keyframes floatShape {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.1); }
+    66% { transform: translate(-20px, 25px) scale(0.95); }
+  }
+
+  /* 几何图形装饰 */
+  .geo-shape {
+    position: absolute;
+    opacity: 0.15;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .geo-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    top: 25%;
+    right: 30%;
+    animation: rotate 20s linear infinite;
+  }
+
+  .geo-square {
+    width: 60px;
+    height: 60px;
+    top: 55%;
+    left: 25%;
+    transform: rotate(45deg);
+    animation: rotate 15s linear infinite reverse;
+  }
+
+  .geo-triangle {
+    width: 0;
+    height: 0;
+    border-left: 35px solid transparent;
+    border-right: 35px solid transparent;
+    border-bottom: 60px solid rgba(255, 255, 255, 0.15);
+    top: 35%;
+    left: 45%;
+    animation: floatY 6s ease-in-out infinite;
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  /* 大播放按钮 */
+  .big-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 5;
+  }
+
+  .big-play-btn:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+  }
+
+  .big-play-btn.playing {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+
+  .big-play-btn .play-icon {
+    width: 0;
+    height: 0;
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+    border-left: 28px solid #fff;
+    margin-left: 6px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+  }
+
+  /* 视频底部控制栏 */
+  .video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 20px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+    z-index: 10;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  /* 进度条 */
+  .progress-bar {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 12px;
+    transition: height 0.2s ease;
+  }
+
+  .progress-bar:hover {
+    height: 7px;
+  }
+
+  .progress-filled {
+    height: 100%;
+    width: 62%;
+    background: var(--gradient-1);
+    border-radius: 3px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+  }
+
+  .progress-thumb {
+    position: absolute;
+    top: 50%;
+    right: -6px;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .progress-bar:hover .progress-thumb {
+    opacity: 1;
+  }
+
+  .progress-buffered {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 78%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+
+  /* 控制按钮行 */
+  .controls-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #fff;
+  }
+
+  .ctrl-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.1);
+  }
+
+  .ctrl-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  .ctrl-btn.play-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .time-display {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  .time-display .current {
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .time-display .divider {
+    opacity: 0.5;
+    margin: 0 4px;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  /* 音量控制 */
+  .volume-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .volume-slider {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+
+  .volume-group:hover .volume-slider {
+    width: 80px;
+  }
+
+  .volume-track {
+    width: 80px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .volume-filled {
+    height: 100%;
+    width: 70%;
+    background: #fff;
+    border-radius: 2px;
+  }
+
+  /* ===== 功能区 ===== */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 28px;
+    margin-bottom: 40px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: var(--transition);
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow);
+    border-color: rgba(139, 92, 246, 0.15);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.01);
+  }
+
+  .card-header-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--gradient-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .card-header h3 {
+    font-family: var(--font-cn);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 2px;
+  }
+
+  .card-header .badge {
+    margin-left: auto;
+    padding: 4px 12px;
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--primary-light);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
+  /* 播放列表 */
+  .playlist {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .playlist-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    align-items: center;
+  }
+
+  .playlist-item:hover {
+    background: var(--bg-2);
+  }
+
+  .playlist-item.active {
+    background: rgba(139, 92, 246, 0.08);
+  }
+
+  .playlist-item.active .pl-title {
+    color: var(--primary);
+  }
+
+  .pl-thumb {
+    width: 90px;
+    height: 54px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pl-thumb.t1 { background: linear-gradient(135deg, #6d28d9, #06b6d4); }
+  .pl-thumb.t2 { background: linear-gradient(135deg, #ec4899, #8b5cf6); }
+  .pl-thumb.t3 { background: linear-gradient(135deg, #10b981, #06b6d4); }
+  .pl-thumb.t4 { background: linear-gradient(135deg, #f59e0b, #ec4899); }
+
+  .pl-thumb::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 12px solid rgba(255, 255, 255, 0.8);
+  }
+
+  .pl-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pl-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: var(--font-cn);
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+  }
+
+  .pl-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .pl-duration {
+    padding: 2px 8px;
+    background: var(--bg-2);
+    border-radius: 2px;
+    font-size: 11px;
+  }
+
+  .playing-indicator {
+    display: none;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+  }
+
+  .playlist-item.active .playing-indicator {
+    display: flex;
+  }
+
+  .playlist-item.active .pl-duration {
+    display: none;
+  }
+
+  .playing-bar {
+    width: 3px;
+    background: var(--primary-light);
+    border-radius: 2px;
+    animation: playingBars 1s ease-in-out infinite;
+  }
+
+  .playing-bar:nth-child(1) { height: 60%; animation-delay: 0s; }
+  .playing-bar:nth-child(2) { height: 100%; animation-delay: 0.2s; }
+  .playing-bar:nth-child(3) { height: 40%; animation-delay: 0.4s; }
+  .playing-bar:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+
+  @keyframes playingBars {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1); }
+  }
+
+  /* 视频信息 */
+  .video-info-header {
+    margin-bottom: 20px;
+  }
+
+  .video-title {
+    font-family: var(--font-cn);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: 1.5px;
+    line-height: 1.4;
+  }
+
+  .video-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .video-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .video-meta-item .meta-icon {
+    font-size: 14px;
+  }
+
+  .info-section {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .info-section + .info-section {
+    margin-top: 20px;
+  }
+
+  .info-label {
+    font-family: var(--font-tech);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .video-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    padding: 6px 14px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+    cursor: pointer;
+  }
+
+  .tag:hover {
+    border-color: var(--primary-light);
+    color: var(--primary-light);
+    background: rgba(139, 92, 246, 0.05);
+  }
+
+  /* ===== 键盘快捷键 ===== */
+  .shortcuts-section {
+    margin-bottom: 60px;
+  }
+
+  .shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .shortcut-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--bg-2);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+  }
+
+  .shortcut-item:hover {
+    background: rgba(139, 92, 246, 0.06);
+    transform: translateY(-2px);
+  }
+
+  .shortcut-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-family: var(--font-cn);
+    letter-spacing: 0.5px;
+  }
+
+  .shortcut-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 10px;
+    background: #fff;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .shortcut-keys {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .shortcut-keys .plus {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  /* ===== 页脚 ===== */
+  .page-footer {
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    letter-spacing: 1px;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 900px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .container {
+      padding: 0 20px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .page-title {
+      font-size: 32px;
+      letter-spacing: 2px;
+    }
+
+    .page-subtitle {
+      font-size: 15px;
+    }
+
+    .video-player {
+      border-radius: var(--radius);
+    }
+
+    .big-play-btn {
+      width: 70px;
+      height: 70px;
+    }
+
+    .big-play-btn .play-icon {
+      border-top-width: 14px;
+      border-bottom-width: 14px;
+      border-left-width: 22px;
+    }
+
+    .controls-row {
+      gap: 10px;
+    }
+
+    .ctrl-btn {
+      width: 32px;
+      height: 32px;
+    }
+
+    .ctrl-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .time-display {
+      font-size: 11px;
+    }
+
+    .volume-group:hover .volume-slider {
+      width: 60px;
+    }
+
+    .volume-track {
+      width: 60px;
+    }
+
+    .card-header {
+      padding: 16px 18px;
+    }
+
+    .card-header h3 {
+      font-size: 16px;
+    }
+
+    .shortcuts-grid {
+      grid-template-columns: 1fr;
+      padding: 16px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 返回链接 -->
+  <a href="../../index.html" class="back-link">
+    <span class="arrow">←</span>
+    <span data-i18n="back.home">返回首页</span>
+  </a>
+
+  <!-- 页头 -->
+  <header class="page-header">
+    <div class="page-label">
+      <span class="dot"></span>
+      <span data-i18n="page.tag">MEDIA PLAYER DEMO</span>
+    </div>
+    <h1 class="page-title">
+      <span data-i18n="page.title">视频播放器</span>
+      <span class="gradient-text" data-i18n="page.titleEn">Video Player</span>
+    </h1>
+    <p class="page-subtitle" data-i18n="page.subtitle">轻量网页视频播放器演示</p>
+  </header>
+
+  <!-- 视频播放器 -->
+  <section class="video-player-section">
+    <div class="video-player" id="videoPlayer">
+      <!-- 视频画面 -->
+      <div class="video-screen">
+        <div class="geo-shape geo-circle"></div>
+        <div class="geo-shape geo-square"></div>
+        <div class="geo-shape geo-triangle"></div>
+      </div>
+
+      <!-- 大播放按钮 -->
+      <div class="big-play-btn" id="bigPlayBtn">
+        <div class="play-icon"></div>
+      </div>
+
+      <!-- 控制栏 -->
+      <div class="video-controls">
+        <!-- 进度条 -->
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-buffered"></div>
+          <div class="progress-filled" id="progressFilled">
+            <div class="progress-thumb"></div>
+          </div>
+        </div>
+
+        <!-- 控制按钮 -->
+        <div class="controls-row">
+          <button class="ctrl-btn play-btn" id="playBtn" aria-label="play">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button class="ctrl-btn" aria-label="previous">
+            <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+          </button>
+          <button class="ctrl-btn" aria-label="next">
+            <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+
+          <div class="time-display">
+            <span class="current" id="currentTime">03:24</span>
+            <span class="divider">/</span>
+            <span class="total" id="totalTime">05:30</span>
+          </div>
+
+          <div class="spacer"></div>
+
+          <!-- 音量 -->
+          <div class="volume-group">
+            <button class="ctrl-btn" aria-label="volume">
+              <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            </button>
+            <div class="volume-slider">
+              <div class="volume-track">
+                <div class="volume-filled"></div>
+              </div>
+            </div>
+          </div>
+
+          <button class="ctrl-btn" aria-label="settings">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          </button>
+
+          <button class="ctrl-btn" aria-label="fullscreen">
+            <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能区 -->
+  <section class="content-grid">
+    <!-- 播放列表 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 10h12v2H4zm0-4h12v2H4zm0 8h8v2H4zm10 0v6l5-3z"/></svg>
+        </div>
+        <h3 data-i18n="playlist.title">播放列表</h3>
+        <span class="badge" data-i18n="playlist.count">4 videos</span>
+      </div>
+      <div class="card-body">
+        <div class="playlist" id="playlist">
+          <div class="playlist-item active" data-index="0">
+            <div class="pl-thumb t1"></div>
+            <div class="pl-info">
+              <div class="pl-title" data-i18n="playlist.item1.title">星空漫步</div>
+              <div class="pl-meta">
+                <span class="pl-duration">05:30</span>
+                <div class="playing-indicator">
+                  <div class="playing-bar"></div>
+                  <div class="playing-bar"></div>
+                  <div class="playing-bar"></div>
+                  <div class="playing-bar"></div>
+                </div>
+                <span data-i18n="playlist.item1.views">12.5K 观看</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="playlist-item" data-index="1">
+            <div class="pl-thumb t2"></div>
+            <div class="pl-info">
+              <div class="pl-title" data-i18n="playlist.item2.title">城市夜曲</div>
+              <div class="pl-meta">
+                <span class="pl-duration">04:15</span>
+                <span data-i18n="playlist.item2.views">8.2K 观看</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="playlist-item" data-index="2">
+            <div class="pl-thumb t3"></div>
+            <div class="pl-info">
+              <div class="pl-title" data-i18n="playlist.item3.title">深海秘境</div>
+              <div class="pl-meta">
+                <span class="pl-duration">06:42</span>
+                <span data-i18n="playlist.item3.views">15.8K 观看</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="playlist-item" data-index="3">
+            <div class="pl-thumb t4"></div>
+            <div class="pl-info">
+              <div class="pl-title" data-i18n="playlist.item4.title">日落山丘</div>
+              <div class="pl-meta">
+                <span class="pl-duration">03:58</span>
+                <span data-i18n="playlist.item4.views">6.7K 观看</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 视频信息 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        </div>
+        <h3 data-i18n="info.title">视频信息</h3>
+        <span class="badge" data-i18n="info.badge">HD 1080p</span>
+      </div>
+      <div class="card-body" style="padding: 24px;">
+        <div class="video-info-header">
+          <h2 class="video-title" data-i18n="info.videoTitle">星空漫步 · 宇宙探索之旅</h2>
+          <div class="video-meta-row">
+            <div class="video-meta-item">
+              <span class="meta-icon">👁</span>
+              <span data-i18n="info.views">12,543 次观看</span>
+            </div>
+            <div class="video-meta-item">
+              <span class="meta-icon">📅</span>
+              <span data-i18n="info.date">2025-03-15</span>
+            </div>
+            <div class="video-meta-item">
+              <span class="meta-icon">⏱</span>
+              <span data-i18n="info.duration">5 分 30 秒</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <div class="info-label" data-i18n="info.descLabel">简介</div>
+          <p class="video-desc" data-i18n="info.description">
+            一段穿越浩瀚星海的视觉旅程，从近地轨道到遥远星系，见证宇宙的壮丽与神秘。
+            采用 4K 高清拍摄，配合沉浸式音效，带来身临其境的太空漫游体验。
+          </p>
+        </div>
+
+        <div class="info-section">
+          <div class="info-label" data-i18n="info.tagsLabel">标签</div>
+          <div class="tag-list">
+            <span class="tag" data-i18n="tag.space">太空</span>
+            <span class="tag" data-i18n="tag.nature">自然</span>
+            <span class="tag" data-i18n="tag.relaxation">治愈</span>
+            <span class="tag" data-i18n="tag.4k">4K</span>
+            <span class="tag" data-i18n="tag.documentary">纪录片</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 键盘快捷键 -->
+  <section class="shortcuts-section">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
+        </div>
+        <h3 data-i18n="shortcuts.title">键盘快捷键</h3>
+        <span class="badge" data-i18n="shortcuts.badge">8 shortcuts</span>
+      </div>
+      <div class="shortcuts-grid">
+        <div class="shortcut-item">
+          <span class="shortcut-label" data-i18n="shortcut.playPause">播放 / 暂停</span>
+          <div class="shortcut-keys">
+            <span class="shortcut-key">Space</span>
+          </div>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-label" data-i18n="shortcut.forward">快进 10 秒</span>
+          <div class="shortcut-keys">
+            <span class="shortcut-key">→</span>
+          </div>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-label" data-i18n="shortcut.backward">后退 10 秒</span>
+          <div class="shortcut-keys">
+            <span class="shortcut-key">←</span>
+          </div>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-label" data-i18n="shortcut.volumeUp">音量增加</span>
+          <div class="shortcut-keys">
+            <span class="shortcut-key">↑</span>
+          </div>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-label" data-i18n="shortcut.volumeDown">音量减少</span>
+          <div class="shortcut-keys">
+            <span class="shortcut-key">↓</span>
+          </div>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-label" data-i18n="shortcut.mute">静音 / 取消静音</span>
+          <div class="shortcut-keys">
+            <span class="shortcut-key">M</span>
+          </div>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-label" data-i18n="shortcut.fullscreen">全屏</span>
+          <div class="shortcut-keys">
+            <span class="shortcut-key">F</span>
+          </div>
+        </div>
+        <div class="shortcut-item">
+          <span class="shortcut-label" data-i18n="shortcut.next">下一个视频</span>
+          <div class="shortcut-keys">
+            <span class="shortcut-key">Shift</span>
+            <span class="plus">+</span>
+            <span class="shortcut-key">N</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="page-footer">
+    <span data-i18n="footer.text">Video Player Demo — 纯 HTML + CSS + JavaScript 构建</span>
+  </footer>
+</div>
+
+<script>
+  // ===== i18n 翻译 =====
+  const i18n = {
+    zh: {
+      'back.home': '返回首页',
+      'page.tag': 'MEDIA PLAYER DEMO / 媒体播放器演示',
+      'page.title': '视频播放器',
+      'page.titleEn': '/ Video Player',
+      'page.subtitle': '轻量网页视频播放器演示',
+      'playlist.title': '播放列表',
+      'playlist.count': '4 个视频',
+      'playlist.item1.title': '星空漫步',
+      'playlist.item1.views': '12.5K 观看',
+      'playlist.item2.title': '城市夜曲',
+      'playlist.item2.views': '8.2K 观看',
+      'playlist.item3.title': '深海秘境',
+      'playlist.item3.views': '15.8K 观看',
+      'playlist.item4.title': '日落山丘',
+      'playlist.item4.views': '6.7K 观看',
+      'info.title': '视频信息',
+      'info.badge': 'HD 1080p',
+      'info.videoTitle': '星空漫步 · 宇宙探索之旅',
+      'info.views': '12,543 次观看',
+      'info.date': '2025-03-15',
+      'info.duration': '5 分 30 秒',
+      'info.descLabel': '简介',
+      'info.description': '一段穿越浩瀚星海的视觉旅程，从近地轨道到遥远星系，见证宇宙的壮丽与神秘。采用 4K 高清拍摄，配合沉浸式音效，带来身临其境的太空漫游体验。',
+      'info.tagsLabel': '标签',
+      'tag.space': '太空',
+      'tag.nature': '自然',
+      'tag.relaxation': '治愈',
+      'tag.4k': '4K',
+      'tag.documentary': '纪录片',
+      'shortcuts.title': '键盘快捷键',
+      'shortcuts.badge': '8 个快捷键',
+      'shortcut.playPause': '播放 / 暂停',
+      'shortcut.forward': '快进 10 秒',
+      'shortcut.backward': '后退 10 秒',
+      'shortcut.volumeUp': '音量增加',
+      'shortcut.volumeDown': '音量减少',
+      'shortcut.mute': '静音 / 取消静音',
+      'shortcut.fullscreen': '全屏',
+      'shortcut.next': '下一个视频',
+      'footer.text': 'Video Player Demo — 纯 HTML + CSS + JavaScript 构建'
+    },
+    en: {
+      'back.home': 'Back to Home',
+      'page.tag': 'MEDIA PLAYER DEMO',
+      'page.title': 'Video Player',
+      'page.titleEn': '',
+      'page.subtitle': 'A lightweight web video player demo',
+      'playlist.title': 'Playlist',
+      'playlist.count': '4 videos',
+      'playlist.item1.title': 'Stellar Wanderer',
+      'playlist.item1.views': '12.5K views',
+      'playlist.item2.title': 'City Nocturne',
+      'playlist.item2.views': '8.2K views',
+      'playlist.item3.title': 'Deep Sea Mystery',
+      'playlist.item3.views': '15.8K views',
+      'playlist.item4.title': 'Sunset Hills',
+      'playlist.item4.views': '6.7K views',
+      'info.title': 'Video Info',
+      'info.badge': 'HD 1080p',
+      'info.videoTitle': 'Stellar Wanderer · A Cosmic Journey',
+      'info.views': '12,543 views',
+      'info.date': 'Mar 15, 2025',
+      'info.duration': '5 min 30 sec',
+      'info.descLabel': 'Description',
+      'info.description': 'A visual journey through the vast starry sea, from low Earth orbit to distant galaxies, witnessing the magnificence and mystery of the universe. Shot in 4K with immersive audio for an out-of-this-world experience.',
+      'info.tagsLabel': 'Tags',
+      'tag.space': 'Space',
+      'tag.nature': 'Nature',
+      'tag.relaxation': 'Relaxing',
+      'tag.4k': '4K',
+      'tag.documentary': 'Documentary',
+      'shortcuts.title': 'Keyboard Shortcuts',
+      'shortcuts.badge': '8 shortcuts',
+      'shortcut.playPause': 'Play / Pause',
+      'shortcut.forward': 'Forward 10s',
+      'shortcut.backward': 'Backward 10s',
+      'shortcut.volumeUp': 'Volume Up',
+      'shortcut.volumeDown': 'Volume Down',
+      'shortcut.mute': 'Mute / Unmute',
+      'shortcut.fullscreen': 'Fullscreen',
+      'shortcut.next': 'Next Video',
+      'footer.text': 'Video Player Demo — Built with pure HTML + CSS + JavaScript'
+    }
+  };
+
+  // ===== 语言切换 =====
+  let currentLang = localStorage.getItem('ycc-lang') || 'zh';
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('ycc-lang', lang);
+    const dict = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key]) {
+        el.innerHTML = dict[key];
+      }
+    });
+    document.title = lang === 'zh'
+      ? '视频播放器 / Video Player'
+      : 'Video Player Demo';
+  }
+
+  applyLang(currentLang);
+
+  // ===== 播放模拟 =====
+  let isPlaying = false;
+  let currentSeconds = 204; // 03:24
+  const totalSeconds = 330; // 05:30
+  let playInterval = null;
+
+  const bigPlayBtn = document.getElementById('bigPlayBtn');
+  const playBtn = document.getElementById('playBtn');
+  const progressFilled = document.getElementById('progressFilled');
+  const currentTimeEl = document.getElementById('currentTime');
+  const totalTimeEl = document.getElementById('totalTime');
+
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return m + ':' + s;
+  }
+
+  function updateProgress() {
+    const pct = (currentSeconds / totalSeconds) * 100;
+    progressFilled.style.width = pct + '%';
+    currentTimeEl.textContent = formatTime(currentSeconds);
+  }
+
+  function togglePlay() {
+    isPlaying = !isPlaying;
+    if (isPlaying) {
+      bigPlayBtn.classList.add('playing');
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+      playInterval = setInterval(() => {
+        currentSeconds += 1;
+        if (currentSeconds >= totalSeconds) {
+          currentSeconds = totalSeconds;
+          togglePlay();
+        }
+        updateProgress();
+      }, 1000);
+    } else {
+      bigPlayBtn.classList.remove('playing');
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+      clearInterval(playInterval);
+    }
+  }
+
+  bigPlayBtn.addEventListener('click', togglePlay);
+  playBtn.addEventListener('click', togglePlay);
+
+  // 进度条点击
+  const progressBar = document.getElementById('progressBar');
+  progressBar.addEventListener('click', (e) => {
+    const rect = progressBar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    currentSeconds = Math.max(0, Math.min(totalSeconds, Math.floor(pct * totalSeconds)));
+    updateProgress();
+  });
+
+  // 播放列表切换
+  const playlistItems = document.querySelectorAll('.playlist-item');
+  const videoDurations = [330, 255, 402, 238];
+  const videoStartTimes = [204, 0, 0, 0];
+  let currentVideoIndex = 0;
+
+  playlistItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const index = parseInt(item.dataset.index);
+      if (index === currentVideoIndex) return;
+
+      playlistItems[currentVideoIndex].classList.remove('active');
+      item.classList.add('active');
+      currentVideoIndex = index;
+
+      // 更新总时长和当前时间
+      const newTotal = videoDurations[index];
+      currentSeconds = videoStartTimes[index] || 0;
+      totalTimeEl.textContent = formatTime(newTotal);
+      updateProgress();
+
+      // 如果正在播放，保持播放状态
+      if (isPlaying) {
+        clearInterval(playInterval);
+        playInterval = setInterval(() => {
+          currentSeconds += 1;
+          if (currentSeconds >= newTotal) {
+            currentSeconds = newTotal;
+            togglePlay();
+          }
+          updateProgress();
+        }, 1000);
+      }
+    });
+  });
+
+  // 键盘快捷键
+  document.addEventListener('keydown', (e) => {
+    // 忽略输入框中的按键
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    switch (e.key) {
+      case ' ':
+        e.preventDefault();
+        togglePlay();
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        currentSeconds = Math.min(totalSeconds, currentSeconds + 10);
+        updateProgress();
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        currentSeconds = Math.max(0, currentSeconds - 10);
+        updateProgress();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        // 模拟音量增加（视觉反馈）
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        // 模拟音量减少
+        break;
+      case 'm':
+      case 'M':
+        // 模拟静音
+        break;
+      case 'f':
+      case 'F':
+        // 模拟全屏
+        const player = document.getElementById('videoPlayer');
+        if (player.style.position === 'fixed') {
+          player.style.position = '';
+          player.style.top = '';
+          player.style.left = '';
+          player.style.width = '';
+          player.style.height = '';
+          player.style.zIndex = '';
+          player.style.borderRadius = '';
+        } else {
+          player.style.position = 'fixed';
+          player.style.top = '0';
+          player.style.left = '0';
+          player.style.width = '100vw';
+          player.style.height = '100vh';
+          player.style.zIndex = '9999';
+          player.style.borderRadius = '0';
+        }
+        break;
+      case 'n':
+      case 'N':
+        if (e.shiftKey) {
+          e.preventDefault();
+          const nextIndex = (currentVideoIndex + 1) % playlistItems.length;
+          playlistItems[nextIndex].click();
+        }
+        break;
+    }
+  });
+</script>
+
+</body>
+</html>

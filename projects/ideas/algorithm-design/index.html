@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="pageTitle">算法设计 / Algorithm Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f8f9fc;
+    color: #1a1a2e;
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #6366f1;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 32px;
+    transition: all 0.3s ease;
+  }
+  .back-link:hover {
+    color: #4f46e5;
+    transform: translateX(-3px);
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .main-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    color: #6b7280;
+    font-weight: 400;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 28px;
+    margin-bottom: 56px;
+  }
+
+  .project-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .project-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(16, 185, 129, 0.15), 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .card-cover {
+    height: 180px;
+    background: linear-gradient(135deg, #d1fae5 0%, #cffafe 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-cover svg {
+    width: 120px;
+    height: 120px;
+    filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.2));
+  }
+
+  .card-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .status-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    align-self: flex-start;
+  }
+  .status-exploring {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+  }
+  .status-idea {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+  }
+  .status-validated {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  .project-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+  }
+  .project-desc {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .tech-tag {
+    padding: 3px 10px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .view-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+  }
+  .view-btn:hover {
+    transform: translateX(3px);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+  }
+
+  .more-hint {
+    text-align: center;
+    padding: 32px 0;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+  .more-hint::before,
+  .more-hint::after {
+    content: '';
+    display: inline-block;
+    width: 30px;
+    height: 1px;
+    background: #e5e7eb;
+    vertical-align: middle;
+    margin: 0 12px;
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 24px 16px; }
+    .header { margin-bottom: 40px; }
+    .project-grid { gap: 20px; }
+    .card-cover { height: 150px; }
+    .card-cover svg { width: 90px; height: 90px; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="../../index.html" class="back-link" data-i18n="backHome">← 返回首页</a>
+
+    <header class="header">
+      <h1 class="main-title" data-i18n="categoryTitle">算法设计</h1>
+      <p class="subtitle" data-i18n="categorySubtitle">Algorithm Design · 用可视化理解算法，让复杂变直观</p>
+    </header>
+
+    <div class="project-grid">
+      <!-- Algo 1 -->
+      <article class="project-card">
+        <div class="card-cover">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grid -->
+            <rect x="20" y="20" width="80" height="80" rx="4" fill="none" stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+            <line x1="40" y1="20" x2="40" y2="100" stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+            <line x1="60" y1="20" x2="60" y2="100" stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+            <line x1="80" y1="20" x2="80" y2="100" stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+            <line x1="20" y1="40" x2="100" y2="40" stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+            <line x1="20" y1="60" x2="100" y2="60" stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+            <line x1="20" y1="80" x2="100" y2="80" stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+            <!-- Start -->
+            <circle cx="30" cy="30" r="6" fill="#10b981"/>
+            <!-- End -->
+            <circle cx="90" cy="90" r="6" fill="#ef4444"/>
+            <!-- Path -->
+            <path d="M30 30 L50 30 L50 50 L70 50 L70 70 L90 70 L90 90" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="4,3"/>
+            <!-- Obstacles -->
+            <rect x="60" y="20" width="20" height="20" fill="#6b7280" opacity="0.4"/>
+            <rect x="20" y="60" width="20" height="20" fill="#6b7280" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="status-tag status-exploring" data-i18n="statusExploring">探索中</span>
+          <h3 class="project-name" data-i18n="algo1Name">路径寻路可视化</h3>
+          <p class="project-desc" data-i18n="algo1Desc">A*/Dijkstra/BFS 算法实时演示，可自定义地图</p>
+          <div class="tech-tags">
+            <span class="tech-tag">A*</span>
+            <span class="tech-tag">Dijkstra</span>
+            <span class="tech-tag">BFS</span>
+          </div>
+          <a href="algo-1/index.html" class="view-btn" data-i18n="viewDetails">查看详情 →</a>
+        </div>
+      </article>
+
+      <!-- Algo 2 -->
+      <article class="project-card">
+        <div class="card-cover" style="background: linear-gradient(135deg, #cffafe 0%, #dbeafe 100%);">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="22" y="75" width="8" height="25" rx="2" fill="#06b6d4" opacity="0.7"/>
+            <rect x="34" y="60" width="8" height="40" rx="2" fill="#06b6d4" opacity="0.8"/>
+            <rect x="46" y="45" width="8" height="55" rx="2" fill="#f59e0b" opacity="0.9"/>
+            <rect x="58" y="30" width="8" height="70" rx="2" fill="#10b981" opacity="0.9"/>
+            <rect x="70" y="55" width="8" height="45" rx="2" fill="#06b6d4" opacity="0.7"/>
+            <rect x="82" y="40" width="8" height="60" rx="2" fill="#f59e0b" opacity="0.8"/>
+            <rect x="94" y="65" width="8" height="35" rx="2" fill="#06b6d4" opacity="0.6"/>
+            <!-- Arrows showing comparison -->
+            <path d="M50 35 L58 28" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+            <path d="M74 45 L66 38" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444"/>
+              </marker>
+            </defs>
+            <!-- Speed lines -->
+            <path d="M20 20 L40 15" stroke="#10b981" stroke-width="1" opacity="0.5"/>
+            <path d="M80 10 L100 18" stroke="#f59e0b" stroke-width="1" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="status-tag status-validated" data-i18n="statusValidated">已验证</span>
+          <h3 class="project-name" data-i18n="algo2Name">排序算法对比</h3>
+          <p class="project-desc" data-i18n="algo2Desc">多种排序算法动态对比，直观展示效率差异</p>
+          <div class="tech-tags">
+            <span class="tech-tag">Bubble</span>
+            <span class="tech-tag">Quick</span>
+            <span class="tech-tag">Merge</span>
+          </div>
+          <a href="algo-2/index.html" class="view-btn" data-i18n="viewDetails">查看详情 →</a>
+        </div>
+      </article>
+
+      <!-- Algo 3 -->
+      <article class="project-card">
+        <div class="card-cover" style="background: linear-gradient(135deg, #ede9fe 0%, #d1fae5 100%);">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Input layer -->
+            <circle cx="25" cy="35" r="6" fill="#8b5cf6" opacity="0.8"/>
+            <circle cx="25" cy="60" r="6" fill="#8b5cf6" opacity="0.8"/>
+            <circle cx="25" cy="85" r="6" fill="#8b5cf6" opacity="0.8"/>
+            <!-- Hidden layer 1 -->
+            <circle cx="55" cy="25" r="5" fill="#06b6d4" opacity="0.7"/>
+            <circle cx="55" cy="45" r="5" fill="#06b6d4" opacity="0.7"/>
+            <circle cx="55" cy="65" r="5" fill="#06b6d4" opacity="0.7"/>
+            <circle cx="55" cy="85" r="5" fill="#06b6d4" opacity="0.7"/>
+            <circle cx="55" cy="100" r="5" fill="#06b6d4" opacity="0.7"/>
+            <!-- Hidden layer 2 -->
+            <circle cx="85" cy="35" r="5" fill="#f59e0b" opacity="0.7"/>
+            <circle cx="85" cy="60" r="5" fill="#f59e0b" opacity="0.7"/>
+            <circle cx="85" cy="85" r="5" fill="#f59e0b" opacity="0.7"/>
+            <!-- Output layer -->
+            <circle cx="110" cy="45" r="6" fill="#10b981" opacity="0.8"/>
+            <circle cx="110" cy="75" r="6" fill="#10b981" opacity="0.8"/>
+            <!-- Connections -->
+            <line x1="31" y1="35" x2="50" y2="25" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="31" y1="35" x2="50" y2="45" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="31" y1="35" x2="50" y2="65" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="31" y1="60" x2="50" y2="45" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="31" y1="60" x2="50" y2="65" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="31" y1="60" x2="50" y2="85" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="31" y1="85" x2="50" y2="65" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="31" y1="85" x2="50" y2="85" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="31" y1="85" x2="50" y2="100" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+            <line x1="60" y1="25" x2="80" y2="35" stroke="#06b6d4" stroke-width="0.5" opacity="0.3"/>
+            <line x1="60" y1="45" x2="80" y2="35" stroke="#06b6d4" stroke-width="0.5" opacity="0.3"/>
+            <line x1="60" y1="45" x2="80" y2="60" stroke="#06b6d4" stroke-width="0.5" opacity="0.3"/>
+            <line x1="60" y1="65" x2="80" y2="60" stroke="#06b6d4" stroke-width="0.5" opacity="0.3"/>
+            <line x1="60" y1="65" x2="80" y2="85" stroke="#06b6d4" stroke-width="0.5" opacity="0.3"/>
+            <line x1="60" y1="85" x2="80" y2="85" stroke="#06b6d4" stroke-width="0.5" opacity="0.3"/>
+            <line x1="60" y1="100" x2="80" y2="85" stroke="#06b6d4" stroke-width="0.5" opacity="0.3"/>
+            <line x1="90" y1="35" x2="104" y2="45" stroke="#f59e0b" stroke-width="0.5" opacity="0.3"/>
+            <line x1="90" y1="60" x2="104" y2="45" stroke="#f59e0b" stroke-width="0.5" opacity="0.3"/>
+            <line x1="90" y1="60" x2="104" y2="75" stroke="#f59e0b" stroke-width="0.5" opacity="0.3"/>
+            <line x1="90" y1="85" x2="104" y2="75" stroke="#f59e0b" stroke-width="0.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="status-tag status-idea" data-i18n="statusIdea">想法阶段</span>
+          <h3 class="project-name" data-i18n="algo3Name">神经网络 Playground</h3>
+          <p class="project-desc" data-i18n="algo3Desc">可视化神经网络训练过程，可调参数</p>
+          <div class="tech-tags">
+            <span class="tech-tag">Neural Network</span>
+            <span class="tech-tag">ML</span>
+            <span class="tech-tag">Visualization</span>
+          </div>
+          <a href="algo-3/index.html" class="view-btn" data-i18n="viewDetails">查看详情 →</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="more-hint" data-i18n="moreHint">更多创意孵化中...</div>
+  </div>
+</body>
+</html>
