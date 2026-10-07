@@ -1801,6 +1801,11 @@ body {
   border-color: rgba(139, 92, 246, 0.25);
   box-shadow: var(--shadow-lg);
 }
+.idea-card-featured:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: var(--shadow-lg);
+}
 
 .idea-header {
   display: flex;

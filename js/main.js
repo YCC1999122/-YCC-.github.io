@@ -586,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ==========================================
   // 7. 3D 卡片倾斜效果
   // ==========================================
-  const tiltCards = document.querySelectorAll('.tilt-card, .project-card, .idea-card, .note-card, .contact-item');
+  const tiltCards = document.querySelectorAll('.tilt-card:not(.idea-card-featured), .project-card:not(.idea-card-featured), .idea-card:not(.idea-card-featured), .note-card, .contact-item');
 
   tiltCards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
