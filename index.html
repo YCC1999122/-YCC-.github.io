@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Research Lab — 创意·设计·探索</title>
     <meta name="description" content="面向创意与技术的开放研究平台：AI 探索、创意设计、数据洞察、全栈开发、交互体验、硬件创新与游戏实验。" />
-  <link rel="stylesheet" href="css/style.css?v=8.1" />
+  <link rel="stylesheet" href="css/style.css?v=8.2" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
@@ -810,6 +810,144 @@
           </div>
           <div class="idea-arrow">→</div>
         </a>
+
+        <!-- 特色展示：互动贺卡网页设计 -->
+        <a href="https://ycc1999122.github.io/test_function/" target="_blank" rel="noopener" class="idea-card tilt-card category-card idea-card-featured">
+          <div class="idea-thumb">
+            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="cardBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#1e1b4b"/>
+                  <stop offset="50%" stop-color="#4c1d95"/>
+                  <stop offset="100%" stop-color="#831843"/>
+                </linearGradient>
+                <linearGradient id="cardGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="rgba(139,92,246,0.6)"/>
+                  <stop offset="100%" stop-color="rgba(236,72,153,0.3)"/>
+                </linearGradient>
+                <radialGradient id="cardParticle" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.9)"/>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                </radialGradient>
+              </defs>
+
+              <!-- 背景 -->
+              <rect width="320" height="180" fill="url(#cardBgGrad)"/>
+
+              <!-- 光束 -->
+              <polygon points="120,0 160,0 80,180 40,180" fill="rgba(139,92,246,0.18)"/>
+              <polygon points="200,0 230,0 170,180 140,180" fill="rgba(236,72,153,0.15)"/>
+
+              <!-- 粒子点 -->
+              <circle cx="40" cy="30" r="1.5" fill="url(#cardParticle)"/>
+              <circle cx="280" cy="40" r="2" fill="url(#cardParticle)"/>
+              <circle cx="60" cy="80" r="1" fill="url(#cardParticle)"/>
+              <circle cx="250" cy="100" r="1.5" fill="url(#cardParticle)"/>
+              <circle cx="100" cy="120" r="1" fill="url(#cardParticle)"/>
+              <circle cx="290" cy="150" r="1.5" fill="url(#cardParticle)"/>
+              <circle cx="30" cy="150" r="1" fill="url(#cardParticle)"/>
+              <circle cx="180" cy="30" r="1.2" fill="url(#cardParticle)"/>
+
+              <!-- 关卡图标（左侧 6 个小图标） -->
+              <g opacity="0.85">
+                <!-- 激光塔防 -->
+                <rect x="14" y="14" width="22" height="22" rx="4" fill="rgba(139,92,246,0.4)" stroke="rgba(139,92,246,0.8)" stroke-width="1"/>
+                <circle cx="25" cy="25" r="3" fill="#c4b5fd"/>
+                <line x1="25" y1="25" x2="35" y2="20" stroke="#f0abfc" stroke-width="1"/>
+                <!-- 弹珠打砖块 -->
+                <rect x="14" y="42" width="22" height="22" rx="4" fill="rgba(59,130,246,0.4)" stroke="rgba(59,130,246,0.8)" stroke-width="1"/>
+                <rect x="18" y="46" width="6" height="3" fill="#93c5fd"/>
+                <rect x="26" y="46" width="6" height="3" fill="#93c5fd"/>
+                <circle cx="25" cy="58" r="2" fill="#dbeafe"/>
+                <!-- 迷宫 -->
+                <rect x="14" y="70" width="22" height="22" rx="4" fill="rgba(16,185,129,0.4)" stroke="rgba(16,185,129,0.8)" stroke-width="1"/>
+                <path d="M18,74 L18,82 L22,82 L22,78 L26,78 L26,84 L30,84 L30,74" stroke="#6ee7b7" stroke-width="1" fill="none"/>
+                <!-- FPS -->
+                <rect x="14" y="98" width="22" height="22" rx="4" fill="rgba(245,158,11,0.4)" stroke="rgba(245,158,11,0.8)" stroke-width="1"/>
+                <path d="M20,104 L20,114 M16,109 L24,109" stroke="#fcd34d" stroke-width="1.2"/>
+                <circle cx="20" cy="109" r="3" fill="none" stroke="#fcd34d" stroke-width="1"/>
+                <!-- 平台跳跃 -->
+                <rect x="14" y="126" width="22" height="22" rx="4" fill="rgba(236,72,153,0.4)" stroke="rgba(236,72,153,0.8)" stroke-width="1"/>
+                <rect x="18" y="138" width="8" height="2" fill="#f9a8d4"/>
+                <rect x="22" y="134" width="8" height="2" fill="#f9a8d4"/>
+                <circle cx="19" cy="135" r="1.5" fill="#fbcfe8"/>
+                <!-- 冰球 -->
+                <rect x="14" y="154" width="22" height="22" rx="4" fill="rgba(6,182,212,0.4)" stroke="rgba(6,182,212,0.8)" stroke-width="1"/>
+                <line x1="18" y1="165" x2="32" y2="165" stroke="#67e8f9" stroke-width="1"/>
+                <circle cx="28" cy="161" r="2" fill="#a5f3fc"/>
+              </g>
+
+              <!-- 连接线 -->
+              <path d="M48,25 L48,165" stroke="rgba(139,92,246,0.4)" stroke-width="1" stroke-dasharray="2,3" fill="none"/>
+
+              <!-- 中央贺卡 -->
+              <g transform="translate(155, 35)">
+                <!-- 贺卡外框光晕 -->
+                <rect x="-6" y="-6" width="142" height="116" rx="12" fill="url(#cardGlow)" opacity="0.6"/>
+                <!-- 贺卡主体 -->
+                <rect x="0" y="0" width="130" height="104" rx="8" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+                <!-- 贺卡顶部装饰 -->
+                <rect x="0" y="0" width="130" height="20" rx="8" fill="rgba(139,92,246,0.35)"/>
+                <circle cx="14" cy="10" r="2" fill="#f0abfc"/>
+                <circle cx="116" cy="10" r="2" fill="#f0abfc"/>
+                <text x="65" y="14" text-anchor="middle" font-family="Orbitron, monospace" font-size="9" fill="#fff" font-weight="700">WISH CARD</text>
+                <!-- 贺卡内容线条 -->
+                <rect x="14" y="32" width="80" height="3" rx="1.5" fill="rgba(255,255,255,0.6)"/>
+                <rect x="14" y="42" width="100" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+                <rect x="14" y="50" width="90" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>
+                <rect x="14" y="58" width="70" height="2" rx="1" fill="rgba(255,255,255,0.2)"/>
+                <!-- 贺卡中央爱心 -->
+                <path d="M65,75 C60,70 55,75 65,85 C75,75 70,70 65,75 Z" fill="#f9a8d4" opacity="0.9"/>
+                <!-- 贺卡底部播放按钮 -->
+                <circle cx="65" cy="92" r="6" fill="rgba(255,255,255,0.85)"/>
+                <polygon points="63,89 63,95 69,92" fill="#4c1d95"/>
+              </g>
+
+              <!-- 右侧倒计时装饰 -->
+              <g transform="translate(298, 30)">
+                <rect x="-12" y="0" width="14" height="14" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <text x="-5" y="11" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#f0abfc" font-weight="700">7</text>
+                <rect x="-12" y="20" width="14" height="14" rx="2" fill="rgba(255,255,255,0.06)"/>
+                <text x="-5" y="31" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#c4b5fd" font-weight="700">0</text>
+                <rect x="-12" y="40" width="14" height="14" rx="2" fill="rgba(255,255,255,0.06)"/>
+                <text x="-5" y="51" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#93c5fd" font-weight="700">0</text>
+                <rect x="-12" y="60" width="14" height="14" rx="2" fill="rgba(255,255,255,0.06)"/>
+                <text x="-5" y="71" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6ee7b7" font-weight="700">0</text>
+              </g>
+
+              <!-- 右下角分享/音乐按钮 -->
+              <g transform="translate(280, 130)">
+                <circle cx="10" cy="10" r="9" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                <path d="M6,10 C6,7 8,5 10,5 C12,5 14,7 14,10 L12,10 L12,11 L8,11 L8,10 Z" fill="#fff"/>
+              </g>
+              <g transform="translate(298, 130)">
+                <circle cx="10" cy="10" r="9" fill="rgba(139,92,246,0.4)" stroke="rgba(139,92,246,0.8)" stroke-width="1"/>
+                <path d="M8,7 L8,13 L13,10 Z" fill="#fff"/>
+              </g>
+
+              <!-- 顶部光带 -->
+              <rect x="0" y="0" width="320" height="2" fill="rgba(255,255,255,0.4)"/>
+            </svg>
+            <div class="idea-thumb-overlay">
+              <span class="idea-thumb-badge">DEMO</span>
+              <span class="idea-thumb-cta">查看演示 →</span>
+            </div>
+          </div>
+          <div class="idea-category-icon">💌</div>
+          <div class="idea-header">
+            <span class="idea-status done">✅ 已部署</span>
+            <span class="idea-category">特色展示 / FEATURED</span>
+          </div>
+          <h3 class="idea-title">互动贺卡网页设计</h3>
+          <p class="idea-desc">
+            把祝福包装成一场闯关旅程 —— 激光塔防、弹珠打砖块、迷宫探险、FPS 射击、平台跳跃、冰球对战，
+            六关游戏解锁一张互动贺卡。粒子背景、倒计时、光束、音乐播放、分享按钮，把网页变成一份会动的祝福。
+          </p>
+          <div class="idea-tags">
+            <span>6 关闯关</span><span>交互贺卡</span><span>粒子特效</span><span>React + Vite</span>
+          </div>
+          <div class="idea-arrow">→</div>
+        </a>
       </div>
     </div>
   </section>
@@ -1135,6 +1273,6 @@
     </div>
   </div>
 
-  <script src="js/main.js?v=8.1"></script>
+  <script src="js/main.js?v=8.2"></script>
 </body>
 </html>
