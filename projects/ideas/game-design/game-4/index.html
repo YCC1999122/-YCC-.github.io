@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="title">深渊回响 | Abyss Echo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f8f9fc;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-border: rgba(255, 255, 255, 0.8);
+    --text-primary: #1a1d2e;
+    --text-secondary: #5a5f7a;
+    --text-tertiary: #8b90a8;
+    --accent: #f97316;
+    --accent-light: #fb923c;
+    --accent-bg: rgba(249, 115, 22, 0.1);
+    --shadow-sm: 0 2px 8px rgba(249, 115, 22, 0.06);
+    --shadow-md: 0 8px 24px rgba(249, 115, 22, 0.08);
+    --shadow-lg: 0 16px 48px rgba(249, 115, 22, 0.12);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+  }
+
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(249, 115, 22, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(220, 38, 38, 0.05) 0%, transparent 40%);
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    margin-bottom: 32px;
+  }
+  .back-link:hover {
+    color: var(--accent);
+    background: var(--accent-bg);
+  }
+
+  .game-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .game-category {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .game-title {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .game-subtitle {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    font-weight: 400;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .hero-section { margin-bottom: 48px; }
+  .hero-canvas-wrapper {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .hero-canvas {
+    width: 100%;
+    height: 360px;
+    border-radius: var(--radius-md);
+    display: block;
+  }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .section-subtitle {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  .intro-section { margin-bottom: 48px; }
+  .intro-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .intro-card p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .intro-card p:last-child { margin-bottom: 0; }
+
+  .features-section { margin-bottom: 48px; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+    background: var(--accent-bg);
+  }
+  .feature-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .feature-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .tech-section { margin-bottom: 48px; }
+  .tech-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tech-tag {
+    padding: 8px 16px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .tech-tag:hover {
+    background: var(--accent);
+    color: white;
+  }
+
+  .timeline-section { margin-bottom: 48px; }
+  .timeline-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .timeline {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    right: 24px;
+    height: 3px;
+    background: #e5e7f0;
+    border-radius: 2px;
+  }
+  .timeline-progress {
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+    border-radius: 2px;
+    z-index: 1;
+    width: 20%;
+  }
+  .timeline-item {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+    max-width: 120px;
+  }
+  .timeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: white;
+    border: 3px solid #e5e7f0;
+    color: var(--text-tertiary);
+    transition: all 0.3s ease;
+  }
+  .timeline-item.done .timeline-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .timeline-item.active .timeline-dot {
+    background: white;
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-bg);
+  }
+  .timeline-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .timeline-item.done .timeline-label,
+  .timeline-item.active .timeline-label {
+    color: var(--text-primary);
+  }
+  .timeline-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .cta-section {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
+    transition: all 0.3s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .container { padding: 20px 16px 48px; }
+    .game-title { font-size: 32px; }
+    .game-subtitle { font-size: 16px; }
+    .hero-canvas { height: 240px; }
+    .intro-card, .tech-card, .timeline-card { padding: 20px; }
+    .section-title { font-size: 20px; }
+    .timeline { flex-direction: column; gap: 20px; }
+    .timeline::before {
+      top: 16px; bottom: 16px; left: 15px; right: auto;
+      width: 3px; height: auto;
+    }
+    .timeline-progress {
+      top: 16px; left: 15px; width: 3px; height: 20%;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-light) 100%);
+    }
+    .timeline-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      max-width: none; text-align: left;
+    }
+    .timeline-dot { margin: 0; flex-shrink: 0; }
+  }
+
+  .lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+  .lang-toggle:hover {
+    color: var(--accent);
+    box-shadow: var(--shadow-md);
+  }
+</style>
+</head>
+<body>
+
+<button class="lang-toggle" onclick="toggleLang()" data-i18n="langToggle">EN</button>
+
+<div class="container">
+  <a href="../index.html" class="back-link">
+    <span data-i18n="back">← 返回游戏创意</span>
+  </a>
+
+  <header class="game-header">
+    <p class="game-category" data-i18n="category">Roguelike × 程序化生成</p>
+    <h1 class="game-title" data-i18n="gameTitle">深渊回响</h1>
+    <p class="game-subtitle" data-i18n="gameSubtitle">Abyss Echo</p>
+    <span class="status-badge" data-i18n="statusBadge">想法阶段</span>
+  </header>
+
+  <section class="hero-section">
+    <div class="hero-canvas-wrapper">
+      <canvas id="gameCanvas" class="hero-canvas" width="900" height="360"></canvas>
+    </div>
+  </section>
+
+  <section class="intro-section">
+    <h2 class="section-title" data-i18n="introTitle">游戏介绍</h2>
+    <div class="intro-card">
+      <p data-i18n="introP1">每次踏入深渊都不相同——AI 驱动的敌人会持续学习你的战术。自适应难度系统根据你的游玩风格实时调整敌人配置与布局，让每一局地下城都成为永无重复的挑战。</p>
+      <p data-i18n="introP2">程序化生成的地下城布局、敌人 AI 学习系统、自适应难度曲线三位一体。每一次死亡之后，深渊会"记住"你的策略，并生成针对性的克制配置，迫使你不断突破自己的舒适区。</p>
+      <p data-i18n="introP3">真正的自适应难度——不是简单调整血量数值，而是 AI 学习你的战术风格，识别你的习惯与弱点，生成专属于你的针对性挑战。深渊不只是难，它在与你共同进化。</p>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <h2 class="section-title" data-i18n="featuresTitle">核心玩法</h2>
+    <p class="section-subtitle" data-i18n="featuresSubtitle">深渊有记忆，每一次死亡都在塑造下一场挑战</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🏰</div>
+        <h3 class="feature-title" data-i18n="feat1Title">程序化地下城</h3>
+        <p class="feature-desc" data-i18n="feat1Desc">每次进入都不同，布局、怪物、宝藏随机生成，无尽的可能性。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3 class="feature-title" data-i18n="feat2Title">AI 战术学习</h3>
+        <p class="feature-desc" data-i18n="feat2Desc">敌人会学习并适应你的打法，识别套路并生成反制策略。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3 class="feature-title" data-i18n="feat3Title">自适应难度</h3>
+        <p class="feature-desc" data-i18n="feat3Desc">根据你的风格生成克制挑战，而非简单调数值。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💀</div>
+        <h3 class="feature-title" data-i18n="feat4Title">死亡记忆</h3>
+        <p class="feature-desc" data-i18n="feat4Desc">深渊记住你的每一次死亡方式，并将其编织进下一局。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tech-section">
+    <h2 class="section-title" data-i18n="techTitle">技术栈</h2>
+    <div class="tech-card">
+      <div class="tech-tags">
+        <span class="tech-tag">Unity</span>
+        <span class="tech-tag">C#</span>
+        <span class="tech-tag">ProBuilder</span>
+        <span class="tech-tag">ML-Agents</span>
+        <span class="tech-tag">Wave Function Collapse</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline-section">
+    <h2 class="section-title" data-i18n="timelineTitle">开发进度</h2>
+    <div class="timeline-card">
+      <div class="timeline">
+        <div class="timeline-progress"></div>
+        <div class="timeline-item done">
+          <div class="timeline-dot">✓</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl1Label">构思</div>
+            <div class="timeline-desc" data-i18n="tl1Desc">核心概念设计</div>
+          </div>
+        </div>
+        <div class="timeline-item active">
+          <div class="timeline-dot">●</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl2Label">原型待开发</div>
+            <div class="timeline-desc" data-i18n="tl2Desc">下一步启动</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">○</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl3Label">关卡系统</div>
+            <div class="timeline-desc" data-i18n="tl3Desc">待完成</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">○</div>
+          <div>
+            <div class="timeline-label" data-i18n="tl4Label">AI 训练</div>
+            <div class="timeline-desc" data-i18n="tl4Desc">待完成</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-section">
+    <a href="../index.html" class="cta-btn">
+      <span data-i18n="ctaBtn">← 返回创意列表</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  // Abyss Echo - Descending dungeon cross-section with glowing abyss portal
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+
+  // Dark background with red-orange depth glow rising from bottom
+  const bgGrad = ctx.createRadialGradient(W / 2, H + 40, 30, W / 2, H / 2, W * 0.85);
+  bgGrad.addColorStop(0, '#3b0f0a');
+  bgGrad.addColorStop(0.32, '#1c0a0a');
+  bgGrad.addColorStop(1, '#070406');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // === Stone ceiling at top ===
+  ctx.fillStyle = '#1f1310';
+  ctx.fillRect(0, 0, W, 22);
+  ctx.fillStyle = '#160c0a';
+  for (let x = 0; x < W; x += 56) {
+    ctx.fillRect(x, 0, 1, 22);
+  }
+  ctx.fillStyle = 'rgba(90, 50, 30, 0.5)';
+  ctx.fillRect(0, 22, W, 2);
+
+  // === Side walls (pit cross-section) ===
+  function drawWall(x, w) {
+    const grad = ctx.createLinearGradient(x, 0, x + w, 0);
+    grad.addColorStop(0, '#241410');
+    grad.addColorStop(1, '#180c08');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x, 22, w, H - 22);
+    // brick texture
+    ctx.fillStyle = 'rgba(10, 5, 4, 0.6)';
+    for (let y = 30; y < H; y += 28) {
+      ctx.fillRect(x, y, w, 1);
+    }
+    for (let y = 30; y < H; y += 28) {
+      const offset = ((y / 28) | 0) % 2 === 0 ? 0 : 28;
+      for (let bx = x + offset; bx < x + w; bx += 56) {
+        ctx.fillRect(bx, y, 1, 28);
+      }
+    }
+  }
+  drawWall(0, 110);          // left wall
+  drawWall(W - 110, 110);    // right wall
+
+  // === Descending floor ledges (zigzag, alternating from walls) ===
+  function drawLedge(x, y, w, h) {
+    const grad = ctx.createLinearGradient(0, y, 0, y + h);
+    grad.addColorStop(0, '#2a1a14');
+    grad.addColorStop(1, '#150b08');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x, y, w, h);
+    // top edge highlight
+    ctx.fillStyle = 'rgba(130, 70, 40, 0.7)';
+    ctx.fillRect(x, y, w, 2);
+    // brick divisions
+    ctx.fillStyle = 'rgba(8, 4, 3, 0.7)';
+    for (let bx = x + 40; bx < x + w; bx += 48) {
+      ctx.fillRect(bx, y, 1, h);
+    }
+    // support shadow underneath
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(x, y + h, w, 4);
+  }
+
+  // Ledge 1: from left wall
+  drawLedge(110, 70, 360, 18);
+  // Ledge 2: from right wall
+  drawLedge(W - 110 - 360, 132, 360, 18);
+  // Ledge 3: from left wall
+  drawLedge(110, 194, 330, 18);
+  // Ledge 4: from right wall (just above portal)
+  drawLedge(W - 110 - 330, 256, 200, 18);
+
+  // === Staircases connecting ledges (zigzag) ===
+  function drawStairs(x1, y1, x2, y2, steps) {
+    const dirX = x2 > x1 ? 1 : -1;
+    const dirY = y2 > y1 ? 1 : 1;
+    const stepW = Math.abs(x2 - x1) / steps;
+    const stepH = (y2 - y1) / steps;
+    for (let i = 0; i < steps; i++) {
+      const sx = x1 + dirX * stepW * i;
+      const sy = y1 + stepH * (i + 1);
+      ctx.fillStyle = '#241410';
+      ctx.fillRect(sx, sy - stepH - 2, stepW + 2, stepH + 3);
+      ctx.fillStyle = 'rgba(110, 60, 35, 0.55)';
+      ctx.fillRect(sx, sy - stepH - 2, stepW + 2, 2);
+    }
+  }
+  // Stairs: ledge1 right end (470,70) -> ledge2 left end (430,132)
+  drawStairs(470, 70, 430, 132, 7);
+  // Stairs: ledge2 left end (430,132) -> ledge3 right end (440,194)
+  drawStairs(430, 132, 440, 194, 7);
+  // Stairs: ledge3 right end (440,194) -> ledge4 left end (460,256)
+  drawStairs(440, 194, 460, 256, 7);
+
+  // === Glowing abyss portal archway at bottom center ===
+  const portalX = W / 2;
+  const portalY = H - 30;
+  const archW = 150;
+  const archH = 90;
+
+  // Wide ambient glow on the floor
+  const ambientGlow = ctx.createRadialGradient(portalX, portalY, 10, portalX, portalY, 240);
+  ambientGlow.addColorStop(0, 'rgba(255, 120, 40, 0.55)');
+  ambientGlow.addColorStop(0.4, 'rgba(220, 60, 30, 0.25)');
+  ambientGlow.addColorStop(1, 'rgba(120, 20, 10, 0)');
+  ctx.fillStyle = ambientGlow;
+  ctx.fillRect(0, H - 200, W, 200);
+
+  // Arch frame (stone)
+  ctx.fillStyle = '#2a1812';
+  ctx.beginPath();
+  ctx.moveTo(portalX - archW / 2 - 14, portalY);
+  ctx.lineTo(portalX - archW / 2 - 14, portalY - archH + 14);
+  ctx.quadraticCurveTo(portalX - archW / 2 - 14, portalY - archH - 14, portalX, portalY - archH - 14);
+  ctx.quadraticCurveTo(portalX + archW / 2 + 14, portalY - archH - 14, portalX + archW / 2 + 14, portalY - archH + 14);
+  ctx.lineTo(portalX + archW / 2 + 14, portalY);
+  ctx.closePath();
+  ctx.fill();
+
+  // Arch interior (glowing)
+  const portalGrad = ctx.createRadialGradient(portalX, portalY - 20, 8, portalX, portalY - 20, archW / 1.4);
+  portalGrad.addColorStop(0, '#ffe0b0');
+  portalGrad.addColorStop(0.25, '#ff9a3c');
+  portalGrad.addColorStop(0.55, '#e8401a');
+  portalGrad.addColorStop(1, '#7a1404');
+  ctx.fillStyle = portalGrad;
+  ctx.beginPath();
+  ctx.moveTo(portalX - archW / 2, portalY);
+  ctx.lineTo(portalX - archW / 2, portalY - archH + 8);
+  ctx.quadraticCurveTo(portalX - archW / 2, portalY - archH, portalX, portalY - archH);
+  ctx.quadraticCurveTo(portalX + archW / 2, portalY - archH, portalX + archW / 2, portalY - archH + 8);
+  ctx.lineTo(portalX + archW / 2, portalY);
+  ctx.closePath();
+  ctx.fill();
+
+  // Bright inner core
+  const coreGrad = ctx.createRadialGradient(portalX, portalY - 10, 2, portalX, portalY - 10, 40);
+  coreGrad.addColorStop(0, 'rgba(255, 250, 220, 0.95)');
+  coreGrad.addColorStop(1, 'rgba(255, 200, 100, 0)');
+  ctx.fillStyle = coreGrad;
+  ctx.beginPath();
+  ctx.ellipse(portalX, portalY - 8, 30, 22, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Arch keystone highlight
+  ctx.fillStyle = 'rgba(255, 170, 90, 0.6)';
+  ctx.fillRect(portalX - 6, portalY - archH - 12, 12, 8);
+
+  // === Rising embers (sparks) ===
+  const embers = [
+    { x: portalX - 30, y: portalY - 30, r: 2.0, a: 0.9 },
+    { x: portalX + 22, y: portalY - 50, r: 1.6, a: 0.8 },
+    { x: portalX - 12, y: portalY - 80, r: 1.4, a: 0.6 },
+    { x: portalX + 40, y: portalY - 25, r: 1.8, a: 0.85 },
+    { x: portalX - 50, y: portalY - 70, r: 1.3, a: 0.5 },
+    { x: portalX + 8,  y: portalY - 110, r: 1.1, a: 0.4 },
+    { x: portalX - 70, y: portalY - 40, r: 1.5, a: 0.55 },
+    { x: portalX + 60, y: portalY - 100, r: 1.2, a: 0.4 },
+    { x: portalX - 25, y: portalY - 150, r: 1.0, a: 0.3 },
+    { x: portalX + 35, y: portalY - 170, r: 0.9, a: 0.25 },
+    { x: portalX - 90, y: portalY - 90, r: 1.2, a: 0.4 },
+    { x: portalX + 90, y: portalY - 60, r: 1.4, a: 0.5 }
+  ];
+  embers.forEach(e => {
+    const eg = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 4);
+    eg.addColorStop(0, `rgba(255, 220, 140, ${e.a})`);
+    eg.addColorStop(0.5, `rgba(255, 130, 50, ${e.a * 0.5})`);
+    eg.addColorStop(1, 'rgba(255, 100, 40, 0)');
+    ctx.fillStyle = eg;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.r * 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = `rgba(255, 240, 200, ${e.a})`;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // === Hero silhouette at top looking down ===
+  const heroX = 230;
+  const heroY = 70;
+  ctx.fillStyle = 'rgba(20, 12, 10, 0.95)';
+  // body
+  ctx.fillRect(heroX - 5, heroY - 22, 10, 16);
+  // head
+  ctx.beginPath();
+  ctx.arc(heroX, heroY - 26, 5, 0, Math.PI * 2);
+  ctx.fill();
+  // legs
+  ctx.fillRect(heroX - 5, heroY - 6, 4, 6);
+  ctx.fillRect(heroX + 1, heroY - 6, 4, 6);
+  // torch
+  ctx.fillRect(heroX + 7, heroY - 30, 2, 12);
+  const torchGlow = ctx.createRadialGradient(heroX + 8, heroY - 32, 1, heroX + 8, heroY - 32, 18);
+  torchGlow.addColorStop(0, 'rgba(255, 220, 120, 0.9)');
+  torchGlow.addColorStop(1, 'rgba(255, 160, 60, 0)');
+  ctx.fillStyle = torchGlow;
+  ctx.beginPath();
+  ctx.arc(heroX + 8, heroY - 32, 18, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffd870';
+  ctx.beginPath();
+  ctx.arc(heroX + 8, heroY - 32, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // === Bottom fog layers ===
+  const fog = ctx.createLinearGradient(0, H - 80, 0, H);
+  fog.addColorStop(0, 'rgba(120, 30, 15, 0)');
+  fog.addColorStop(1, 'rgba(180, 50, 20, 0.4)');
+  ctx.fillStyle = fog;
+  ctx.fillRect(0, H - 80, W, 80);
+
+  // === Vignette ===
+  const vign = ctx.createRadialGradient(W / 2, H / 2, W * 0.25, W / 2, H / 2, W * 0.7);
+  vign.addColorStop(0, 'rgba(0,0,0,0)');
+  vign.addColorStop(1, 'rgba(0,0,0,0.55)');
+  ctx.fillStyle = vign;
+  ctx.fillRect(0, 0, W, H);
+</script>
+
+<script>
+  const translations = {
+    zh: {
+      title: '深渊回响 | Abyss Echo',
+      langToggle: 'EN',
+      back: '← 返回游戏创意',
+      category: 'Roguelike × 程序化生成',
+      gameTitle: '深渊回响',
+      gameSubtitle: 'Abyss Echo',
+      statusBadge: '想法阶段',
+      introTitle: '游戏介绍',
+      introP1: '每次踏入深渊都不相同——AI 驱动的敌人会持续学习你的战术。自适应难度系统根据你的游玩风格实时调整敌人配置与布局，让每一局地下城都成为永无重复的挑战。',
+      introP2: '程序化生成的地下城布局、敌人 AI 学习系统、自适应难度曲线三位一体。每一次死亡之后，深渊会"记住"你的策略，并生成针对性的克制配置，迫使你不断突破自己的舒适区。',
+      introP3: '真正的自适应难度——不是简单调整血量数值，而是 AI 学习你的战术风格，识别你的习惯与弱点，生成专属于你的针对性挑战。深渊不只是难，它在与你共同进化。',
+      featuresTitle: '核心玩法',
+      featuresSubtitle: '深渊有记忆，每一次死亡都在塑造下一场挑战',
+      feat1Title: '程序化地下城',
+      feat1Desc: '每次进入都不同，布局、怪物、宝藏随机生成，无尽的可能性。',
+      feat2Title: 'AI 战术学习',
+      feat2Desc: '敌人会学习并适应你的打法，识别套路并生成反制策略。',
+      feat3Title: '自适应难度',
+      feat3Desc: '根据你的风格生成克制挑战，而非简单调数值。',
+      feat4Title: '死亡记忆',
+      feat4Desc: '深渊记住你的每一次死亡方式，并将其编织进下一局。',
+      techTitle: '技术栈',
+      timelineTitle: '开发进度',
+      tl1Label: '构思',
+      tl1Desc: '核心概念设计',
+      tl2Label: '原型待开发',
+      tl2Desc: '下一步启动',
+      tl3Label: '关卡系统',
+      tl3Desc: '待完成',
+      tl4Label: 'AI 训练',
+      tl4Desc: '待完成',
+      ctaBtn: '← 返回创意列表'
+    },
+    en: {
+      title: 'Abyss Echo | 深渊回响',
+      langToggle: '中文',
+      back: '← Back to Ideas',
+      category: 'Roguelike × Procedural Generation',
+      gameTitle: 'Abyss Echo',
+      gameSubtitle: '深渊回响',
+      statusBadge: 'Idea Stage',
+      introTitle: 'About the Game',
+      introP1: 'Every descent into the abyss is different — AI-driven enemies continuously learn your tactics. An adaptive difficulty system reshapes enemy placement and loadouts to match your play style in real time, making every dungeon run a one-of-a-kind challenge.',
+      introP2: 'Procedurally generated dungeon layouts, an enemy AI learning system, and an adaptive difficulty curve work as one. After each death the abyss "remembers" your strategy and spawns counter-configurations, forcing you to keep breaking out of your comfort zone.',
+      introP3: 'True adaptive difficulty — not just tweaking HP numbers, but AI that learns your tactical style, identifies your habits and weak points, and generates challenges tailored specifically to you. The abyss is not merely hard; it co-evolves with you.',
+      featuresTitle: 'Core Gameplay',
+      featuresSubtitle: 'The abyss has memory — every death shapes the next challenge',
+      feat1Title: 'Procedural Dungeon',
+      feat1Desc: 'A different layout, monsters, and loot every entry. Infinite possibilities.',
+      feat2Title: 'AI Tactical Learning',
+      feat2Desc: 'Enemies learn and adapt to your playstyle, spotting patterns and countering them.',
+      feat3Title: 'Adaptive Difficulty',
+      feat3Desc: 'Generates counter-challenges based on your style — not just stat tweaks.',
+      feat4Title: 'Death Memory',
+      feat4Desc: 'The abyss remembers how you died and weaves it into the next run.',
+      techTitle: 'Tech Stack',
+      timelineTitle: 'Development Progress',
+      tl1Label: 'Concept',
+      tl1Desc: 'Core concept design',
+      tl2Label: 'Prototype To Do',
+      tl2Desc: 'Starting next',
+      tl3Label: 'Level System',
+      tl3Desc: 'To do',
+      tl4Label: 'AI Training',
+      tl4Desc: 'To do',
+      ctaBtn: '← Back to Ideas'
+    }
+  };
+
+  let currentLang = localStorage.getItem('ycc-lang') || 'zh';
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('ycc-lang', lang);
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key]) el.textContent = t[key];
+    });
+    document.title = t.title;
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  }
+
+  function toggleLang() {
+    applyLang(currentLang === 'zh' ? 'en' : 'zh');
+  }
+
+  applyLang(currentLang);
+</script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="title">光影之间 | Between Light & Shadow</title>
+<title data-i18n="title">时空织机 | Chrono Loom</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -14,12 +14,12 @@
     --text-primary: #1a1d2e;
     --text-secondary: #5a5f7a;
     --text-tertiary: #8b90a8;
-    --accent: #f59e0b;
-    --accent-light: #fbbf24;
-    --accent-bg: rgba(245, 158, 11, 0.1);
-    --shadow-sm: 0 2px 8px rgba(245, 158, 11, 0.06);
-    --shadow-md: 0 8px 24px rgba(245, 158, 11, 0.08);
-    --shadow-lg: 0 16px 48px rgba(245, 158, 11, 0.12);
+    --accent: #14b8a6;
+    --accent-light: #2dd4bf;
+    --accent-bg: rgba(20, 184, 166, 0.1);
+    --shadow-sm: 0 2px 8px rgba(20, 184, 166, 0.06);
+    --shadow-md: 0 8px 24px rgba(20, 184, 166, 0.08);
+    --shadow-lg: 0 16px 48px rgba(20, 184, 166, 0.12);
     --radius-sm: 10px;
     --radius-md: 16px;
     --radius-lg: 24px;
@@ -32,8 +32,8 @@
     line-height: 1.6;
     min-height: 100vh;
     background-image:
-      radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+      radial-gradient(circle at 10% 20%, rgba(20, 184, 166, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.05) 0%, transparent 40%);
   }
 
   .container {
@@ -64,12 +64,20 @@
     text-align: center;
     margin-bottom: 40px;
   }
+  .game-category {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
   .game-title {
     font-size: 42px;
     font-weight: 800;
     letter-spacing: -0.5px;
     margin-bottom: 8px;
-    background: linear-gradient(135deg, #f59e0b 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, #14b8a6 0%, #38bdf8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -245,7 +253,7 @@
     background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
     border-radius: 2px;
     z-index: 1;
-    width: 30%;
+    width: 35%;
   }
   .timeline-item {
     position: relative;
@@ -309,12 +317,12 @@
     border-radius: var(--radius-md);
     font-size: 15px;
     font-weight: 600;
-    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.3);
     transition: all 0.3s ease;
   }
   .cta-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 8px 24px rgba(20, 184, 166, 0.4);
   }
 
   @media (max-width: 768px) {
@@ -330,7 +338,7 @@
       width: 3px; height: auto;
     }
     .timeline-progress {
-      top: 16px; left: 15px; width: 3px; height: 30%;
+      top: 16px; left: 15px; width: 3px; height: 35%;
       background: linear-gradient(180deg, var(--accent) 0%, var(--accent-light) 100%);
     }
     .timeline-item {
@@ -374,9 +382,10 @@
   </a>
 
   <header class="game-header">
-    <h1 class="game-title" data-i18n="gameTitle">光影之间</h1>
-    <p class="game-subtitle" data-i18n="gameSubtitle">Between Light & Shadow</p>
-    <span class="status-badge" data-i18n="statusBadge">构思阶段</span>
+    <p class="game-category" data-i18n="category">时空解谜 × 叙事</p>
+    <h1 class="game-title" data-i18n="gameTitle">时空织机</h1>
+    <p class="game-subtitle" data-i18n="gameSubtitle">Chrono Loom</p>
+    <span class="status-badge" data-i18n="statusBadge">探索中</span>
   </header>
 
   <section class="hero-section">
@@ -388,35 +397,35 @@
   <section class="intro-section">
     <h2 class="section-title" data-i18n="introTitle">游戏介绍</h2>
     <div class="intro-card">
-      <p data-i18n="introP1">《光影之间》是一款以光线折射和阴影变化为核心机制的解谜游戏。玩家将在一座神秘的光影之殿中探索，通过旋转镜面、移动棱镜、调整光源，引导光线照亮隐藏的印记，解开一个又一个精心设计的谜题。</p>
-      <p data-i18n="introP2">游戏拥有真实的物理光线系统，每一束光都会根据物理定律进行反射、折射和散射。镜面反射、棱镜分光、透镜聚焦——你需要运用光学知识，让光线按照你的意愿穿行于黑暗的空间之中。</p>
-      <p data-i18n="introP3">独特的氛围美学是游戏的另一大特色。幽暗的环境、流动的光束、细腻的阴影，配合空灵的背景音乐，打造出一个令人沉浸的光影世界。每一关都是一件光影艺术品，等待你去发现和创造。</p>
+      <p data-i18n="introP1">编织时间线，让过去、现在、未来同时存在于同一画面。你在"现在"做的操作会即时影响过去与未来，形成因果循环的解谜空间——不是回到过去改写历史，而是让三个时刻在同一帧中相互呼应。</p>
+      <p data-i18n="introP2">三条时间线并行运行，玩家可以在三个时间点之间自由穿梭。任何一个时间点上的改变都会以涟漪形式向外扩散，影响另外两个时间点的状态与可交互元素，带来层层递进的连锁反应。</p>
+      <p data-i18n="introP3">创新之处在于：过去、现在、未来并非线性顺序，而是同时存在并相互影响。玩家需要找到因果的"稳定锚点"，在悖论与循环之间寻得平衡，才能解开那些看似无解的时空谜题。</p>
     </div>
   </section>
 
   <section class="features-section">
     <h2 class="section-title" data-i18n="featuresTitle">核心玩法</h2>
-    <p class="section-subtitle" data-i18n="featuresSubtitle">光与影的艺术，用智慧点亮黑暗</p>
+    <p class="section-subtitle" data-i18n="featuresSubtitle">三时并存，因果编织，重新定义时空解谜</p>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon">💡</div>
-        <h3 class="feature-title" data-i18n="feat1Title">物理光线系统</h3>
-        <p class="feature-desc" data-i18n="feat1Desc">基于真实物理的光线模拟，反射、折射、散射都遵循光学定律，带来真实的解谜体验。</p>
+        <div class="feature-icon">📐</div>
+        <h3 class="feature-title" data-i18n="feat1Title">三时并存</h3>
+        <p class="feature-desc" data-i18n="feat1Desc">过去、现在、未来同屏显示，玩家一眼看清三个时刻的状态与联系。</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🌑</div>
-        <h3 class="feature-title" data-i18n="feat2Title">阴影机关</h3>
-        <p class="feature-desc" data-i18n="feat2Desc">利用物体投射的阴影触发机关，遮挡特定角度的光线，在黑暗中寻找隐藏的通道。</p>
+        <div class="feature-icon">🔗</div>
+        <h3 class="feature-title" data-i18n="feat2Title">因果涟漪</h3>
+        <p class="feature-desc" data-i18n="feat2Desc">一个时间点的改变产生涟漪，向外扩散并影响其他时间点的状态。</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🪞</div>
-        <h3 class="feature-title" data-i18n="feat3Title">镜面反射</h3>
-        <p class="feature-desc" data-i18n="feat3Desc">旋转和放置镜面，让光线绕过障碍。多面镜子组合，创造出复杂的光之路径。</p>
+        <div class="feature-icon">🧵</div>
+        <h3 class="feature-title" data-i18n="feat3Title">时间编织</h3>
+        <p class="feature-desc" data-i18n="feat3Desc">手动连接不同时间点的事件，创造自定义因果链与解谜路径。</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">✨</div>
-        <h3 class="feature-title" data-i18n="feat4Title">氛围美学</h3>
-        <p class="feature-desc" data-i18n="feat4Desc">精致的光影画面，空灵的音乐氛围，每一关都是一件可交互的光影艺术品。</p>
+        <div class="feature-icon">🌀</div>
+        <h3 class="feature-title" data-i18n="feat4Title">稳定锚点</h3>
+        <p class="feature-desc" data-i18n="feat4Desc">找到时间线的稳定锚点，避免悖论崩溃，维持因果闭环。</p>
       </div>
     </div>
   </section>
@@ -427,10 +436,8 @@
       <div class="tech-tags">
         <span class="tech-tag">Unity</span>
         <span class="tech-tag">C#</span>
-        <span class="tech-tag">Ray Tracing</span>
-        <span class="tech-tag">Shader Graph</span>
-        <span class="tech-tag">URP</span>
-        <span class="tech-tag">Physics</span>
+        <span class="tech-tag">Timeline</span>
+        <span class="tech-tag">自定义因果引擎</span>
       </div>
     </div>
   </section>
@@ -443,29 +450,29 @@
         <div class="timeline-item done">
           <div class="timeline-dot">✓</div>
           <div>
-            <div class="timeline-label" data-i18n="tl1Label">构思阶段</div>
-            <div class="timeline-desc" data-i18n="tl1Desc">核心创意设计</div>
+            <div class="timeline-label" data-i18n="tl1Label">构思</div>
+            <div class="timeline-desc" data-i18n="tl1Desc">核心概念设计</div>
           </div>
         </div>
         <div class="timeline-item active">
           <div class="timeline-dot">●</div>
           <div>
-            <div class="timeline-label" data-i18n="tl2Label">原型阶段</div>
-            <div class="timeline-desc" data-i18n="tl2Desc">光线系统研发</div>
+            <div class="timeline-label" data-i18n="tl2Label">原型开发中</div>
+            <div class="timeline-desc" data-i18n="tl2Desc">三时机制验证</div>
           </div>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot">○</div>
           <div>
-            <div class="timeline-label" data-i18n="tl3Label">开发中</div>
-            <div class="timeline-desc" data-i18n="tl3Desc">关卡与美术制作</div>
+            <div class="timeline-label" data-i18n="tl3Label">关卡设计</div>
+            <div class="timeline-desc" data-i18n="tl3Desc">待完成</div>
           </div>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot">○</div>
           <div>
-            <div class="timeline-label" data-i18n="tl4Label">待完成</div>
-            <div class="timeline-desc" data-i18n="tl4Desc">测试与发布</div>
+            <div class="timeline-label" data-i18n="tl4Label">叙事打磨</div>
+            <div class="timeline-desc" data-i18n="tl4Desc">待完成</div>
           </div>
         </div>
       </div>
@@ -480,461 +487,331 @@
 </div>
 
 <script>
-  // Between Light & Shadow - Light beam reflection puzzle scene
+  // Chrono Loom - Three time layers woven together
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
   const H = canvas.height;
 
-  // Dark ambient background
-  const bgGrad = ctx.createRadialGradient(W * 0.3, H * 0.2, 100, W * 0.5, H * 0.5, W * 0.7);
-  bgGrad.addColorStop(0, '#1a1530');
-  bgGrad.addColorStop(0.5, '#0f0d1f');
-  bgGrad.addColorStop(1, '#05040a');
+  // Deep teal background gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#0b1f2e');
+  bgGrad.addColorStop(0.5, '#0d2a2a');
+  bgGrad.addColorStop(1, '#0a1a26');
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, W, H);
 
-  // Subtle architectural details - stone walls
-  // Left wall
-  const wallGrad = ctx.createLinearGradient(0, 0, 40, 0);
-  wallGrad.addColorStop(0, '#2a2440');
-  wallGrad.addColorStop(1, '#1a1530');
-  ctx.fillStyle = wallGrad;
-  ctx.fillRect(0, 0, 30, H);
+  // Atmospheric dust / stars
+  for (let i = 0; i < 110; i++) {
+    const x = Math.random() * W;
+    const y = Math.random() * H;
+    const a = Math.random() * 0.4 + 0.05;
+    ctx.fillStyle = `rgba(150, 220, 220, ${a})`;
+    ctx.fillRect(x, y, 1, 1);
+  }
 
-  // Right wall
-  const wallGrad2 = ctx.createLinearGradient(W - 40, 0, W, 0);
-  wallGrad2.addColorStop(0, '#1a1530');
-  wallGrad2.addColorStop(1, '#2a2440');
-  ctx.fillStyle = wallGrad2;
-  ctx.fillRect(W - 30, 0, 30, H);
+  // === Three overlapping time layer bands ===
+  // Past (top) - warm sepia-teal, faded
+  const pastGrad = ctx.createLinearGradient(0, 0, 0, 140);
+  pastGrad.addColorStop(0, 'rgba(190, 140, 95, 0.24)');
+  pastGrad.addColorStop(1, 'rgba(120, 90, 70, 0.06)');
+  ctx.fillStyle = pastGrad;
+  ctx.fillRect(0, 0, W, 140);
 
-  // Floor
-  const floorGrad = ctx.createLinearGradient(0, H - 40, 0, H);
-  floorGrad.addColorStop(0, '#1a1530');
-  floorGrad.addColorStop(1, '#2a2440');
-  ctx.fillStyle = floorGrad;
-  ctx.fillRect(0, H - 30, W, 30);
+  // Present (middle) - vivid teal
+  const presGrad = ctx.createLinearGradient(0, 110, 0, 250);
+  presGrad.addColorStop(0, 'rgba(20, 184, 166, 0.18)');
+  presGrad.addColorStop(1, 'rgba(13, 148, 136, 0.30)');
+  ctx.fillStyle = presGrad;
+  ctx.fillRect(0, 110, W, 140);
 
-  // Ceiling
-  const ceilGrad = ctx.createLinearGradient(0, 0, 0, 30);
-  ceilGrad.addColorStop(0, '#2a2440');
-  ceilGrad.addColorStop(1, '#1a1530');
-  ctx.fillStyle = ceilGrad;
-  ctx.fillRect(0, 0, W, 30);
+  // Future (bottom) - bright cyan glow
+  const futGrad = ctx.createLinearGradient(0, 230, 0, 360);
+  futGrad.addColorStop(0, 'rgba(34, 211, 238, 0.22)');
+  futGrad.addColorStop(1, 'rgba(56, 189, 248, 0.36)');
+  ctx.fillStyle = futGrad;
+  ctx.fillRect(0, 230, W, 130);
 
-  // Stone brick patterns
-  ctx.strokeStyle = 'rgba(60, 50, 90, 0.3)';
+  // Subtle layer divider lines
+  ctx.strokeStyle = 'rgba(45, 212, 191, 0.18)';
   ctx.lineWidth = 1;
-  for (let y = 40; y < H - 40; y += 30) {
+  ctx.setLineDash([2, 6]);
+  [110, 230].forEach(y => {
     ctx.beginPath();
-    ctx.moveTo(30, y);
-    ctx.lineTo(W - 30, y);
+    ctx.moveTo(0, y);
+    ctx.lineTo(W, y);
     ctx.stroke();
-  }
-  for (let y = 55; y < H - 40; y += 30) {
-    for (let x = 30; x < W - 30; x += 80) {
-      const offset = (y / 30) % 2 === 0 ? 0 : 40;
-      ctx.beginPath();
-      ctx.moveTo(x + offset, y - 15);
-      ctx.lineTo(x + offset, y + 15);
-      ctx.stroke();
-    }
-  }
+  });
+  ctx.setLineDash([]);
 
-  // Dust particles in air
-  for (let i = 0; i < 40; i++) {
-    const x = 30 + Math.random() * (W - 60);
-    const y = 40 + Math.random() * (H - 80);
-    const r = Math.random() * 1.5 + 0.5;
-    ctx.fillStyle = `rgba(255, 200, 100, ${Math.random() * 0.15 + 0.05})`;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
+  // === Past layer scene: ancient ruins ===
+  function drawColumn(x, baseY, h) {
+    ctx.fillStyle = 'rgba(205, 175, 130, 0.55)';
+    ctx.fillRect(x - 8, baseY - h, 16, h);
+    ctx.fillRect(x - 12, baseY - 4, 24, 4);
+    ctx.fillRect(x - 10, baseY - h, 20, 3);
   }
+  drawColumn(70, 105, 58);
+  drawColumn(140, 105, 42);
+  drawColumn(760, 105, 55);
+  drawColumn(830, 105, 70);
 
-  // Light source - top left
-  const lightX = 60;
-  const lightY = 50;
-
-  // Light source housing (window/sconce)
-  ctx.fillStyle = '#3d3055';
-  ctx.strokeStyle = '#5d4a80';
-  ctx.lineWidth = 2;
+  // Old dead tree silhouette in past
+  ctx.fillStyle = 'rgba(150, 110, 75, 0.55)';
+  ctx.fillRect(418, 78, 6, 28);
   ctx.beginPath();
-  ctx.arc(lightX, lightY, 18, 0, Math.PI * 2);
+  ctx.arc(421, 75, 16, 0, Math.PI * 2);
   ctx.fill();
+  ctx.strokeStyle = 'rgba(150, 110, 75, 0.5)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(421, 70); ctx.lineTo(410, 58);
+  ctx.moveTo(421, 70); ctx.lineTo(432, 60);
   ctx.stroke();
 
-  // Inner glow of source
-  const sourceGlow = ctx.createRadialGradient(lightX, lightY, 2, lightX, lightY, 16);
-  sourceGlow.addColorStop(0, '#fffbe6');
-  sourceGlow.addColorStop(0.3, '#fde68a');
-  sourceGlow.addColorStop(1, 'rgba(253, 230, 138, 0)');
-  ctx.fillStyle = sourceGlow;
+  // === Present layer scene: structures and figure ===
+  // Small temple/house
+  ctx.fillStyle = 'rgba(45, 212, 191, 0.6)';
+  ctx.fillRect(195, 210, 78, 38);
   ctx.beginPath();
-  ctx.arc(lightX, lightY, 16, 0, Math.PI * 2);
+  ctx.moveTo(188, 210);
+  ctx.lineTo(234, 184);
+  ctx.lineTo(280, 210);
+  ctx.closePath();
   ctx.fill();
+  ctx.fillStyle = 'rgba(10, 50, 50, 0.7)';
+  ctx.fillRect(225, 222, 18, 26);
 
-  // Core
-  ctx.fillStyle = '#fffbe6';
+  // Present tower
+  ctx.fillStyle = 'rgba(45, 212, 191, 0.45)';
+  ctx.fillRect(680, 196, 22, 52);
+  ctx.fillRect(685, 186, 12, 12);
+  ctx.fillStyle = 'rgba(150, 240, 230, 0.8)';
+  ctx.fillRect(688, 200, 4, 4);
+
+  // Present figure (traveler)
+  ctx.fillStyle = 'rgba(20, 184, 166, 0.85)';
   ctx.beginPath();
-  ctx.arc(lightX, lightY, 5, 0, Math.PI * 2);
+  ctx.arc(498, 213, 6, 0, Math.PI * 2);
   ctx.fill();
+  ctx.fillRect(495, 219, 6, 17);
+  ctx.fillRect(492, 236, 5, 2);
+  ctx.fillRect(499, 236, 5, 2);
+  // staff
+  ctx.fillRect(504, 208, 2, 26);
 
-  // Mirrors - define positions and angles
-  // Mirror 1: top area, reflects light down-right
-  const m1 = { x: 280, y: 80, angle: Math.PI / 4, length: 50 };
-  // Mirror 2: middle-left, reflects right
-  const m2 = { x: 200, y: 200, angle: -Math.PI / 4, length: 50 };
-  // Mirror 3: middle-right, reflects down-right
-  const m3 = { x: 500, y: 160, angle: Math.PI / 3, length: 50 };
-  // Mirror 4: lower area
-  const m4 = { x: 650, y: 280, angle: -Math.PI / 6, length: 50 };
+  // === Future layer scene: glowing tech shapes ===
+  // Floating platforms
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.55)';
+  ctx.fillRect(120, 322, 64, 6);
+  ctx.fillRect(250, 332, 52, 6);
+  ctx.fillRect(610, 326, 72, 6);
+  ctx.fillRect(770, 334, 60, 6);
+  // platform glows
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+  ctx.fillRect(118, 328, 68, 14);
+  ctx.fillRect(248, 338, 56, 14);
+  ctx.fillRect(608, 332, 76, 14);
 
-  function drawMirror(mirror) {
-    const hl = mirror.length / 2;
-    const dx = Math.cos(mirror.angle) * hl;
-    const dy = Math.sin(mirror.angle) * hl;
-
-    const x1 = mirror.x - dx;
-    const y1 = mirror.y - dy;
-    const x2 = mirror.x + dx;
-    const y2 = mirror.y + dy;
-
-    // Mirror frame (back)
-    const nx = -Math.sin(mirror.angle);
-    const ny = Math.cos(mirror.angle);
-    ctx.fillStyle = '#4a3f6a';
-    ctx.strokeStyle = '#6b5a95';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(x1 + nx * 4, y1 + ny * 4);
-    ctx.lineTo(x2 + nx * 4, y2 + ny * 4);
-    ctx.lineTo(x2, y2);
-    ctx.lineTo(x1, y1);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // Mirror surface
-    const mirrorGrad = ctx.createLinearGradient(x1, y1, x2, y2);
-    mirrorGrad.addColorStop(0, '#e8e0ff');
-    mirrorGrad.addColorStop(0.5, '#ffffff');
-    mirrorGrad.addColorStop(1, '#d0c8f0');
-    ctx.strokeStyle = mirrorGrad;
-    ctx.lineWidth = 4;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-
-    // Mirror highlight
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(x1 + nx * 1, y1 + ny * 1);
-    ctx.lineTo(x2 + nx * 1, y2 + ny * 1);
-    ctx.stroke();
-
-    // Mount/base
-    ctx.fillStyle = '#3d3055';
-    ctx.beginPath();
-    ctx.arc(mirror.x, mirror.y, 6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#6b5a95';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.fillStyle = '#8b7cc0';
-    ctx.beginPath();
-    ctx.arc(mirror.x, mirror.y, 2.5, 0, Math.PI * 2);
-    ctx.fill();
+  // Geometric tech shapes
+  ctx.strokeStyle = 'rgba(34, 211, 238, 0.85)';
+  ctx.lineWidth = 2;
+  // hexagon
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = i * Math.PI / 3 - Math.PI / 2;
+    const px = 450 + Math.cos(a) * 13;
+    const py = 322 + Math.sin(a) * 13;
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
   }
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(34, 211, 238, 0.25)';
+  ctx.fill();
+  // triangle
+  ctx.beginPath();
+  ctx.moveTo(560, 312);
+  ctx.lineTo(548, 332);
+  ctx.lineTo(572, 332);
+  ctx.closePath();
+  ctx.stroke();
+  // diamond
+  ctx.beginPath();
+  ctx.moveTo(380, 312);
+  ctx.lineTo(392, 324);
+  ctx.lineTo(380, 336);
+  ctx.lineTo(368, 324);
+  ctx.closePath();
+  ctx.stroke();
 
-  // Draw all mirrors
-  drawMirror(m1);
-  drawMirror(m2);
-  drawMirror(m3);
-  drawMirror(m4);
-
-  // Light beam path with reflections
-  // Start from light source going down-right
-  function drawLightBeam(points) {
-    // Outer glow
-    ctx.strokeStyle = 'rgba(253, 224, 71, 0.15)';
-    ctx.lineWidth = 24;
+  // === Woven time threads (the "loom") ===
+  const threads = [
+    { from: { x: 70,  y: 60  }, to: { x: 450, y: 320 }, color: '#2dd4bf' },
+    { from: { x: 140, y: 90  }, to: { x: 680, y: 250 }, color: '#fbbf24' },
+    { from: { x: 760, y: 80  }, to: { x: 200, y: 330 }, color: '#22d3ee' },
+    { from: { x: 830, y: 100 }, to: { x: 498, y: 210 }, color: '#a78bfa' },
+    { from: { x: 421, y: 90  }, to: { x: 700, y: 322 }, color: '#2dd4bf' },
+    { from: { x: 234, y: 200 }, to: { x: 600, y: 322 }, color: '#fbbf24' },
+    { from: { x: 498, y: 210 }, to: { x: 380, y: 324 }, color: '#22d3ee' }
+  ];
+  threads.forEach(t => {
+    // soft glow
+    ctx.strokeStyle = t.color + '30';
+    ctx.lineWidth = 6;
     ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
+    ctx.moveTo(t.from.x, t.from.y);
+    ctx.lineTo(t.to.x, t.to.y);
     ctx.stroke();
-
-    // Mid glow
-    ctx.strokeStyle = 'rgba(253, 224, 71, 0.3)';
-    ctx.lineWidth = 12;
+    // core thread
+    ctx.strokeStyle = t.color + 'cc';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
+    ctx.moveTo(t.from.x, t.from.y);
+    ctx.lineTo(t.to.x, t.to.y);
     ctx.stroke();
+  });
 
-    // Inner beam
-    ctx.strokeStyle = 'rgba(255, 251, 230, 0.9)';
-    ctx.lineWidth = 3;
+  // === Causal nodes (glowing dots at anchors/intersections) ===
+  const nodes = [
+    { x: 70,  y: 60  }, { x: 140, y: 90  }, { x: 421, y: 90  },
+    { x: 760, y: 80  }, { x: 830, y: 100 },
+    { x: 234, y: 200 }, { x: 498, y: 210 }, { x: 680, y: 200 },
+    { x: 450, y: 320 }, { x: 200, y: 330 }, { x: 680, y: 250 },
+    { x: 600, y: 322 }, { x: 700, y: 322 }, { x: 380, y: 324 }
+  ];
+  nodes.forEach(n => {
+    const g = ctx.createRadialGradient(n.x, n.y, 1, n.x, n.y, 16);
+    g.addColorStop(0, 'rgba(45, 212, 191, 0.95)');
+    g.addColorStop(0.5, 'rgba(45, 212, 191, 0.3)');
+    g.addColorStop(1, 'rgba(45, 212, 191, 0)');
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.stroke();
-
-    // Core
-    ctx.strokeStyle = '#ffffff';
+    ctx.arc(n.x, n.y, 16, 0, Math.PI * 2);
+    ctx.fill();
+    // bright core
+    ctx.fillStyle = '#e6fffb';
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+    // ring
+    ctx.strokeStyle = 'rgba(45, 212, 191, 0.6)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
+    ctx.arc(n.x, n.y, 6, 0, Math.PI * 2);
     ctx.stroke();
-  }
+  });
 
-  // Light beam path: source -> m1 -> m2 -> m3 -> m4 -> target
-  const beamPoints = [
-    { x: lightX, y: lightY },
-    { x: m1.x, y: m1.y },
-    { x: m2.x, y: m2.y },
-    { x: m3.x, y: m3.y },
-    { x: m4.x, y: m4.y },
-    { x: 800, y: 200 }
-  ];
-  drawLightBeam(beamPoints);
+  // === Layer labels ===
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textBaseline = 'top';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(205, 175, 130, 0.95)';
+  ctx.fillText('PAST · 过去', 16, 14);
+  ctx.fillStyle = 'rgba(45, 212, 191, 0.98)';
+  ctx.fillText('PRESENT · 现在', 16, 122);
+  ctx.fillStyle = 'rgba(103, 232, 249, 0.98)';
+  ctx.fillText('FUTURE · 未来', 16, 240);
 
-  // Target/crystal on the right
-  const targetX = 800;
-  const targetY = 200;
-
-  // Target glow (big)
-  const targetGlow = ctx.createRadialGradient(targetX, targetY, 5, targetX, targetY, 80);
-  targetGlow.addColorStop(0, 'rgba(253, 224, 71, 0.4)');
-  targetGlow.addColorStop(0.3, 'rgba(253, 224, 71, 0.2)');
-  targetGlow.addColorStop(1, 'rgba(253, 224, 71, 0)');
-  ctx.fillStyle = targetGlow;
-  ctx.fillRect(targetX - 80, targetY - 80, 160, 160);
-
-  // Target pedestal
-  ctx.fillStyle = '#3d3055';
-  ctx.fillRect(targetX - 25, targetY + 20, 50, 8);
-  ctx.fillStyle = '#2a2240';
-  ctx.fillRect(targetX - 20, targetY + 28, 40, 12);
-
-  // Crystal target
-  ctx.save();
-  ctx.translate(targetX, targetY);
-
-  // Crystal body
-  const crystalGrad = ctx.createLinearGradient(0, -25, 0, 25);
-  crystalGrad.addColorStop(0, '#fef9c3');
-  crystalGrad.addColorStop(0.5, '#fde047');
-  crystalGrad.addColorStop(1, '#eab308');
-  ctx.fillStyle = crystalGrad;
-  ctx.strokeStyle = '#fef9c3';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(0, -28);
-  ctx.lineTo(15, -5);
-  ctx.lineTo(10, 20);
-  ctx.lineTo(-10, 20);
-  ctx.lineTo(-15, -5);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-
-  // Crystal facets
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(0, -28);
-  ctx.lineTo(0, 20);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(-15, -5);
-  ctx.lineTo(15, -5);
-  ctx.stroke();
-
-  // Crystal highlight
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-  ctx.beginPath();
-  ctx.moveTo(-5, -20);
-  ctx.lineTo(0, -28);
-  ctx.lineTo(-2, -5);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.restore();
-
-  // Obstacles/blocks that create shadows
-  function drawObstacle(x, y, w, h) {
-    // Block body
-    const obsGrad = ctx.createLinearGradient(x, y, x + w, y + h);
-    obsGrad.addColorStop(0, '#3d3055');
-    obsGrad.addColorStop(1, '#2a2240');
-    ctx.fillStyle = obsGrad;
-    ctx.strokeStyle = '#5d4a80';
-    ctx.lineWidth = 1.5;
-    ctx.fillRect(x, y, w, h);
-    ctx.strokeRect(x, y, w, h);
-
-    // Top highlight
-    ctx.fillStyle = 'rgba(139, 124, 192, 0.3)';
-    ctx.fillRect(x, y, w, 3);
-  }
-
-  // Some obstacles
-  drawObstacle(380, 220, 40, 60);
-  drawObstacle(120, 130, 30, 50);
-  drawObstacle(580, 60, 35, 45);
-
-  // Shadow from obstacle (cast by light)
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-  ctx.beginPath();
-  ctx.moveTo(380, 220);
-  ctx.lineTo(320, 310);
-  ctx.lineTo(420, 340);
-  ctx.lineTo(420, 280);
-  ctx.closePath();
-  ctx.fill();
-
-  // Decorative - ancient symbols on walls
-  ctx.fillStyle = 'rgba(139, 124, 192, 0.2)';
-  ctx.font = '20px serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('☀', 70, 130);
-  ctx.fillText('◈', W - 70, 100);
-  ctx.fillText('⬡', 70, H - 80);
-  ctx.fillText('✦', W - 70, H - 70);
-
-  // Level indicator (bottom right)
-  ctx.fillStyle = 'rgba(60, 50, 90, 0.8)';
-  ctx.strokeStyle = '#6b5a95';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.roundRect(W - 120, H - 60, 100, 36, 6);
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = '#fde047';
-  ctx.font = 'bold 12px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('第 7 关 / Level 7', W - 70, H - 42);
-
-  // Reset button (bottom left)
-  ctx.fillStyle = 'rgba(60, 50, 90, 0.8)';
-  ctx.strokeStyle = '#6b5a95';
-  ctx.beginPath();
-  ctx.roundRect(20, H - 60, 80, 36, 6);
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = '#c4b5fd';
-  ctx.font = '12px sans-serif';
-  ctx.fillText('↻ 重置', 60, H - 42);
+  // Soft vignette
+  const vign = ctx.createRadialGradient(W/2, H/2, W*0.3, W/2, H/2, W*0.7);
+  vign.addColorStop(0, 'rgba(0,0,0,0)');
+  vign.addColorStop(1, 'rgba(0,0,0,0.45)');
+  ctx.fillStyle = vign;
+  ctx.fillRect(0, 0, W, H);
 </script>
 
 <script>
   const translations = {
     zh: {
-      title: '光影之间 | Between Light & Shadow',
+      title: '时空织机 | Chrono Loom',
       langToggle: 'EN',
       back: '← 返回游戏创意',
-      gameTitle: '光影之间',
-      gameSubtitle: 'Between Light & Shadow',
-      statusBadge: '构思阶段',
+      category: '时空解谜 × 叙事',
+      gameTitle: '时空织机',
+      gameSubtitle: 'Chrono Loom',
+      statusBadge: '探索中',
       introTitle: '游戏介绍',
-      introP1: '《光影之间》是一款以光线折射和阴影变化为核心机制的解谜游戏。玩家将在一座神秘的光影之殿中探索，通过旋转镜面、移动棱镜、调整光源，引导光线照亮隐藏的印记，解开一个又一个精心设计的谜题。',
-      introP2: '游戏拥有真实的物理光线系统，每一束光都会根据物理定律进行反射、折射和散射。镜面反射、棱镜分光、透镜聚焦——你需要运用光学知识，让光线按照你的意愿穿行于黑暗的空间之中。',
-      introP3: '独特的氛围美学是游戏的另一大特色。幽暗的环境、流动的光束、细腻的阴影，配合空灵的背景音乐，打造出一个令人沉浸的光影世界。每一关都是一件光影艺术品，等待你去发现和创造。',
+      introP1: '编织时间线，让过去、现在、未来同时存在于同一画面。你在"现在"做的操作会即时影响过去与未来，形成因果循环的解谜空间——不是回到过去改写历史，而是让三个时刻在同一帧中相互呼应。',
+      introP2: '三条时间线并行运行，玩家可以在三个时间点之间自由穿梭。任何一个时间点上的改变都会以涟漪形式向外扩散，影响另外两个时间点的状态与可交互元素，带来层层递进的连锁反应。',
+      introP3: '创新之处在于：过去、现在、未来并非线性顺序，而是同时存在并相互影响。玩家需要找到因果的"稳定锚点"，在悖论与循环之间寻得平衡，才能解开那些看似无解的时空谜题。',
       featuresTitle: '核心玩法',
-      featuresSubtitle: '光与影的艺术，用智慧点亮黑暗',
-      feat1Title: '物理光线系统',
-      feat1Desc: '基于真实物理的光线模拟，反射、折射、散射都遵循光学定律，带来真实的解谜体验。',
-      feat2Title: '阴影机关',
-      feat2Desc: '利用物体投射的阴影触发机关，遮挡特定角度的光线，在黑暗中寻找隐藏的通道。',
-      feat3Title: '镜面反射',
-      feat3Desc: '旋转和放置镜面，让光线绕过障碍。多面镜子组合，创造出复杂的光之路径。',
-      feat4Title: '氛围美学',
-      feat4Desc: '精致的光影画面，空灵的音乐氛围，每一关都是一件可交互的光影艺术品。',
+      featuresSubtitle: '三时并存，因果编织，重新定义时空解谜',
+      feat1Title: '三时并存',
+      feat1Desc: '过去、现在、未来同屏显示，玩家一眼看清三个时刻的状态与联系。',
+      feat2Title: '因果涟漪',
+      feat2Desc: '一个时间点的改变产生涟漪，向外扩散并影响其他时间点的状态。',
+      feat3Title: '时间编织',
+      feat3Desc: '手动连接不同时间点的事件，创造自定义因果链与解谜路径。',
+      feat4Title: '稳定锚点',
+      feat4Desc: '找到时间线的稳定锚点，避免悖论崩溃，维持因果闭环。',
       techTitle: '技术栈',
       timelineTitle: '开发进度',
-      tl1Label: '构思阶段',
-      tl1Desc: '核心创意设计',
-      tl2Label: '原型阶段',
-      tl2Desc: '光线系统研发',
-      tl3Label: '开发中',
-      tl3Desc: '关卡与美术制作',
-      tl4Label: '待完成',
-      tl4Desc: '测试与发布',
+      tl1Label: '构思',
+      tl1Desc: '核心概念设计',
+      tl2Label: '原型开发中',
+      tl2Desc: '三时机制验证',
+      tl3Label: '关卡设计',
+      tl3Desc: '待完成',
+      tl4Label: '叙事打磨',
+      tl4Desc: '待完成',
       ctaBtn: '← 返回创意列表'
     },
     en: {
-      title: 'Between Light & Shadow | 光影之间',
+      title: 'Chrono Loom | 时空织机',
       langToggle: '中文',
       back: '← Back to Ideas',
-      gameTitle: 'Between Light & Shadow',
-      gameSubtitle: '光影之间',
-      statusBadge: 'Concept',
+      category: 'Time Puzzle × Narrative',
+      gameTitle: 'Chrono Loom',
+      gameSubtitle: '时空织机',
+      statusBadge: 'Exploring',
       introTitle: 'About the Game',
-      introP1: 'Between Light & Shadow is a puzzle game centered around light refraction and shadow dynamics. Players explore a mysterious Temple of Light, rotating mirrors, moving prisms, and adjusting light sources to guide beams and illuminate hidden sigils, solving meticulously designed puzzles one by one.',
-      introP2: 'The game features a realistic physics-based light system. Every beam of light reflects, refracts, and scatters according to the laws of physics. Mirror reflections, prism dispersion, lens focusing - you will need to apply your knowledge of optics to make light travel through dark spaces as you wish.',
-      introP3: 'The unique atmospheric aesthetic is another highlight. Dim environments, flowing light beams, delicate shadows, and ethereal background music combine to create an immersive world of light and shadow. Each level is an interactive work of light art, waiting to be discovered.',
+      introP1: 'Weave the timeline so that past, present, and future coexist in a single frame. Actions you take in the "now" instantly ripple into past and future, forming a causal-loop puzzle space — not time travel to rewrite history, but three moments resonating together in one beat.',
+      introP2: 'Three parallel timelines run simultaneously, and players can freely shift between three time points. Any change at one point spreads outward as a ripple, affecting the state and interactables of the other two, creating cascading chains of cause and effect.',
+      introP3: 'The innovation: past, present, and future are not a linear sequence — they coexist and influence one another. Players must locate causal "anchor points" and balance paradox against recursion to unlock time puzzles that once seemed unsolvable.',
       featuresTitle: 'Core Gameplay',
-      featuresSubtitle: 'The art of light and shadow, illuminate darkness with wisdom',
-      feat1Title: 'Physical Light System',
-      feat1Desc: 'Realistic physics-based light simulation. Reflection, refraction, and scattering follow optical laws for an authentic puzzle experience.',
-      feat2Title: 'Shadow Mechanics',
-      feat2Desc: 'Use shadows cast by objects to trigger mechanisms. Block specific light angles and find hidden paths in darkness.',
-      feat3Title: 'Mirror Reflection',
-      feat3Desc: 'Rotate and place mirrors to bend light around obstacles. Combine multiple mirrors to create complex light paths.',
-      feat4Title: 'Atmospheric Aesthetics',
-      feat4Desc: 'Exquisite light and shadow visuals, ethereal music atmosphere. Each level is an interactive light art piece.',
+      featuresSubtitle: 'Three eras coexisting, woven causality — redefining time puzzles',
+      feat1Title: 'Triple Coexistence',
+      feat1Desc: 'Past, present, and future share one screen so you can read all three states and their links at a glance.',
+      feat2Title: 'Causal Ripple',
+      feat2Desc: 'A change at one time point sends ripples outward, reshaping the state of the other two.',
+      feat3Title: 'Time Weaving',
+      feat3Desc: 'Manually connect events across time points to craft your own causal chains and solve paths.',
+      feat4Title: 'Stable Anchor',
+      feat4Desc: 'Find the timeline\'s stable anchors to avert paradox collapse and keep the loop intact.',
       techTitle: 'Tech Stack',
       timelineTitle: 'Development Progress',
       tl1Label: 'Concept',
-      tl1Desc: 'Core creative design',
-      tl2Label: 'Prototype',
-      tl2Desc: 'Light system R&D',
-      tl3Label: 'In Development',
-      tl3Desc: 'Level & art production',
-      tl4Label: 'To Do',
-      tl4Desc: 'Testing & release',
+      tl1Desc: 'Core concept design',
+      tl2Label: 'Prototype In Dev',
+      tl2Desc: 'Triple-time mechanics validation',
+      tl3Label: 'Level Design',
+      tl3Desc: 'To do',
+      tl4Label: 'Narrative Polish',
+      tl4Desc: 'To do',
       ctaBtn: '← Back to Ideas'
     }
   };
 
-  let currentLang = 'zh';
-
-  function toggleLang() {
-    currentLang = currentLang === 'zh' ? 'en' : 'zh';
-    applyLang(currentLang);
-    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
-  }
+  let currentLang = localStorage.getItem('ycc-lang') || 'zh';
 
   function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('ycc-lang', lang);
     const t = translations[lang];
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
-      if (t[key]) {
-        el.textContent = t[key];
-      }
+      if (t[key]) el.textContent = t[key];
     });
     document.title = t.title;
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
   }
+
+  function toggleLang() {
+    applyLang(currentLang === 'zh' ? 'en' : 'zh');
+  }
+
+  applyLang(currentLang);
 </script>
 
 </body>

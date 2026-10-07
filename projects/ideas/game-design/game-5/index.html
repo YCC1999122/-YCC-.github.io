@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="title">灵魂共鸣 | Soul Resonance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f8f9fc;
+    --card-bg: rgba(255, 255, 255, 0.72);
+    --card-border: rgba(255, 255, 255, 0.85);
+    --text-primary: #1a1a2e;
+    --text-secondary: #5a5f7a;
+    --text-tertiary: #8b90a8;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --accent-bg: rgba(99, 102, 241, 0.10);
+    --gold: #f59e0b;
+    --gold-light: #fcd34d;
+    --purple: #7c3aed;
+    --purple-light: #a78bfa;
+    --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.06);
+    --shadow-md: 0 8px 24px rgba(99, 102, 241, 0.10);
+    --shadow-lg: 0 16px 48px rgba(99, 102, 241, 0.14);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(245, 158, 11, 0.08) 0%, transparent 42%),
+      radial-gradient(circle at 88% 22%, rgba(124, 58, 237, 0.09) 0%, transparent 42%),
+      radial-gradient(circle at 50% 92%, rgba(99, 102, 241, 0.06) 0%, transparent 45%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 28px 64px;
+    position: relative;
+  }
+
+  /* ============ Language Toggle ============ */
+  .lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(99, 102, 241, 0.22);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.10);
+  }
+  .lang-toggle:hover {
+    border-color: rgba(99, 102, 241, 0.45);
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.18);
+    transform: translateY(-1px);
+  }
+  .lang-toggle .lang-cn,
+  .lang-toggle .lang-en { transition: color 0.25s ease; color: #9ca3af; }
+  .lang-toggle .lang-cn.active { color: #6366f1; }
+  .lang-toggle .lang-en.active { color: #6366f1; }
+  .lang-toggle .lang-sep { color: #d1d5db; margin: 0 3px; }
+
+  /* ============ Back Link ============ */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #6366f1;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 32px;
+    padding: 7px 16px 7px 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(99, 102, 241, 0.14);
+    transition: all 0.3s ease;
+  }
+  .back-link:hover {
+    color: #4f46e5;
+    transform: translateX(-3px);
+    border-color: rgba(99, 102, 241, 0.32);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.14);
+  }
+
+  /* ============ Header ============ */
+  .game-header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .header-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6366f1;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.08);
+    margin-bottom: 14px;
+  }
+  .game-title {
+    font-size: clamp(2.2rem, 5.5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+    background: linear-gradient(120deg, #f59e0b 0%, #fbbf24 30%, #a855f7 65%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+  }
+  .game-subtitle {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    color: var(--text-tertiary);
+    font-weight: 500;
+    margin-bottom: 18px;
+    letter-spacing: 0.04em;
+  }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .status-badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .category-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 6px 14px;
+    background: rgba(124, 58, 237, 0.08);
+    color: #7c3aed;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(124, 58, 237, 0.14);
+  }
+
+  /* ============ Hero Section ============ */
+  .hero-section {
+    margin-bottom: 48px;
+  }
+  .hero-canvas-wrapper {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-canvas-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.10), transparent 60%);
+    pointer-events: none;
+  }
+  .hero-canvas {
+    width: 100%;
+    height: 380px;
+    border-radius: var(--radius-md);
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-caption {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 12px;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ Section Titles ============ */
+  .section-title {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 22px;
+    background: linear-gradient(180deg, #f59e0b 0%, #a855f7 100%);
+    border-radius: 2px;
+  }
+  .section-subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+    padding-left: 14px;
+  }
+
+  /* ============ Intro Section ============ */
+  .intro-section {
+    margin-bottom: 48px;
+  }
+  .intro-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 32px 36px;
+    box-shadow: var(--shadow-md);
+  }
+  .intro-card p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.85;
+    margin-bottom: 18px;
+  }
+  .intro-card p:last-child {
+    margin-bottom: 0;
+  }
+  .intro-card p strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .intro-card .intro-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    background: rgba(124, 58, 237, 0.10);
+    padding: 3px 10px;
+    border-radius: 8px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* ============ Features Grid ============ */
+  .features-section {
+    margin-bottom: 48px;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    position: relative;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 26px 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.35s ease;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-md);
+    background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.12), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(124, 58, 237, 0.32);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(124, 58, 237, 0.14));
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    position: relative;
+    z-index: 1;
+  }
+  .feature-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    position: relative;
+    z-index: 1;
+  }
+  .feature-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ Tech Stack ============ */
+  .tech-section {
+    margin-bottom: 48px;
+  }
+  .tech-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tech-tag {
+    padding: 8px 16px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid rgba(99, 102, 241, 0.10);
+    transition: all 0.25s ease;
+    cursor: default;
+  }
+  .tech-tag:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  }
+
+  /* ============ Timeline ============ */
+  .timeline-section {
+    margin-bottom: 48px;
+  }
+  .timeline-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .timeline {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 32px;
+    right: 32px;
+    height: 3px;
+    background: #e5e7f0;
+    border-radius: 2px;
+  }
+  .timeline-progress {
+    position: absolute;
+    top: 16px;
+    left: 32px;
+    height: 3px;
+    background: linear-gradient(90deg, #f59e0b 0%, #a855f7 100%);
+    border-radius: 2px;
+    z-index: 1;
+    width: 35%;
+  }
+  .timeline-item {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+    max-width: 140px;
+  }
+  .timeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    background: white;
+    border: 3px solid #e5e7f0;
+    color: var(--text-tertiary);
+    transition: all 0.3s ease;
+  }
+  .timeline-item.done .timeline-dot {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    border-color: #f59e0b;
+    color: white;
+  }
+  .timeline-item.active .timeline-dot {
+    background: white;
+    border-color: #a855f7;
+    color: #a855f7;
+    box-shadow: 0 0 0 5px rgba(168, 85, 247, 0.15);
+    animation: pulse-ring 2s ease-in-out infinite;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 0 5px rgba(168, 85, 247, 0.15); }
+    50% { box-shadow: 0 0 0 9px rgba(168, 85, 247, 0.08); }
+  }
+  .timeline-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .timeline-item.done .timeline-label,
+  .timeline-item.active .timeline-label {
+    color: var(--text-primary);
+  }
+  .timeline-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+  }
+
+  /* ============ Bottom CTA ============ */
+  .cta-section {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #f59e0b 0%, #a855f7 50%, #6366f1 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.30);
+    transition: all 0.3s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.42);
+  }
+
+  /* ============ Responsive ============ */
+  @media (max-width: 768px) {
+    .container { padding: 28px 16px 48px; }
+    .hero-canvas { height: 240px; }
+    .intro-card, .tech-card, .timeline-card { padding: 22px 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .timeline { flex-direction: column; gap: 22px; padding: 0 4px; }
+    .timeline::before {
+      top: 16px;
+      bottom: 16px;
+      left: 15px;
+      right: auto;
+      width: 3px;
+      height: auto;
+    }
+    .timeline-progress {
+      top: 16px;
+      left: 15px;
+      width: 3px;
+      height: 35%;
+      background: linear-gradient(180deg, #f59e0b 0%, #a855f7 100%);
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      max-width: none;
+      text-align: left;
+    }
+    .timeline-dot { margin: 0; flex-shrink: 0; }
+    .lang-toggle { top: 14px; right: 14px; padding: 6px 11px; font-size: 12px; }
+    .status-badge, .category-badge { font-size: 11px; padding: 5px 12px; }
+  }
+</style>
+</head>
+<body>
+  <button class="lang-toggle" id="langToggle" aria-label="Toggle language">
+    <span class="lang-cn active">中</span>
+    <span class="lang-sep">/</span>
+    <span class="lang-en">EN</span>
+  </button>
+
+  <div class="container">
+    <a href="../index.html" class="back-link" data-i18n="back">← 返回游戏创意</a>
+
+    <header class="game-header">
+      <span class="header-eyebrow" data-i18n="eyebrow">Dual-Character Puzzle Lab</span>
+      <h1 class="game-title" data-i18n="gameTitle">灵魂共鸣</h1>
+      <p class="game-subtitle" data-i18n="gameSubtitle">Soul Resonance</p>
+      <span class="status-badge" data-i18n="status">探索中</span>
+      <span class="category-badge" data-i18n="category">双角色联动 × 解谜</span>
+    </header>
+
+    <section class="hero-section">
+      <div class="hero-canvas-wrapper">
+        <canvas id="gameCanvas" class="hero-canvas" width="1040" height="380"></canvas>
+        <p class="hero-caption" data-i18n="heroCaption">光与影的镜像共鸣 — 一个动作，两个世界</p>
+      </div>
+    </section>
+
+    <section class="intro-section">
+      <h2 class="section-title" data-i18n="introTitle">游戏介绍</h2>
+      <p class="section-subtitle" data-i18n="introSubtitle">玩法 · 特色 · 创新点</p>
+      <div class="intro-card">
+        <p><span class="intro-label" data-i18n="introLabel1">玩法</span><span data-i18n="introP1">同时控制光与影两个角色，他们的动作相互映射。控制光角色移动时，影角色会做镜像动作。一个角色的移动会触发另一个角色所在空间的机关，需要在双重空间中同步推进解谜。</span></p>
+        <p><span class="intro-label" data-i18n="introLabel2">特色</span><span data-i18n="introP2">光角色在明世界行动，影角色在暗世界行动。两个世界共享同一空间但机关布局不同。需要利用镜像关系协同解谜——光世界里的台阶可能是影世界里的天花板，影世界里的开关可能点亮光世界里的灯。</span></p>
+        <p><span class="intro-label" data-i18n="introLabel3">创新点</span><span data-i18n="introP3">不是简单的"切换角色"，而是真正的"同时控制"。两个角色的动作是镜像映射的，需要利用这种约束找到解法——玩家必须思考一个动作如何在两个世界同时生效，这种"双重约束"带来全新的解谜维度。</span></p>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <h2 class="section-title" data-i18n="featuresTitle">核心玩法</h2>
+      <p class="section-subtitle" data-i18n="featuresSubtitle">四大特色系统，构建光影共鸣的解谜体验</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🪞</div>
+          <h3 class="feature-title" data-i18n="feat1Title">镜像控制</h3>
+          <p class="feature-desc" data-i18n="feat1Desc">两个角色动作相互映射，一个移动另一个做镜像。这种约束成为解谜的核心机制。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">☀️🌙</div>
+          <h3 class="feature-title" data-i18n="feat2Title">明暗世界</h3>
+          <p class="feature-desc" data-i18n="feat2Desc">光角色在明世界，影角色在暗世界。同一空间，不同机关布局，需要协同探索。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title" data-i18n="feat3Title">共鸣机关</h3>
+          <p class="feature-desc" data-i18n="feat3Desc">一个角色触发另一个世界的机关。光世界的开关可能解锁影世界的通路，反之亦然。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎵</div>
+          <h3 class="feature-title" data-i18n="feat4Title">共振态</h3>
+          <p class="feature-desc" data-i18n="feat4Desc">两个角色靠近时进入共振状态，解锁特殊能力——如光束桥、影穿透、时空凝滞等。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tech-section">
+      <h2 class="section-title" data-i18n="techTitle">技术栈</h2>
+      <p class="section-subtitle" data-i18n="techSubtitle">引擎与系统</p>
+      <div class="tech-card">
+        <div class="tech-tags">
+          <span class="tech-tag">Unity</span>
+          <span class="tech-tag">C#</span>
+          <span class="tech-tag">2D 渲染</span>
+          <span class="tech-tag">自定义镜像映射系统</span>
+          <span class="tech-tag">Shader Graph</span>
+          <span class="tech-tag">光线追踪 2D</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-section">
+      <h2 class="section-title" data-i18n="timelineTitle">开发进度</h2>
+      <p class="section-subtitle" data-i18n="timelineSubtitle">从构思到打磨的旅程</p>
+      <div class="timeline-card">
+        <div class="timeline">
+          <div class="timeline-progress"></div>
+          <div class="timeline-item done">
+            <div class="timeline-dot">✓</div>
+            <div>
+              <div class="timeline-label" data-i18n="tl1Label">构思</div>
+              <div class="timeline-desc" data-i18n="tl1Desc">核心概念完成</div>
+            </div>
+          </div>
+          <div class="timeline-item active">
+            <div class="timeline-dot">●</div>
+            <div>
+              <div class="timeline-label" data-i18n="tl2Label">原型开发中</div>
+              <div class="timeline-desc" data-i18n="tl2Desc">镜像映射验证</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">○</div>
+            <div>
+              <div class="timeline-label" data-i18n="tl3Label">关卡设计</div>
+              <div class="timeline-desc" data-i18n="tl3Desc">待完成</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">○</div>
+            <div>
+              <div class="timeline-label" data-i18n="tl4Label">叙事打磨</div>
+              <div class="timeline-desc" data-i18n="tl4Desc">待完成</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-section">
+      <a href="../index.html" class="cta-btn" data-i18n="ctaBtn">← 返回创意列表</a>
+    </div>
+  </div>
+
+<script>
+// ============ Canvas Hero - Soul Resonance Scene ============
+(function () {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+  const CX = W / 2;
+  const CY = H / 2;
+
+  // --- Background: split light (left, gold) and shadow (right, purple) ---
+  // Left light gradient
+  const lightGrad = ctx.createLinearGradient(0, 0, CX, H);
+  lightGrad.addColorStop(0, '#fef9c3');
+  lightGrad.addColorStop(0.5, '#fde68a');
+  lightGrad.addColorStop(1, '#f59e0b');
+  ctx.fillStyle = lightGrad;
+  ctx.fillRect(0, 0, CX, H);
+
+  // Right shadow gradient
+  const shadowGrad = ctx.createLinearGradient(CX, 0, W, H);
+  shadowGrad.addColorStop(0, '#312e81');
+  shadowGrad.addColorStop(0.5, '#1e1b4b');
+  shadowGrad.addColorStop(1, '#0c0a1e');
+  ctx.fillStyle = shadowGrad;
+  ctx.fillRect(CX, 0, CX, H);
+
+  // Soft divider glow at center
+  const dividerGrad = ctx.createLinearGradient(CX - 60, 0, CX + 60, 0);
+  dividerGrad.addColorStop(0, 'rgba(254, 243, 199, 0)');
+  dividerGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.35)');
+  dividerGrad.addColorStop(1, 'rgba(129, 140, 248, 0)');
+  ctx.fillStyle = dividerGrad;
+  ctx.fillRect(CX - 60, 0, 120, H);
+
+  // Center vertical line (subtle, dashed)
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+  ctx.lineWidth = 0.8;
+  ctx.setLineDash([3, 5]);
+  ctx.beginPath();
+  ctx.moveTo(CX, 20);
+  ctx.lineTo(CX, H - 20);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // --- Light side: rays from upper-left ---
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  ctx.strokeStyle = '#fef3c7';
+  ctx.lineWidth = 1.2;
+  const rayOriginX = 80;
+  const rayOriginY = 60;
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 4) + (i / 5) * (Math.PI / 4);
+    ctx.beginPath();
+    ctx.moveTo(rayOriginX, rayOriginY);
+    ctx.lineTo(rayOriginX + Math.cos(angle) * 280, rayOriginY + Math.sin(angle) * 280);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Light particles (warm sparkles)
+  ctx.fillStyle = '#fef9c3';
+  const lightSparks = [
+    [60, 80], [120, 140], [180, 60], [80, 220], [200, 280], [150, 320], [260, 100], [300, 200]
+  ];
+  lightSparks.forEach(([x, y]) => {
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath();
+    ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  // --- Shadow side: dark veins flowing toward center ---
+  ctx.save();
+  ctx.globalAlpha = 0.5;
+  ctx.strokeStyle = '#818cf8';
+  ctx.lineWidth = 1.2;
+  const veinOriginX = W - 80;
+  const veinOriginY = 60;
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI * 3 / 4) + (i / 5) * (Math.PI / 4);
+    ctx.beginPath();
+    ctx.moveTo(veinOriginX, veinOriginY);
+    ctx.bezierCurveTo(
+      veinOriginX + Math.cos(angle) * 100, veinOriginY + Math.sin(angle) * 100,
+      veinOriginX + Math.cos(angle) * 200, veinOriginY + Math.sin(angle) * 200,
+      veinOriginX + Math.cos(angle) * 280, veinOriginY + Math.sin(angle) * 280
+    );
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Shadow particles (cool sparkles)
+  ctx.fillStyle = '#a78bfa';
+  const shadowSparks = [
+    [W - 60, 80], [W - 120, 140], [W - 180, 60], [W - 80, 220], [W - 200, 280], [W - 150, 320], [W - 260, 100], [W - 300, 200]
+  ];
+  shadowSparks.forEach(([x, y]) => {
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath();
+    ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  // --- Resonance connection arcs (light to shadow, crossing the divide) ---
+  // Upper arc (light to shadow)
+  const arcGrad1 = ctx.createLinearGradient(CX - 120, CY - 40, CX + 120, CY - 40);
+  arcGrad1.addColorStop(0, 'rgba(251, 191, 36, 0.85)');
+  arcGrad1.addColorStop(1, 'rgba(129, 140, 248, 0.85)');
+  ctx.strokeStyle = arcGrad1;
+  ctx.lineWidth = 1.6;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(CX - 130, CY - 20);
+  ctx.quadraticCurveTo(CX, CY - 90, CX + 130, CY - 20);
+  ctx.stroke();
+  // Lower arc (shadow to light)
+  const arcGrad2 = ctx.createLinearGradient(CX + 120, CY + 40, CX - 120, CY + 40);
+  arcGrad2.addColorStop(0, 'rgba(129, 140, 248, 0.85)');
+  arcGrad2.addColorStop(1, 'rgba(251, 191, 36, 0.85)');
+  ctx.strokeStyle = arcGrad2;
+  ctx.beginPath();
+  ctx.moveTo(CX - 130, CY + 20);
+  ctx.quadraticCurveTo(CX, CY + 90, CX + 130, CY + 20);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // --- Helper: draw a stylized character ---
+  function drawCharacter(centerX, centerY, opts) {
+    const {
+      bodyColor, bodyGlow, headColor, armColor, legColor, haloColor, haloOpacity, reachDir, accentColor
+    } = opts;
+
+    // Glow halo
+    const haloGrad = ctx.createRadialGradient(centerX, centerY - 4, 4, centerX, centerY - 4, 60);
+    haloGrad.addColorStop(0, haloColor);
+    haloGrad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.globalAlpha = haloOpacity;
+    ctx.fillStyle = haloGrad;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY - 4, 60, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Body aura ring
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY + 5, 28, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Head
+    ctx.fillStyle = headColor;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY - 24, 9, 0, Math.PI * 2);
+    ctx.fill();
+    // Head highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.beginPath();
+    ctx.arc(centerX - 3, centerY - 27, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Body (rounded rect)
+    ctx.fillStyle = bodyColor;
+    roundRect(ctx, centerX - 10, centerY - 14, 20, 28, 5);
+    ctx.fill();
+    // Body highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    roundRect(ctx, centerX - 8, centerY - 12, 5, 24, 2);
+    ctx.fill();
+
+    // Arms - reaching toward center (reachDir: -1 left char reaches right, +1 right char reaches left)
+    ctx.fillStyle = armColor;
+    const armY = centerY - 6;
+    const armLen = 24;
+    roundRect(ctx, centerX + reachDir * 8, armY, reachDir * armLen, 5, 2.5);
+    ctx.fill();
+    // Hand (small circle at end)
+    ctx.beginPath();
+    ctx.arc(centerX + reachDir * (8 + armLen), armY + 2.5, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Legs
+    ctx.fillStyle = legColor;
+    roundRect(ctx, centerX - 8, centerY + 14, 6, 14, 2);
+    ctx.fill();
+    roundRect(ctx, centerX + 2, centerY + 14, 6, 14, 2);
+    ctx.fill();
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  // Light character (left, gold tones) - reaches right (reachDir = +1)
+  drawCharacter(CX - 130, CY, {
+    bodyColor: '#fef3c7',
+    bodyGlow: '#fde68a',
+    headColor: '#fef9c3',
+    armColor: '#fde68a',
+    legColor: '#fbbf24',
+    haloColor: 'rgba(254, 240, 138, 0.55)',
+    haloOpacity: 0.85,
+    reachDir: 1,
+    accentColor: '#f59e0b'
+  });
+
+  // Shadow character (right, purple tones) - reaches left (reachDir = -1) - mirror
+  drawCharacter(CX + 130, CY, {
+    bodyColor: '#312e81',
+    bodyGlow: '#4338ca',
+    headColor: '#1e1b4b',
+    armColor: '#4338ca',
+    legColor: '#312e81',
+    haloColor: 'rgba(129, 140, 248, 0.55)',
+    haloOpacity: 0.85,
+    reachDir: -1,
+    accentColor: '#a78bfa'
+  });
+
+  // --- Center resonance spark ---
+  // Outer glow rings
+  for (let i = 4; i >= 1; i--) {
+    ctx.globalAlpha = 0.18 * i / 4;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(CX, CY, 14 + i * 6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Bright core
+  const coreGrad = ctx.createRadialGradient(CX, CY, 0, CX, CY, 14);
+  coreGrad.addColorStop(0, '#ffffff');
+  coreGrad.addColorStop(0.5, '#fef3c7');
+  coreGrad.addColorStop(1, 'rgba(254, 243, 199, 0)');
+  ctx.fillStyle = coreGrad;
+  ctx.beginPath();
+  ctx.arc(CX, CY, 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 4-point sparkle
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.moveTo(CX, CY - 18);
+  ctx.lineTo(CX + 2, CY);
+  ctx.lineTo(CX, CY + 18);
+  ctx.lineTo(CX - 2, CY);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(CX - 18, CY);
+  ctx.lineTo(CX, CY + 2);
+  ctx.lineTo(CX + 18, CY);
+  ctx.lineTo(CX, CY - 2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Tiny orbiting particles around resonance
+  for (let i = 0; i < 8; i++) {
+    const ang = (i / 8) * Math.PI * 2;
+    const r = 28;
+    const px = CX + Math.cos(ang) * r;
+    const py = CY + Math.sin(ang) * r;
+    ctx.fillStyle = i % 2 === 0 ? '#fef3c7' : '#a78bfa';
+    ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    ctx.arc(px, py, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // --- World labels (small, top corners) ---
+  ctx.font = '600 11px Inter, sans-serif';
+  ctx.fillStyle = 'rgba(180, 83, 9, 0.7)';
+  ctx.textAlign = 'left';
+  ctx.fillText('☀ LIGHT WORLD', 24, 32);
+  ctx.fillStyle = 'rgba(167, 139, 250, 0.85)';
+  ctx.textAlign = 'right';
+  ctx.fillText('SHADOW WORLD 🌙', W - 24, 32);
+
+  // Floor lines on both sides (showing shared space)
+  ctx.strokeStyle = 'rgba(180, 83, 9, 0.4)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 4]);
+  ctx.beginPath();
+  ctx.moveTo(20, H - 40);
+  ctx.lineTo(CX - 20, H - 40);
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(167, 139, 250, 0.4)';
+  ctx.beginPath();
+  ctx.moveTo(CX + 20, H - 40);
+  ctx.lineTo(W - 20, H - 40);
+  ctx.stroke();
+  ctx.setLineDash([]);
+})();
+</script>
+
+<script>
+// ============ i18n - Bilingual support (consistent with main site) ============
+(function () {
+  'use strict';
+
+  var i18n = {
+    zh: {
+      title: '灵魂共鸣 | Soul Resonance',
+      back: '← 返回游戏创意',
+      eyebrow: '双角色联动 · 创意实验室',
+      gameTitle: '灵魂共鸣',
+      gameSubtitle: 'Soul Resonance',
+      status: '探索中',
+      category: '双角色联动 × 解谜',
+      heroCaption: '光与影的镜像共鸣 — 一个动作，两个世界',
+      introTitle: '游戏介绍',
+      introSubtitle: '玩法 · 特色 · 创新点',
+      introLabel1: '玩法',
+      introLabel2: '特色',
+      introLabel3: '创新点',
+      introP1: '同时控制光与影两个角色，他们的动作相互映射。控制光角色移动时，影角色会做镜像动作。一个角色的移动会触发另一个角色所在空间的机关，需要在双重空间中同步推进解谜。',
+      introP2: '光角色在明世界行动，影角色在暗世界行动。两个世界共享同一空间但机关布局不同。需要利用镜像关系协同解谜——光世界里的台阶可能是影世界里的天花板，影世界里的开关可能点亮光世界里的灯。',
+      introP3: '不是简单的"切换角色"，而是真正的"同时控制"。两个角色的动作是镜像映射的，需要利用这种约束找到解法——玩家必须思考一个动作如何在两个世界同时生效，这种"双重约束"带来全新的解谜维度。',
+      featuresTitle: '核心玩法',
+      featuresSubtitle: '四大特色系统，构建光影共鸣的解谜体验',
+      feat1Title: '镜像控制',
+      feat1Desc: '两个角色动作相互映射，一个移动另一个做镜像。这种约束成为解谜的核心机制。',
+      feat2Title: '明暗世界',
+      feat2Desc: '光角色在明世界，影角色在暗世界。同一空间，不同机关布局，需要协同探索。',
+      feat3Title: '共鸣机关',
+      feat3Desc: '一个角色触发另一个世界的机关。光世界的开关可能解锁影世界的通路，反之亦然。',
+      feat4Title: '共振态',
+      feat4Desc: '两个角色靠近时进入共振状态，解锁特殊能力——如光束桥、影穿透、时空凝滞等。',
+      techTitle: '技术栈',
+      techSubtitle: '引擎与系统',
+      timelineTitle: '开发进度',
+      timelineSubtitle: '从构思到打磨的旅程',
+      tl1Label: '构思',
+      tl1Desc: '核心概念完成',
+      tl2Label: '原型开发中',
+      tl2Desc: '镜像映射验证',
+      tl3Label: '关卡设计',
+      tl3Desc: '待完成',
+      tl4Label: '叙事打磨',
+      tl4Desc: '待完成',
+      ctaBtn: '← 返回创意列表'
+    },
+    en: {
+      title: 'Soul Resonance | 灵魂共鸣',
+      back: '← Back to Game Ideas',
+      eyebrow: 'Dual-Character · Creative Lab',
+      gameTitle: 'Soul Resonance',
+      gameSubtitle: '灵魂共鸣',
+      status: 'Exploring',
+      category: 'Dual-Character × Puzzle',
+      heroCaption: 'Mirror resonance of light and shadow — one motion, two worlds',
+      introTitle: 'About the Game',
+      introSubtitle: 'Gameplay · Features · Innovation',
+      introLabel1: 'Play',
+      introLabel2: 'Feature',
+      introLabel3: 'Innovation',
+      introP1: 'Simultaneously control both Light and Shadow — their actions mirror each other. When you move the Light character, the Shadow performs the mirror motion. One character\'s movement triggers mechanisms in the other\'s space, so you must advance the puzzle in dual spaces at once.',
+      introP2: 'The Light character acts in the bright world; the Shadow in the dark. Both worlds share the same space yet differ in mechanism layout. Light-world stairs may be the dark-world ceiling; a dark-world switch may light a lamp in the light world.',
+      introP3: 'This isn\'t simple "character switching" — it\'s true simultaneous control. Both characters\' motions are mirror-mapped, and players must think about how a single action takes effect in both worlds at once. This "dual constraint" opens a new dimension of puzzle design.',
+      featuresTitle: 'Core Gameplay',
+      featuresSubtitle: 'Four signature systems crafting the resonance puzzle experience',
+      feat1Title: 'Mirror Control',
+      feat1Desc: 'Two characters\' actions mirror each other — moving one mirrors the other. This constraint is the heart of the puzzle mechanics.',
+      feat2Title: 'Light & Dark Worlds',
+      feat2Desc: 'Light roams the bright world; Shadow roams the dark. Same space, different mechanism layouts — explore them in tandem.',
+      feat3Title: 'Resonance Mechanisms',
+      feat3Desc: 'One character triggers the other world\'s mechanisms. A light-world switch may unlock a dark-world path, and vice versa.',
+      feat4Title: 'Resonance State',
+      feat4Desc: 'When the two draw close, they enter resonance — unlocking special abilities like light-bridges, shadow-pierce, or time-stasis.',
+      techTitle: 'Tech Stack',
+      techSubtitle: 'Engine & Systems',
+      timelineTitle: 'Development Progress',
+      timelineSubtitle: 'The journey from concept to polish',
+      tl1Label: 'Concept',
+      tl1Desc: 'Core concept done',
+      tl2Label: 'Prototype',
+      tl2Desc: 'Mirror-mapping validation',
+      tl3Label: 'Level Design',
+      tl3Desc: 'To do',
+      tl4Label: 'Narrative Polish',
+      tl4Desc: 'To do',
+      ctaBtn: '← Back to Ideas'
+    }
+  };
+
+  var currentLang = localStorage.getItem('ycc-lang') || 'zh';
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('ycc-lang', lang);
+    var dict = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (dict[key]) el.innerHTML = dict[key];
+    });
+    document.title = dict.title;
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    var cn = document.querySelector('.lang-toggle .lang-cn');
+    var en = document.querySelector('.lang-toggle .lang-en');
+    if (cn) cn.classList.toggle('active', lang === 'zh');
+    if (en) en.classList.toggle('active', lang === 'en');
+  }
+
+  var toggle = document.getElementById('langToggle');
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      applyLang(currentLang === 'zh' ? 'en' : 'zh');
+    });
+  }
+
+  applyLang(currentLang);
+})();
+</script>
+
+</body>
+</html>

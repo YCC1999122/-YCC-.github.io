@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="title">星辰碎片 | Stellar Fragments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f8f9fc;
+    --card-bg: rgba(255, 255, 255, 0.72);
+    --card-border: rgba(255, 255, 255, 0.85);
+    --text-primary: #1a1a2e;
+    --text-secondary: #5a5f7a;
+    --text-tertiary: #8b90a8;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --accent-bg: rgba(99, 102, 241, 0.10);
+    --indigo: #4338ca;
+    --violet: #7c3aed;
+    --cyan: #06b6d4;
+    --gold: #f59e0b;
+    --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.06);
+    --shadow-md: 0 8px 24px rgba(99, 102, 241, 0.10);
+    --shadow-lg: 0 16px 48px rgba(99, 102, 241, 0.14);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 15% 18%, rgba(67, 56, 202, 0.09) 0%, transparent 42%),
+      radial-gradient(circle at 85% 22%, rgba(124, 58, 237, 0.10) 0%, transparent 42%),
+      radial-gradient(circle at 50% 92%, rgba(6, 182, 212, 0.06) 0%, transparent 45%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 28px 64px;
+    position: relative;
+  }
+
+  /* ============ Language Toggle ============ */
+  .lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(99, 102, 241, 0.22);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.10);
+  }
+  .lang-toggle:hover {
+    border-color: rgba(99, 102, 241, 0.45);
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.18);
+    transform: translateY(-1px);
+  }
+  .lang-toggle .lang-cn,
+  .lang-toggle .lang-en { transition: color 0.25s ease; color: #9ca3af; }
+  .lang-toggle .lang-cn.active { color: #6366f1; }
+  .lang-toggle .lang-en.active { color: #6366f1; }
+  .lang-toggle .lang-sep { color: #d1d5db; margin: 0 3px; }
+
+  /* ============ Back Link ============ */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #6366f1;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 32px;
+    padding: 7px 16px 7px 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(99, 102, 241, 0.14);
+    transition: all 0.3s ease;
+  }
+  .back-link:hover {
+    color: #4f46e5;
+    transform: translateX(-3px);
+    border-color: rgba(99, 102, 241, 0.32);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.14);
+  }
+
+  /* ============ Header ============ */
+  .game-header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .header-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6366f1;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.08);
+    margin-bottom: 14px;
+  }
+  .game-title {
+    font-size: clamp(2.2rem, 5.5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+    background: linear-gradient(120deg, #1e3a8a 0%, #4338ca 25%, #7c3aed 55%, #06b6d4 90%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+  }
+  .game-subtitle {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    color: var(--text-tertiary);
+    font-weight: 500;
+    margin-bottom: 18px;
+    letter-spacing: 0.04em;
+  }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: rgba(245, 158, 11, 0.14);
+    color: #d97706;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .status-badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .category-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 6px 14px;
+    background: rgba(124, 58, 237, 0.08);
+    color: #7c3aed;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(124, 58, 237, 0.14);
+  }
+
+  /* ============ Hero Section ============ */
+  .hero-section {
+    margin-bottom: 48px;
+  }
+  .hero-canvas-wrapper {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-canvas-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.10), transparent 60%);
+    pointer-events: none;
+  }
+  .hero-canvas {
+    width: 100%;
+    height: 380px;
+    border-radius: var(--radius-md);
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-caption {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 12px;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ Section Titles ============ */
+  .section-title {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 22px;
+    background: linear-gradient(180deg, #4338ca 0%, #7c3aed 50%, #06b6d4 100%);
+    border-radius: 2px;
+  }
+  .section-subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+    padding-left: 14px;
+  }
+
+  /* ============ Intro Section ============ */
+  .intro-section {
+    margin-bottom: 48px;
+  }
+  .intro-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 32px 36px;
+    box-shadow: var(--shadow-md);
+  }
+  .intro-card p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.85;
+    margin-bottom: 18px;
+  }
+  .intro-card p:last-child {
+    margin-bottom: 0;
+  }
+  .intro-card .intro-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    background: rgba(124, 58, 237, 0.10);
+    padding: 3px 10px;
+    border-radius: 8px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* ============ Features Grid ============ */
+  .features-section {
+    margin-bottom: 48px;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    position: relative;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 26px 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.35s ease;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-md);
+    background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.12), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(124, 58, 237, 0.32);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, rgba(67, 56, 202, 0.14), rgba(6, 182, 212, 0.14));
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    position: relative;
+    z-index: 1;
+  }
+  .feature-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    position: relative;
+    z-index: 1;
+  }
+  .feature-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ Tech Stack ============ */
+  .tech-section {
+    margin-bottom: 48px;
+  }
+  .tech-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tech-tag {
+    padding: 8px 16px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid rgba(99, 102, 241, 0.10);
+    transition: all 0.25s ease;
+    cursor: default;
+  }
+  .tech-tag:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  }
+
+  /* ============ Timeline ============ */
+  .timeline-section {
+    margin-bottom: 48px;
+  }
+  .timeline-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px 32px;
+    box-shadow: var(--shadow-md);
+  }
+  .timeline {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 32px;
+    right: 32px;
+    height: 3px;
+    background: #e5e7f0;
+    border-radius: 2px;
+  }
+  .timeline-progress {
+    position: absolute;
+    top: 16px;
+    left: 32px;
+    height: 3px;
+    background: linear-gradient(90deg, #4338ca 0%, #7c3aed 50%, #06b6d4 100%);
+    border-radius: 2px;
+    z-index: 1;
+    width: 20%;
+  }
+  .timeline-item {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+    max-width: 140px;
+  }
+  .timeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    background: white;
+    border: 3px solid #e5e7f0;
+    color: var(--text-tertiary);
+    transition: all 0.3s ease;
+  }
+  .timeline-item.done .timeline-dot {
+    background: linear-gradient(135deg, #4338ca, #7c3aed);
+    border-color: #4338ca;
+    color: white;
+  }
+  .timeline-item.active .timeline-dot {
+    background: white;
+    border-color: #7c3aed;
+    color: #7c3aed;
+    box-shadow: 0 0 0 5px rgba(168, 85, 247, 0.15);
+    animation: pulse-ring 2s ease-in-out infinite;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 0 5px rgba(168, 85, 247, 0.15); }
+    50% { box-shadow: 0 0 0 9px rgba(168, 85, 247, 0.08); }
+  }
+  .timeline-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .timeline-item.done .timeline-label,
+  .timeline-item.active .timeline-label {
+    color: var(--text-primary);
+  }
+  .timeline-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+  }
+
+  /* ============ Bottom CTA ============ */
+  .cta-section {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #4338ca 30%, #7c3aed 65%, #06b6d4 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.30);
+    transition: all 0.3s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.42);
+  }
+
+  /* ============ Responsive ============ */
+  @media (max-width: 768px) {
+    .container { padding: 28px 16px 48px; }
+    .hero-canvas { height: 240px; }
+    .intro-card, .tech-card, .timeline-card { padding: 22px 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .timeline { flex-direction: column; gap: 22px; padding: 0 4px; }
+    .timeline::before {
+      top: 16px;
+      bottom: 16px;
+      left: 15px;
+      right: auto;
+      width: 3px;
+      height: auto;
+    }
+    .timeline-progress {
+      top: 16px;
+      left: 15px;
+      width: 3px;
+      height: 20%;
+      background: linear-gradient(180deg, #4338ca 0%, #7c3aed 50%, #06b6d4 100%);
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      max-width: none;
+      text-align: left;
+    }
+    .timeline-dot { margin: 0; flex-shrink: 0; }
+    .lang-toggle { top: 14px; right: 14px; padding: 6px 11px; font-size: 12px; }
+    .status-badge, .category-badge { font-size: 11px; padding: 5px 12px; }
+  }
+</style>
+</head>
+<body>
+  <button class="lang-toggle" id="langToggle" aria-label="Toggle language">
+    <span class="lang-cn active">中</span>
+    <span class="lang-sep">/</span>
+    <span class="lang-en">EN</span>
+  </button>
+
+  <div class="container">
+    <a href="../index.html" class="back-link" data-i18n="back">← 返回游戏创意</a>
+
+    <header class="game-header">
+      <span class="header-eyebrow" data-i18n="eyebrow">Spatial Topology Lab</span>
+      <h1 class="game-title" data-i18n="gameTitle">星辰碎片</h1>
+      <p class="game-subtitle" data-i18n="gameSubtitle">Stellar Fragments</p>
+      <span class="status-badge" data-i18n="status">想法阶段</span>
+      <span class="category-badge" data-i18n="category">3D空间解谜 × 物理</span>
+    </header>
+
+    <section class="hero-section">
+      <div class="hero-canvas-wrapper">
+        <canvas id="gameCanvas" class="hero-canvas" width="1040" height="380"></canvas>
+        <p class="hero-caption" data-i18n="heroCaption">折叠的 3D 空间中，星辰碎片散落于扭曲的维度</p>
+      </div>
+    </section>
+
+    <section class="intro-section">
+      <h2 class="section-title" data-i18n="introTitle">游戏介绍</h2>
+      <p class="section-subtitle" data-i18n="introSubtitle">玩法 · 特色 · 创新点</p>
+      <div class="intro-card">
+        <p><span class="intro-label" data-i18n="introLabel1">玩法</span><span data-i18n="introP1">在折叠的 3D 空间中收集星辰碎片。利用空间弯曲、引力滑行、维度穿越探索立体迷宫。空间本身是可以折叠和扭曲的——远处的平台可以被"折叠"到身边，陌生的维度可以通过特殊门进入。</span></p>
+        <p><span class="intro-label" data-i18n="introLabel2">特色</span><span data-i18n="introP2">3D 空间折叠机制——可以将远处的平台"折叠"到身边，瞬间跨越距离。引力滑行——利用星辰的引力场加速移动，沿曲线轨迹飞行。维度穿越——通过特殊门进入不同维度，每个维度有独特的物理规则与机关。</span></p>
+        <p><span class="intro-label" data-i18n="introLabel3">创新点</span><span data-i18n="introP3">将抽象的 3D 空间拓扑概念游戏化。空间不是固定的，而是可以扭曲、折叠、穿越的——玩家需要重新理解"距离"、"方向"与"连通性"，这是一种全新的空间认知解谜体验。</span></p>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <h2 class="section-title" data-i18n="featuresTitle">核心玩法</h2>
+      <p class="section-subtitle" data-i18n="featuresSubtitle">四大空间机制，重塑立体迷宫的探索方式</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🌌</div>
+          <h3 class="feature-title" data-i18n="feat1Title">空间折叠</h3>
+          <p class="feature-desc" data-i18n="feat1Desc">将远处的平台"折叠"到身边，瞬间跨越距离。重新定义 3D 空间中的"远与近"。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🪐</div>
+          <h3 class="feature-title" data-i18n="feat2Title">引力滑行</h3>
+          <p class="feature-desc" data-i18n="feat2Desc">利用星辰的引力场加速移动，沿曲线轨迹飞行，在引力井之间穿梭跳跃。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚪</div>
+          <h3 class="feature-title" data-i18n="feat3Title">维度穿越</h3>
+          <p class="feature-desc" data-i18n="feat3Desc">通过维度门进入不同空间，每个维度有独特的物理规则与机关布局。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⭐</div>
+          <h3 class="feature-title" data-i18n="feat4Title">星辰收集</h3>
+          <p class="feature-desc" data-i18n="feat4Desc">收集星辰碎片解锁新区域、新能力与新维度，碎片散落于扭曲空间的各处。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tech-section">
+      <h2 class="section-title" data-i18n="techTitle">技术栈</h2>
+      <p class="section-subtitle" data-i18n="techSubtitle">引擎与系统</p>
+      <div class="tech-card">
+        <div class="tech-tags">
+          <span class="tech-tag">Unity</span>
+          <span class="tech-tag">C#</span>
+          <span class="tech-tag">3D 物理</span>
+          <span class="tech-tag">自定义空间折叠 Shader</span>
+          <span class="tech-tag">HLSL</span>
+          <span class="tech-tag">URP 渲染管线</span>
+          <span class="tech-tag">Job System</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-section">
+      <h2 class="section-title" data-i18n="timelineTitle">开发进度</h2>
+      <p class="section-subtitle" data-i18n="timelineSubtitle">从构思到完成的星际旅程</p>
+      <div class="timeline-card">
+        <div class="timeline">
+          <div class="timeline-progress"></div>
+          <div class="timeline-item done">
+            <div class="timeline-dot">✓</div>
+            <div>
+              <div class="timeline-label" data-i18n="tl1Label">构思</div>
+              <div class="timeline-desc" data-i18n="tl1Desc">核心概念完成</div>
+            </div>
+          </div>
+          <div class="timeline-item active">
+            <div class="timeline-dot">●</div>
+            <div>
+              <div class="timeline-label" data-i18n="tl2Label">原型</div>
+              <div class="timeline-desc" data-i18n="tl2Desc">待开发</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">○</div>
+            <div>
+              <div class="timeline-label" data-i18n="tl3Label">空间系统</div>
+              <div class="timeline-desc" data-i18n="tl3Desc">待完成</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">○</div>
+            <div>
+              <div class="timeline-label" data-i18n="tl4Label">关卡设计</div>
+              <div class="timeline-desc" data-i18n="tl4Desc">待完成</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-section">
+      <a href="../index.html" class="cta-btn" data-i18n="ctaBtn">← 返回创意列表</a>
+    </div>
+  </div>
+
+<script>
+// ============ Canvas Hero - Stellar Fragments Scene ============
+(function () {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+  const CX = W / 2;
+  const CY = H / 2;
+
+  // --- Deep blue-purple starfield background ---
+  const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+  bgGrad.addColorStop(0, '#0c1633');
+  bgGrad.addColorStop(0.45, '#1e3a8a');
+  bgGrad.addColorStop(0.75, '#4c1d95');
+  bgGrad.addColorStop(1, '#1e1b4b');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Nebula clouds (soft radial gradients)
+  const nebula1 = ctx.createRadialGradient(W * 0.25, H * 0.3, 0, W * 0.25, H * 0.3, 200);
+  nebula1.addColorStop(0, 'rgba(129, 140, 248, 0.30)');
+  nebula1.addColorStop(1, 'rgba(129, 140, 248, 0)');
+  ctx.fillStyle = nebula1;
+  ctx.fillRect(0, 0, W, H);
+
+  const nebula2 = ctx.createRadialGradient(W * 0.78, H * 0.65, 0, W * 0.78, H * 0.65, 220);
+  nebula2.addColorStop(0, 'rgba(236, 72, 153, 0.22)');
+  nebula2.addColorStop(1, 'rgba(236, 72, 153, 0)');
+  ctx.fillStyle = nebula2;
+  ctx.fillRect(0, 0, W, H);
+
+  const nebula3 = ctx.createRadialGradient(CX, H * 0.4, 0, CX, H * 0.4, 260);
+  nebula3.addColorStop(0, 'rgba(6, 182, 212, 0.20)');
+  nebula3.addColorStop(1, 'rgba(6, 182, 212, 0)');
+  ctx.fillStyle = nebula3;
+  ctx.fillRect(0, 0, W, H);
+
+  // --- Starfield (small twinkling dots) ---
+  const stars = [
+    [40, 50, 0.9], [80, 110, 0.6], [120, 40, 0.8], [180, 90, 0.5], [220, 30, 0.7],
+    [280, 130, 0.6], [340, 70, 0.9], [60, 220, 0.5], [140, 280, 0.7], [200, 240, 0.6],
+    [260, 300, 0.8], [320, 260, 0.5], [380, 220, 0.7], [700, 50, 0.8], [740, 100, 0.6],
+    [800, 40, 0.9], [860, 110, 0.5], [920, 70, 0.7], [980, 130, 0.6], [760, 220, 0.5],
+    [820, 280, 0.8], [880, 240, 0.6], [940, 300, 0.7], [1000, 220, 0.5], [680, 320, 0.6],
+    [50, 360, 0.5], [150, 340, 0.7], [250, 360, 0.6], [750, 360, 0.7], [870, 340, 0.5],
+    [970, 360, 0.6], [430, 30, 0.5], [530, 350, 0.6], [610, 30, 0.7], [490, 360, 0.5]
+  ];
+  stars.forEach(([x, y, r]) => {
+    ctx.fillStyle = 'rgba(255, 255, 255, ' + r + ')';
+    ctx.beginPath();
+    ctx.arc(x, y, r * 1.1, 0, Math.PI * 2);
+    ctx.fill();
+    // Cross sparkle for bigger stars
+    if (r > 0.7) {
+      ctx.strokeStyle = 'rgba(255, 255, 255, ' + (r * 0.5) + ')';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(x - 4, y); ctx.lineTo(x + 4, y);
+      ctx.moveTo(x, y - 4); ctx.lineTo(x, y + 4);
+      ctx.stroke();
+    }
+  });
+
+  // --- Helper: draw an isometric cube (wireframe + translucent faces) ---
+  function isoCube(cx, cy, size, opts) {
+    const { strokeColor, fillColor, lineOpacity, fillOpacity, strokeWidth } = Object.assign({
+      strokeColor: '#818cf8', fillColor: '#4338ca',
+      lineOpacity: 0.7, fillOpacity: 0.18, strokeWidth: 1
+    }, opts);
+
+    // Isometric projection offsets
+    const dx = size * 0.5;   // horizontal offset for depth
+    const dy = size * 0.28;  // vertical offset for depth
+
+    // 8 cube vertices
+    // front face: (cx - s, cy - s), (cx + s, cy - s), (cx + s, cy + s), (cx - s, cy + s)
+    const s = size;
+    const front = [
+      [cx - s, cy - s], [cx + s, cy - s], [cx + s, cy + s], [cx - s, cy + s]
+    ];
+    // back face offset by (-dx, -dy)
+    const back = front.map(p => [p[0] - dx, p[1] - dy]);
+
+    // Top face (front-top edge to back-top edge)
+    ctx.fillStyle = `rgba(67, 56, 202, ${fillOpacity})`;
+    ctx.beginPath();
+    ctx.moveTo(front[0][0], front[0][1]);
+    ctx.lineTo(front[1][0], front[1][1]);
+    ctx.lineTo(back[1][0], back[1][1]);
+    ctx.lineTo(back[0][0], back[0][1]);
+    ctx.closePath();
+    ctx.fill();
+
+    // Left face
+    ctx.fillStyle = `rgba(76, 29, 149, ${fillOpacity * 1.2})`;
+    ctx.beginPath();
+    ctx.moveTo(front[0][0], front[0][1]);
+    ctx.lineTo(back[0][0], back[0][1]);
+    ctx.lineTo(back[3][0], back[3][1]);
+    ctx.lineTo(front[3][0], front[3][1]);
+    ctx.closePath();
+    ctx.fill();
+
+    // Right face
+    ctx.fillStyle = `rgba(99, 102, 241, ${fillOpacity * 0.9})`;
+    ctx.beginPath();
+    ctx.moveTo(front[1][0], front[1][1]);
+    ctx.lineTo(back[1][0], back[1][1]);
+    ctx.lineTo(back[2][0], back[2][1]);
+    ctx.lineTo(front[2][0], front[2][1]);
+    ctx.closePath();
+    ctx.fill();
+
+    // Wireframe
+    ctx.globalAlpha = lineOpacity;
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = strokeWidth;
+    // Front square
+    ctx.beginPath();
+    ctx.moveTo(front[0][0], front[0][1]);
+    ctx.lineTo(front[1][0], front[1][1]);
+    ctx.lineTo(front[2][0], front[2][1]);
+    ctx.lineTo(front[3][0], front[3][1]);
+    ctx.closePath();
+    ctx.stroke();
+    // Back square
+    ctx.beginPath();
+    ctx.moveTo(back[0][0], back[0][1]);
+    ctx.lineTo(back[1][0], back[1][1]);
+    ctx.lineTo(back[2][0], back[2][1]);
+    ctx.lineTo(back[3][0], back[3][1]);
+    ctx.closePath();
+    ctx.stroke();
+    // Connecting edges
+    ctx.beginPath();
+    ctx.moveTo(front[0][0], front[0][1]); ctx.lineTo(back[0][0], back[0][1]);
+    ctx.moveTo(front[1][0], front[1][1]); ctx.lineTo(back[1][0], back[1][1]);
+    ctx.moveTo(front[2][0], front[2][1]); ctx.lineTo(back[2][0], back[2][1]);
+    ctx.moveTo(front[3][0], front[3][1]); ctx.lineTo(back[3][0], back[3][1]);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  // --- Folded 3D cube space (multiple cubes stacked/offset) ---
+  // Main central cube
+  isoCube(CX, CY + 20, 38, {
+    strokeColor: '#a5b4fc', fillColor: '#4338ca',
+    lineOpacity: 0.85, fillOpacity: 0.22, strokeWidth: 1.2
+  });
+  // Upper adjacent cube (folded up)
+  isoCube(CX, CY - 60, 32, {
+    strokeColor: '#c7d2fe', fillColor: '#6366f1',
+    lineOpacity: 0.65, fillOpacity: 0.16, strokeWidth: 1
+  });
+  // Lower adjacent cube (folded down)
+  isoCube(CX, CY + 100, 32, {
+    strokeColor: '#c7d2fe', fillColor: '#6366f1',
+    lineOpacity: 0.5, fillOpacity: 0.14, strokeWidth: 0.9
+  });
+  // Left adjacent cube (folded left)
+  isoCube(CX - 90, CY + 20, 26, {
+    strokeColor: '#a5b4fc', fillColor: '#4338ca',
+    lineOpacity: 0.55, fillOpacity: 0.14, strokeWidth: 0.9
+  });
+  // Right adjacent cube (folded right)
+  isoCube(CX + 90, CY + 20, 26, {
+    strokeColor: '#a5b4fc', fillColor: '#4338ca',
+    lineOpacity: 0.55, fillOpacity: 0.14, strokeWidth: 0.9
+  });
+
+  // Fold connection lines (showing how cubes are folded together)
+  ctx.strokeStyle = 'rgba(167, 139, 250, 0.45)';
+  ctx.lineWidth = 0.8;
+  ctx.setLineDash([2, 3]);
+  ctx.beginPath();
+  // Main to upper
+  ctx.moveTo(CX - 38, CY - 18); ctx.lineTo(CX - 32, CY - 28);
+  ctx.moveTo(CX + 38, CY - 18); ctx.lineTo(CX + 32, CY - 28);
+  // Main to lower
+  ctx.moveTo(CX - 38, CY + 58); ctx.lineTo(CX - 32, CY + 68);
+  ctx.moveTo(CX + 38, CY + 58); ctx.lineTo(CX + 32, CY + 68);
+  // Main to left
+  ctx.moveTo(CX - 38, CY + 20); ctx.lineTo(CX - 64, CY + 20);
+  // Main to right
+  ctx.moveTo(CX + 38, CY + 20); ctx.lineTo(CX + 64, CY + 20);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // --- Glowing star fragments (radial gradient gold/orange) ---
+  function drawStarFragment(x, y, radius, intensity) {
+    // Outer glow
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, radius * 3.5);
+    glow.addColorStop(0, `rgba(254, 243, 199, ${0.85 * intensity})`);
+    glow.addColorStop(0.3, `rgba(251, 191, 36, ${0.55 * intensity})`);
+    glow.addColorStop(0.6, `rgba(249, 115, 22, ${0.25 * intensity})`);
+    glow.addColorStop(1, 'rgba(249, 115, 22, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(x, y, radius * 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Core
+    const core = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    core.addColorStop(0, '#ffffff');
+    core.addColorStop(0.4, '#fef3c7');
+    core.addColorStop(1, '#fbbf24');
+    ctx.fillStyle = core;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4-point sparkle
+    ctx.fillStyle = `rgba(254, 243, 199, ${0.95 * intensity})`;
+    ctx.beginPath();
+    ctx.moveTo(x, y - radius * 2.2);
+    ctx.lineTo(x + radius * 0.4, y);
+    ctx.lineTo(x, y + radius * 2.2);
+    ctx.lineTo(x - radius * 0.4, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x - radius * 2.2, y);
+    ctx.lineTo(x, y + radius * 0.4);
+    ctx.lineTo(x + radius * 2.2, y);
+    ctx.lineTo(x, y - radius * 0.4);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Main fragment in center cube
+  drawStarFragment(CX, CY + 20, 8, 1);
+  // Fragment in upper cube
+  drawStarFragment(CX, CY - 60, 5, 0.85);
+  // Fragment in right cube
+  drawStarFragment(CX + 90, CY + 20, 4.5, 0.78);
+  // Fragment in lower cube
+  drawStarFragment(CX - 30, CY + 100, 4, 0.7);
+  // Floating fragments
+  drawStarFragment(140, 80, 5.5, 0.75);
+  drawStarFragment(W - 150, 100, 5, 0.8);
+  drawStarFragment(W - 220, 280, 4, 0.65);
+  drawStarFragment(180, 300, 4.5, 0.7);
+
+  // --- Gravity curvature lines (cyan, curved, connecting fragments) ---
+  ctx.strokeStyle = 'rgba(103, 232, 249, 0.45)';
+  ctx.lineWidth = 1.2;
+  ctx.setLineDash([3, 4]);
+  // From left fragment to center
+  ctx.beginPath();
+  ctx.moveTo(140, 80);
+  ctx.bezierCurveTo(280, 60, 380, 80, CX - 20, CY);
+  ctx.stroke();
+  // From right fragment to center
+  ctx.beginPath();
+  ctx.moveTo(W - 150, 100);
+  ctx.bezierCurveTo(W - 280, 80, W - 380, 100, CX + 20, CY);
+  ctx.stroke();
+  // From center to lower
+  ctx.beginPath();
+  ctx.moveTo(CX, CY + 50);
+  ctx.bezierCurveTo(CX - 50, CY + 80, CX - 80, CY + 90, CX - 30, CY + 100);
+  ctx.stroke();
+  // From center to right cube fragment
+  ctx.beginPath();
+  ctx.moveTo(CX + 30, CY + 20);
+  ctx.quadraticCurveTo(CX + 60, CY + 10, CX + 90, CY + 20);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // --- Travel trajectory (dashed, bright) ---
+  ctx.strokeStyle = 'rgba(254, 243, 199, 0.65)';
+  ctx.lineWidth = 1.4;
+  ctx.setLineDash([4, 6]);
+  ctx.beginPath();
+  ctx.moveTo(140, 80);
+  ctx.quadraticCurveTo(CX - 80, 40, CX, CY + 20);
+  ctx.quadraticCurveTo(CX + 80, 0, W - 150, 100);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Small moving dot on trajectory (static position)
+  ctx.fillStyle = '#fef3c7';
+  ctx.beginPath();
+  ctx.arc(CX - 40, 60, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(254, 243, 199, 0.4)';
+  ctx.beginPath();
+  ctx.arc(CX - 40, 60, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // --- Dimension door (small portal arc on left) ---
+  ctx.save();
+  ctx.strokeStyle = 'rgba(167, 139, 250, 0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(60, H - 90, 18, Math.PI, 0);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(124, 58, 237, 0.25)';
+  ctx.beginPath();
+  ctx.arc(60, H - 90, 16, Math.PI, 0);
+  ctx.fill();
+  // Door glow
+  const doorGlow = ctx.createRadialGradient(60, H - 90, 0, 60, H - 90, 30);
+  doorGlow.addColorStop(0, 'rgba(167, 139, 250, 0.4)');
+  doorGlow.addColorStop(1, 'rgba(167, 139, 250, 0)');
+  ctx.fillStyle = doorGlow;
+  ctx.beginPath();
+  ctx.arc(60, H - 90, 30, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // --- World labels ---
+  ctx.font = '600 11px Inter, sans-serif';
+  ctx.fillStyle = 'rgba(167, 139, 250, 0.85)';
+  ctx.textAlign = 'left';
+  ctx.fillText('🌌 FOLDED 3D SPACE', 24, 32);
+
+  ctx.fillStyle = 'rgba(103, 232, 249, 0.85)';
+  ctx.textAlign = 'right';
+  ctx.fillText('GRAVITY FIELD 🪐', W - 24, 32);
+
+  ctx.fillStyle = 'rgba(167, 139, 250, 0.75)';
+  ctx.textAlign = 'left';
+  ctx.fillText('DIMENSION DOOR 🚪', 86, H - 88);
+})();
+</script>
+
+<script>
+// ============ i18n - Bilingual support (consistent with main site) ============
+(function () {
+  'use strict';
+
+  var i18n = {
+    zh: {
+      title: '星辰碎片 | Stellar Fragments',
+      back: '← 返回游戏创意',
+      eyebrow: '空间拓扑 · 创意实验室',
+      gameTitle: '星辰碎片',
+      gameSubtitle: 'Stellar Fragments',
+      status: '想法阶段',
+      category: '3D空间解谜 × 物理',
+      heroCaption: '折叠的 3D 空间中，星辰碎片散落于扭曲的维度',
+      introTitle: '游戏介绍',
+      introSubtitle: '玩法 · 特色 · 创新点',
+      introLabel1: '玩法',
+      introLabel2: '特色',
+      introLabel3: '创新点',
+      introP1: '在折叠的 3D 空间中收集星辰碎片。利用空间弯曲、引力滑行、维度穿越探索立体迷宫。空间本身是可以折叠和扭曲的——远处的平台可以被"折叠"到身边，陌生的维度可以通过特殊门进入。',
+      introP2: '3D 空间折叠机制——可以将远处的平台"折叠"到身边，瞬间跨越距离。引力滑行——利用星辰的引力场加速移动，沿曲线轨迹飞行。维度穿越——通过特殊门进入不同维度，每个维度有独特的物理规则与机关。',
+      introP3: '将抽象的 3D 空间拓扑概念游戏化。空间不是固定的，而是可以扭曲、折叠、穿越的——玩家需要重新理解"距离"、"方向"与"连通性"，这是一种全新的空间认知解谜体验。',
+      featuresTitle: '核心玩法',
+      featuresSubtitle: '四大空间机制，重塑立体迷宫的探索方式',
+      feat1Title: '空间折叠',
+      feat1Desc: '将远处的平台"折叠"到身边，瞬间跨越距离。重新定义 3D 空间中的"远与近"。',
+      feat2Title: '引力滑行',
+      feat2Desc: '利用星辰的引力场加速移动，沿曲线轨迹飞行，在引力井之间穿梭跳跃。',
+      feat3Title: '维度穿越',
+      feat3Desc: '通过维度门进入不同空间，每个维度有独特的物理规则与机关布局。',
+      feat4Title: '星辰收集',
+      feat4Desc: '收集星辰碎片解锁新区域、新能力与新维度，碎片散落于扭曲空间的各处。',
+      techTitle: '技术栈',
+      techSubtitle: '引擎与系统',
+      timelineTitle: '开发进度',
+      timelineSubtitle: '从构思到完成的星际旅程',
+      tl1Label: '构思',
+      tl1Desc: '核心概念完成',
+      tl2Label: '原型',
+      tl2Desc: '待开发',
+      tl3Label: '空间系统',
+      tl3Desc: '待完成',
+      tl4Label: '关卡设计',
+      tl4Desc: '待完成',
+      ctaBtn: '← 返回创意列表'
+    },
+    en: {
+      title: 'Stellar Fragments | 星辰碎片',
+      back: '← Back to Game Ideas',
+      eyebrow: 'Spatial Topology Lab',
+      gameTitle: 'Stellar Fragments',
+      gameSubtitle: '星辰碎片',
+      status: 'Ideation',
+      category: '3D Spatial Puzzle × Physics',
+      heroCaption: 'In folded 3D space, stellar fragments scatter across twisted dimensions',
+      introTitle: 'About the Game',
+      introSubtitle: 'Gameplay · Features · Innovation',
+      introLabel1: 'Play',
+      introLabel2: 'Feature',
+      introLabel3: 'Innovation',
+      introP1: 'Collect stellar fragments in folded 3D space. Bend space, gravity-glide, and dimension-hop through three-dimensional mazes. Space itself can be folded and twisted — distant platforms can be "folded" to your side, and unfamiliar dimensions entered through special doors.',
+      introP2: '3D space-folding mechanics let you "fold" distant platforms close, instantly bridging distance. Gravity-glide uses stellar gravity fields to accelerate along curved trajectories. Dimension-crossing enters different dimensions via special doors, each with unique physics and mechanisms.',
+      introP3: 'Gamifies abstract 3D spatial topology. Space isn\'t fixed — it can be twisted, folded, and crossed. Players must rethink "distance," "direction," and "connectivity" — a fresh spatial-cognition puzzle experience.',
+      featuresTitle: 'Core Gameplay',
+      featuresSubtitle: 'Four spatial mechanics reshaping 3D maze exploration',
+      feat1Title: 'Space Folding',
+      feat1Desc: 'Fold distant platforms to your side, instantly bridging distance. Redefines "near and far" in 3D space.',
+      feat2Title: 'Gravity Gliding',
+      feat2Desc: 'Use stellar gravity fields to accelerate, flying along curved trajectories, hopping between gravity wells.',
+      feat3Title: 'Dimension Crossing',
+      feat3Desc: 'Enter different spaces via dimension doors, each with unique physics rules and mechanism layouts.',
+      feat4Title: 'Stellar Collection',
+      feat4Desc: 'Collect fragments to unlock new areas, abilities, and dimensions — scattered across twisted space.',
+      techTitle: 'Tech Stack',
+      techSubtitle: 'Engine & Systems',
+      timelineTitle: 'Development Progress',
+      timelineSubtitle: 'The stellar journey from concept to completion',
+      tl1Label: 'Concept',
+      tl1Desc: 'Core concept done',
+      tl2Label: 'Prototype',
+      tl2Desc: 'To develop',
+      tl3Label: 'Space System',
+      tl3Desc: 'To do',
+      tl4Label: 'Level Design',
+      tl4Desc: 'To do',
+      ctaBtn: '← Back to Ideas'
+    }
+  };
+
+  var currentLang = localStorage.getItem('ycc-lang') || 'zh';
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('ycc-lang', lang);
+    var dict = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (dict[key]) el.innerHTML = dict[key];
+    });
+    document.title = dict.title;
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    var cn = document.querySelector('.lang-toggle .lang-cn');
+    var en = document.querySelector('.lang-toggle .lang-en');
+    if (cn) cn.classList.toggle('active', lang === 'zh');
+    if (en) en.classList.toggle('active', lang === 'en');
+  }
+
+  var toggle = document.getElementById('langToggle');
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      applyLang(currentLang === 'zh' ? 'en' : 'zh');
+    });
+  }
+
+  applyLang(currentLang);
+})();
+</script>
+
+</body>
+</html>

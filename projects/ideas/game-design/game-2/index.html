@@ -3,194 +3,317 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="title">星界防线 | Star Defense</title>
+<title data-i18n="pageTitle">赛博忍者 | Cyber Ninja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg: #f8f9fc;
-    --card-bg: rgba(255, 255, 255, 0.7);
-    --card-border: rgba(255, 255, 255, 0.8);
-    --text-primary: #1a1d2e;
-    --text-secondary: #5a5f7a;
-    --text-tertiary: #8b90a8;
-    --accent: #06b6d4;
-    --accent-light: #22d3ee;
-    --accent-bg: rgba(6, 182, 212, 0.1);
-    --shadow-sm: 0 2px 8px rgba(6, 182, 212, 0.06);
-    --shadow-md: 0 8px 24px rgba(6, 182, 212, 0.08);
-    --shadow-lg: 0 16px 48px rgba(6, 182, 212, 0.12);
-    --radius-sm: 10px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
-  }
-
+  html, body { height: 100%; }
   body {
     font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg);
-    color: var(--text-primary);
-    line-height: 1.6;
+    background: #f8f9fc;
+    color: #1a1a2e;
+    line-height: 1.65;
     min-height: 100vh;
     background-image:
-      radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+      radial-gradient(circle at 12% 12%, rgba(236, 72, 153, 0.10) 0%, transparent 45%),
+      radial-gradient(circle at 88% 22%, rgba(168, 85, 247, 0.10) 0%, transparent 45%),
+      radial-gradient(circle at 50% 95%, rgba(34, 211, 238, 0.07) 0%, transparent 45%);
+    background-attachment: fixed;
+    overflow-x: hidden;
   }
 
   .container {
-    max-width: 960px;
+    max-width: 1180px;
     margin: 0 auto;
-    padding: 32px 24px 64px;
+    padding: 44px 28px 64px;
+    position: relative;
   }
 
+  /* ============ Language Toggle ============ */
+  .lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(236, 72, 153, 0.22);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(236, 72, 153, 0.10);
+  }
+  .lang-toggle:hover {
+    border-color: rgba(236, 72, 153, 0.45);
+    box-shadow: 0 6px 18px rgba(236, 72, 153, 0.18);
+    transform: translateY(-1px);
+  }
+  .lang-toggle .lang-cn,
+  .lang-toggle .lang-en { transition: color 0.25s ease; color: #9ca3af; }
+  .lang-toggle .lang-cn.active { color: #db2777; }
+  .lang-toggle .lang-en.active { color: #db2777; }
+  .lang-toggle .lang-sep { color: #d1d5db; margin: 0 3px; }
+
+  /* ============ Back Link ============ */
   .back-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--text-secondary);
+    color: #db2777;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
-    padding: 8px 16px;
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
-    margin-bottom: 32px;
+    margin-bottom: 30px;
+    padding: 6px 14px 6px 10px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(236, 72, 153, 0.12);
+    transition: all 0.3s ease;
   }
   .back-link:hover {
-    color: var(--accent);
-    background: var(--accent-bg);
+    color: #be185d;
+    transform: translateX(-3px);
+    border-color: rgba(236, 72, 153, 0.3);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.12);
   }
 
+  /* ============ Header ============ */
   .game-header {
-    text-align: center;
-    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
   }
-  .game-title {
-    font-size: 42px;
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: rgba(16, 185, 129, 0.13);
+    color: #059669;
+  }
+  .status-tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .category-tag {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    padding: 5px 12px;
+    background: rgba(107, 114, 128, 0.08);
+    border-radius: 20px;
+  }
+  .main-title {
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
     font-weight: 800;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
-    background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+    background: linear-gradient(120deg, #ec4899 0%, #a855f7 50%, #22d3ee 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
   }
-  .game-subtitle {
-    font-size: 18px;
-    color: var(--text-tertiary);
-    font-weight: 400;
-    margin-bottom: 16px;
-    letter-spacing: 0.5px;
-  }
-  .status-badge {
-    display: inline-block;
-    padding: 6px 16px;
-    background: var(--accent-bg);
-    color: var(--accent);
-    border-radius: 999px;
-    font-size: 13px;
+  .subtitle-en {
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
     font-weight: 600;
+    color: #db2777;
+    letter-spacing: 0.04em;
   }
 
-  .hero-section { margin-bottom: 48px; }
-  .hero-canvas-wrapper {
-    background: var(--card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    box-shadow: var(--shadow-lg);
+  /* ============ Hero Canvas ============ */
+  .hero-canvas-wrap {
+    position: relative;
+    border-radius: 16px;
     overflow: hidden;
+    margin-bottom: 44px;
+    box-shadow: 0 12px 40px rgba(45, 10, 62, 0.28), 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(236, 72, 153, 0.3);
   }
-  .hero-canvas {
-    width: 100%;
-    height: 360px;
-    border-radius: var(--radius-md);
+  .hero-canvas-wrap canvas {
     display: block;
+    width: 100%;
+    height: auto;
+    background: #0a0a1a;
+  }
+  .hero-caption {
+    position: absolute;
+    bottom: 14px;
+    left: 18px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(10, 10, 26, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(236, 72, 153, 0.3);
   }
 
-  .section-title {
-    font-size: 24px;
+  /* ============ Section ============ */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-label {
+    display: inline-block;
+    font-size: 11px;
     font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #db2777;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: rgba(236, 72, 153, 0.08);
     margin-bottom: 16px;
-    color: var(--text-primary);
   }
-  .section-subtitle {
-    color: var(--text-secondary);
-    font-size: 15px;
-    margin-bottom: 32px;
+  .section-title {
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 24px;
+    letter-spacing: -0.015em;
   }
 
-  .intro-section { margin-bottom: 48px; }
+  /* ============ Intro ============ */
   .intro-card {
-    background: var(--card-bg);
+    background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 24px rgba(236, 72, 153, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
   }
-  .intro-card p {
-    color: var(--text-secondary);
-    font-size: 15px;
-    line-height: 1.8;
-    margin-bottom: 16px;
+  .intro-item {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
   }
-  .intro-card p:last-child { margin-bottom: 0; }
-
-  .features-section { margin-bottom: 48px; }
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-  }
-  .feature-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-md);
-    padding: 24px;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.3s ease;
-  }
-  .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-  }
-  .feature-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-sm);
+  .intro-num {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    margin-bottom: 16px;
-    background: var(--accent-bg);
-  }
-  .feature-title {
+    font-weight: 700;
     font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
   }
-  .feature-desc {
+  .intro-body { flex: 1; }
+  .intro-label {
     font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.6;
+    font-weight: 700;
+    color: #db2777;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  .intro-text {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.7;
   }
 
-  .tech-section { margin-bottom: 48px; }
-  .tech-card {
-    background: var(--card-bg);
+  /* ============ Features Grid ============ */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .feature-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: 28px 32px;
-    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    padding: 24px 26px;
+    box-shadow: 0 4px 24px rgba(236, 72, 153, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(236, 72, 153, 0.16), transparent 65%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 40px rgba(236, 72, 153, 0.18), 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-color: rgba(236, 72, 153, 0.35);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 14px;
+    display: inline-block;
+  }
+  .feature-title {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .feature-desc {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ Tech Stack ============ */
+  .tech-card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    padding: 24px 28px;
+    box-shadow: 0 4px 24px rgba(236, 72, 153, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
   }
   .tech-tags {
     display: flex;
@@ -198,783 +321,684 @@
     gap: 10px;
   }
   .tech-tag {
-    padding: 8px 16px;
-    background: var(--accent-bg);
-    color: var(--accent);
-    border-radius: 999px;
+    padding: 7px 14px;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(168, 85, 247, 0.1));
+    color: #db2777;
+    border-radius: 10px;
     font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    font-weight: 600;
+    border: 1px solid rgba(236, 72, 153, 0.15);
+    transition: all 0.25s ease;
   }
   .tech-tag:hover {
-    background: var(--accent);
-    color: white;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.18), rgba(168, 85, 247, 0.18));
+    border-color: rgba(236, 72, 153, 0.35);
+    transform: translateY(-2px);
   }
 
-  .timeline-section { margin-bottom: 48px; }
+  /* ============ Timeline ============ */
   .timeline-card {
-    background: var(--card-bg);
+    background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    padding: 32px 32px 28px;
+    box-shadow: 0 4px 24px rgba(236, 72, 153, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
   }
   .timeline {
     position: relative;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 8px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding-top: 14px;
   }
   .timeline::before {
     content: '';
     position: absolute;
-    top: 16px;
-    left: 24px;
-    right: 24px;
+    top: 28px;
+    left: 8%;
+    right: 8%;
     height: 3px;
-    background: #e5e7f0;
-    border-radius: 2px;
+    background: linear-gradient(to right, #ec4899 0%, #a855f7 72%, #e5e7eb 72%, #e5e7eb 100%);
+    border-radius: 3px;
   }
-  .timeline-progress {
-    position: absolute;
-    top: 16px;
-    left: 24px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
-    border-radius: 2px;
-    z-index: 1;
-    width: 45%;
-  }
-  .timeline-item {
+  .tl-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     position: relative;
     z-index: 2;
-    text-align: center;
-    flex: 1;
-    max-width: 120px;
+    padding: 0 6px;
   }
-  .timeline-dot {
-    width: 32px;
-    height: 32px;
+  .tl-dot {
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    margin: 0 auto 12px;
+    background: #fff;
+    border: 3px solid #e5e7eb;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    background: white;
-    border: 3px solid #e5e7f0;
-    color: var(--text-tertiary);
+    font-size: 13px;
+    font-weight: 700;
+    color: #9ca3af;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
   }
-  .timeline-item.done .timeline-dot {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
+  .tl-node.completed .tl-dot {
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    border-color: #ec4899;
+    color: #fff;
   }
-  .timeline-item.active .timeline-dot {
-    background: white;
-    border-color: var(--accent);
-    color: var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-bg);
+  .tl-node.active .tl-dot {
+    background: #fff;
+    border-color: #ec4899;
+    color: #db2777;
+    box-shadow: 0 0 0 5px rgba(236, 72, 153, 0.18), 0 0 14px rgba(236, 72, 153, 0.4);
+    animation: tlPulse 1.8s ease-in-out infinite;
   }
-  .timeline-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
+  @keyframes tlPulse {
+    0%, 100% { box-shadow: 0 0 0 5px rgba(236, 72, 153, 0.18), 0 0 14px rgba(236, 72, 153, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(236, 72, 153, 0.12), 0 0 20px rgba(236, 72, 153, 0.55); }
+  }
+  .tl-stage {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
     margin-bottom: 4px;
   }
-  .timeline-item.done .timeline-label,
-  .timeline-item.active .timeline-label {
-    color: var(--text-primary);
+  .tl-status {
+    font-size: 12px;
+    font-weight: 500;
+    color: #9ca3af;
   }
-  .timeline-desc {
-    font-size: 11px;
-    color: var(--text-tertiary);
-  }
+  .tl-node.completed .tl-status { color: #db2777; }
+  .tl-node.active .tl-status { color: #db2777; }
 
-  .cta-section {
+  /* ============ Bottom Back Button ============ */
+  .back-bottom-wrap {
     text-align: center;
-    margin-top: 16px;
+    margin-top: 52px;
+    padding-top: 36px;
+    border-top: 1px solid rgba(236, 72, 153, 0.12);
   }
-  .cta-btn {
+  .back-bottom {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 14px 32px;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-    color: white;
+    padding: 13px 30px;
+    background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+    color: #fff;
     text-decoration: none;
-    border-radius: var(--radius-md);
+    border-radius: 14px;
     font-size: 15px;
     font-weight: 600;
-    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
     transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.3);
   }
-  .cta-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
+  .back-bottom:hover {
+    box-shadow: 0 10px 30px rgba(236, 72, 153, 0.45);
+    transform: translateY(-3px);
   }
 
+  /* ============ Responsive ============ */
   @media (max-width: 768px) {
-    .container { padding: 20px 16px 48px; }
-    .game-title { font-size: 32px; }
-    .game-subtitle { font-size: 16px; }
-    .hero-canvas { height: 240px; }
-    .intro-card, .tech-card, .timeline-card { padding: 20px; }
-    .section-title { font-size: 20px; }
-    .timeline { flex-direction: column; gap: 20px; }
-    .timeline::before {
-      top: 16px; bottom: 16px; left: 15px; right: auto;
-      width: 3px; height: auto;
-    }
-    .timeline-progress {
-      top: 16px; left: 15px; width: 3px; height: 45%;
-      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-light) 100%);
-    }
-    .timeline-item {
-      display: flex; align-items: flex-start; gap: 16px;
-      max-width: none; text-align: left;
-    }
-    .timeline-dot { margin: 0; flex-shrink: 0; }
+    .container { padding: 32px 16px 48px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .intro-card, .tech-card, .timeline-card { padding: 22px 20px; }
+    .timeline { grid-template-columns: repeat(2, 1fr); gap: 28px 0; }
+    .timeline::before { display: none; }
+    .intro-item { flex-direction: column; gap: 10px; }
+    .lang-toggle { top: 14px; right: 14px; padding: 6px 11px; font-size: 12px; }
+    .hero-caption { font-size: 10px; padding: 5px 10px; bottom: 10px; left: 12px; }
   }
-
-  .lang-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 100;
-    background: var(--card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.2s ease;
-  }
-  .lang-toggle:hover {
-    color: var(--accent);
-    box-shadow: var(--shadow-md);
+  @media (max-width: 480px) {
+    .timeline { grid-template-columns: 1fr; gap: 24px; }
+    .tl-node { flex-direction: row; justify-content: flex-start; gap: 14px; text-align: left; }
+    .tl-dot { margin-bottom: 0; }
   }
 </style>
 </head>
 <body>
+  <button class="lang-toggle" id="langToggle" aria-label="Toggle language">
+    <span class="lang-cn active">中</span>
+    <span class="lang-sep">/</span>
+    <span class="lang-en">EN</span>
+  </button>
 
-<button class="lang-toggle" onclick="toggleLang()" data-i18n="langToggle">EN</button>
+  <div class="container">
+    <a href="../index.html" class="back-link" data-i18n="backToIdeas">← 返回游戏创意</a>
 
-<div class="container">
-  <a href="../index.html" class="back-link">
-    <span data-i18n="back">← 返回游戏创意</span>
-  </a>
+    <header class="game-header">
+      <div class="header-meta">
+        <span class="status-tag" data-i18n="status">原型完成</span>
+        <span class="category-tag" data-i18n="category">动作跑酷 × 赛博朋克</span>
+      </div>
+      <h1 class="main-title" data-i18n="gameName">赛博忍者</h1>
+      <span class="subtitle-en" data-i18n="gameNameEn">Cyber Ninja</span>
+    </header>
 
-  <header class="game-header">
-    <h1 class="game-title" data-i18n="gameTitle">星界防线</h1>
-    <p class="game-subtitle" data-i18n="gameSubtitle">Star Defense</p>
-    <span class="status-badge" data-i18n="statusBadge">原型阶段</span>
-  </header>
-
-  <section class="hero-section">
-    <div class="hero-canvas-wrapper">
-      <canvas id="gameCanvas" class="hero-canvas" width="900" height="360"></canvas>
+    <!-- ============ Hero Canvas ============ -->
+    <div class="hero-canvas-wrap">
+      <canvas id="heroCanvas" width="1120" height="420"></canvas>
+      <span class="hero-caption" data-i18n="heroCaption">霓虹都市跑酷场景预览</span>
     </div>
-  </section>
 
-  <section class="intro-section">
-    <h2 class="section-title" data-i18n="introTitle">游戏介绍</h2>
-    <div class="intro-card">
-      <p data-i18n="introP1">《星界防线》是一款创新的塔防 + 卡牌策略太空主题游戏。在浩瀚的宇宙边境，你将扮演星际防线指挥官，建造防御工事、部署防御塔、组合战术卡牌，抵御一波又一波的外星入侵者。</p>
-      <p data-i18n="introP2">与传统塔防不同，游戏引入了自由建造系统——你可以在战场任意位置铺设防御路径，让敌人按照你设计的路线行进。配合丰富的卡牌系统，每张卡牌都代表一种战术技能或特殊效果，合理搭配可以打出令人惊艳的组合技。</p>
-      <p data-i18n="introP3">游戏包含多种难度关卡和无尽模式，从新手指挥官到星际老兵都能找到适合自己的挑战。精美的太空场景、流畅的战斗特效和沉浸式的音效设计，将带你进入一个充满科幻感的防御战场。</p>
-    </div>
-  </section>
-
-  <section class="features-section">
-    <h2 class="section-title" data-i18n="featuresTitle">核心玩法</h2>
-    <p class="section-subtitle" data-i18n="featuresSubtitle">塔防与卡牌的完美融合，重新定义策略游戏</p>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🛡️</div>
-        <h3 class="feature-title" data-i18n="feat1Title">自由建造防御线</h3>
-        <p class="feature-desc" data-i18n="feat1Desc">在战场上自由铺设路径和防御塔，设计专属于你的防御阵型，每局都有新玩法。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🃏</div>
-        <h3 class="feature-title" data-i18n="feat2Title">卡牌组合系统</h3>
-        <p class="feature-desc" data-i18n="feat2Desc">收集并组合战术卡牌，触发强大的连锁效果。上百张卡牌，无限种可能。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🌌</div>
-        <h3 class="feature-title" data-i18n="feat3Title">太空主题</h3>
-        <p class="feature-desc" data-i18n="feat3Desc">精美科幻画风，星云背景、行星要塞、激光特效，打造沉浸式太空战场体验。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⭐</div>
-        <h3 class="feature-title" data-i18n="feat4Title">多难度关卡</h3>
-        <p class="feature-desc" data-i18n="feat4Desc">从简单到地狱难度，丰富的关卡设计和无尽模式，挑战你的策略极限。</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="tech-section">
-    <h2 class="section-title" data-i18n="techTitle">技术栈</h2>
-    <div class="tech-card">
-      <div class="tech-tags">
-        <span class="tech-tag">Godot</span>
-        <span class="tech-tag">GDScript</span>
-        <span class="tech-tag">2D Graphics</span>
-        <span class="tech-tag">Pathfinding</span>
-        <span class="tech-tag">Card System</span>
-        <span class="tech-tag">Particle FX</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="timeline-section">
-    <h2 class="section-title" data-i18n="timelineTitle">开发进度</h2>
-    <div class="timeline-card">
-      <div class="timeline">
-        <div class="timeline-progress"></div>
-        <div class="timeline-item done">
-          <div class="timeline-dot">✓</div>
-          <div>
-            <div class="timeline-label" data-i18n="tl1Label">构思阶段</div>
-            <div class="timeline-desc" data-i18n="tl1Desc">核心玩法设计</div>
+    <!-- ============ Intro ============ -->
+    <section class="section">
+      <span class="section-label" data-i18n="introLabel">Game Intro</span>
+      <h2 class="section-title" data-i18n="introTitle">游戏介绍</h2>
+      <div class="intro-card">
+        <div class="intro-item">
+          <div class="intro-num">1</div>
+          <div class="intro-body">
+            <div class="intro-label" data-i18n="intro1Label">玩法</div>
+            <p class="intro-text" data-i18n="intro1Text">高速忍者跑酷，核心机制是"时间减速"——按住右键时间减速到 10%，可以精准规划路线、躲避子弹、斩击多个敌人。松开后时间恢复，按规划的路线瞬间执行。</p>
           </div>
         </div>
-        <div class="timeline-item active">
-          <div class="timeline-dot">●</div>
-          <div>
-            <div class="timeline-label" data-i18n="tl2Label">原型阶段</div>
-            <div class="timeline-desc" data-i18n="tl2Desc">核心机制验证</div>
+        <div class="intro-item">
+          <div class="intro-num">2</div>
+          <div class="intro-body">
+            <div class="intro-label" data-i18n="intro2Label">特色</div>
+            <p class="intro-text" data-i18n="intro2Text">墙壁反弹跑酷、瞬移斩击、子弹反弹格挡。整个都市是一个开放的垂直关卡，从底层到顶层霓虹天际。</p>
           </div>
         </div>
-        <div class="timeline-item">
-          <div class="timeline-dot">○</div>
-          <div>
-            <div class="timeline-label" data-i18n="tl3Label">开发中</div>
-            <div class="timeline-desc" data-i18n="tl3Desc">关卡与卡牌设计</div>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot">○</div>
-          <div>
-            <div class="timeline-label" data-i18n="tl4Label">待完成</div>
-            <div class="timeline-desc" data-i18n="tl4Desc">测试与发布</div>
+        <div class="intro-item">
+          <div class="intro-num">3</div>
+          <div class="intro-body">
+            <div class="intro-label" data-i18n="intro3Label">创新点</div>
+            <p class="intro-text" data-i18n="intro3Text">时间减速不是慢动作，而是"规划-执行"模式。减速时规划路线，恢复时以电影级速度瞬间完成。</p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="cta-section">
-    <a href="../index.html" class="cta-btn">
-      <span data-i18n="ctaBtn">← 返回创意列表</span>
-    </a>
+    <!-- ============ Core Features ============ -->
+    <section class="section">
+      <span class="section-label" data-i18n="featureLabel">Core Mechanics</span>
+      <h2 class="section-title" data-i18n="featureTitle">核心玩法</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⏱️</div>
+          <h3 class="feature-title" data-i18n="f1Title">时间减速</h3>
+          <p class="feature-desc" data-i18n="f1Desc">按住右键时间减到10%，规划路线</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title" data-i18n="f2Title">瞬移斩击</h3>
+          <p class="feature-desc" data-i18n="f2Desc">标记多个敌人，松开时间后瞬间斩击</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏃</div>
+          <h3 class="feature-title" data-i18n="f3Title">墙壁跑酷</h3>
+          <p class="feature-desc" data-i18n="f3Desc">墙壁反弹、垂直跑墙、空中冲刺</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3 class="feature-title" data-i18n="f4Title">子弹格挡</h3>
+          <p class="feature-desc" data-i18n="f4Desc">精准格挡反弹子弹到敌人</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Tech Stack ============ -->
+    <section class="section">
+      <span class="section-label" data-i18n="techLabel">Tech Stack</span>
+      <h2 class="section-title" data-i18n="techTitle">技术栈</h2>
+      <div class="tech-card">
+        <div class="tech-tags">
+          <span class="tech-tag" data-i18n="tech1">Unity</span>
+          <span class="tech-tag" data-i18n="tech2">C#</span>
+          <span class="tech-tag" data-i18n="tech3">URP</span>
+          <span class="tech-tag" data-i18n="tech4">Cinemachine</span>
+          <span class="tech-tag" data-i18n="tech5">后处理</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Timeline ============ -->
+    <section class="section">
+      <span class="section-label" data-i18n="progressLabel">Development Progress</span>
+      <h2 class="section-title" data-i18n="progressTitle">开发进度</h2>
+      <div class="timeline-card">
+        <div class="timeline">
+          <div class="tl-node completed">
+            <div class="tl-dot">✓</div>
+            <div class="tl-stage" data-i18n="stage1">构思</div>
+            <div class="tl-status" data-i18n="stage1Status">已完成</div>
+          </div>
+          <div class="tl-node completed">
+            <div class="tl-dot">✓</div>
+            <div class="tl-stage" data-i18n="stage2">原型</div>
+            <div class="tl-status" data-i18n="stage2Status">已完成</div>
+          </div>
+          <div class="tl-node active">
+            <div class="tl-dot">●</div>
+            <div class="tl-stage" data-i18n="stage3">关卡开发</div>
+            <div class="tl-status" data-i18n="stage3Status">开发中</div>
+          </div>
+          <div class="tl-node">
+            <div class="tl-dot">4</div>
+            <div class="tl-stage" data-i18n="stage4">打磨</div>
+            <div class="tl-status" data-i18n="stage4Status">待完成</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="back-bottom-wrap">
+      <a href="../index.html" class="back-bottom" data-i18n="backToList">← 返回创意列表</a>
+    </div>
   </div>
-</div>
 
-<script>
-  // Star Defense - Top-down space tower defense scene
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width;
-  const H = canvas.height;
+  <script>
+    (function () {
+      'use strict';
 
-  // Deep space background
-  const bgGrad = ctx.createRadialGradient(W * 0.7, H * 0.3, 50, W * 0.5, H * 0.5, W);
-  bgGrad.addColorStop(0, '#0f172a');
-  bgGrad.addColorStop(0.5, '#1e1b4b');
-  bgGrad.addColorStop(1, '#0c0a1f');
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(0, 0, W, H);
+      var i18n = {
+        zh: {
+          pageTitle: '赛博忍者 | Cyber Ninja',
+          backToIdeas: '← 返回游戏创意',
+          status: '原型完成',
+          category: '动作跑酷 × 赛博朋克',
+          gameName: '赛博忍者',
+          gameNameEn: 'Cyber Ninja',
+          heroCaption: '霓虹都市跑酷场景预览',
+          introLabel: 'Game Intro',
+          introTitle: '游戏介绍',
+          intro1Label: '玩法',
+          intro1Text: '高速忍者跑酷，核心机制是"时间减速"——按住右键时间减速到 10%，可以精准规划路线、躲避子弹、斩击多个敌人。松开后时间恢复，按规划的路线瞬间执行。',
+          intro2Label: '特色',
+          intro2Text: '墙壁反弹跑酷、瞬移斩击、子弹反弹格挡。整个都市是一个开放的垂直关卡，从底层到顶层霓虹天际。',
+          intro3Label: '创新点',
+          intro3Text: '时间减速不是慢动作，而是"规划-执行"模式。减速时规划路线，恢复时以电影级速度瞬间完成。',
+          featureLabel: 'Core Mechanics',
+          featureTitle: '核心玩法',
+          f1Title: '时间减速', f1Desc: '按住右键时间减到10%，规划路线',
+          f2Title: '瞬移斩击', f2Desc: '标记多个敌人，松开时间后瞬间斩击',
+          f3Title: '墙壁跑酷', f3Desc: '墙壁反弹、垂直跑墙、空中冲刺',
+          f4Title: '子弹格挡', f4Desc: '精准格挡反弹子弹到敌人',
+          techLabel: 'Tech Stack', techTitle: '技术栈',
+          tech1: 'Unity', tech2: 'C#', tech3: 'URP', tech4: 'Cinemachine', tech5: '后处理',
+          progressLabel: 'Development Progress', progressTitle: '开发进度',
+          stage1: '构思', stage1Status: '已完成',
+          stage2: '原型', stage2Status: '已完成',
+          stage3: '关卡开发', stage3Status: '开发中',
+          stage4: '打磨', stage4Status: '待完成',
+          backToList: '← 返回创意列表'
+        },
+        en: {
+          pageTitle: 'Cyber Ninja | 赛博忍者',
+          backToIdeas: '← Back to Game Ideas',
+          status: 'Prototype',
+          category: 'Action Parkour × Cyberpunk',
+          gameName: 'Cyber Ninja',
+          gameNameEn: '赛博忍者',
+          heroCaption: 'Neon City Parkour Scene Preview',
+          introLabel: 'Game Intro',
+          introTitle: 'Game Introduction',
+          intro1Label: 'Gameplay',
+          intro1Text: 'High-speed ninja parkour with a core mechanic of "time dilation" — hold the right mouse button to slow time to 10%, letting you precisely plan routes, dodge bullets, and slash multiple enemies. Release to restore time and execute the planned route instantly.',
+          intro2Label: 'Features',
+          intro2Text: 'Wall-rebound parkour, blink-strikes, and bullet ricochet blocks. The entire city is an open vertical level, from the ground floor up to the neon skyline.',
+          intro3Label: 'Innovation',
+          intro3Text: 'Time dilation is not slow motion — it is a "plan-execute" mode. Plan the route during slowdown, then complete it at cinematic speed the instant time restores.',
+          featureLabel: 'Core Mechanics',
+          featureTitle: 'Core Mechanics',
+          f1Title: 'Time Dilation', f1Desc: 'Hold right-click to slow time to 10% and plan your route',
+          f2Title: 'Blink Strike', f2Desc: 'Mark multiple enemies, then slash them instantly when time restores',
+          f3Title: 'Wall Parkour', f3Desc: 'Wall rebounds, vertical wall runs, air dashes',
+          f4Title: 'Bullet Block', f4Desc: 'Precisely block and ricochet bullets back at enemies',
+          techLabel: 'Tech Stack', techTitle: 'Tech Stack',
+          tech1: 'Unity', tech2: 'C#', tech3: 'URP', tech4: 'Cinemachine', tech5: 'Post-Processing',
+          progressLabel: 'Development Progress', progressTitle: 'Development Progress',
+          stage1: 'Concept', stage1Status: 'Completed',
+          stage2: 'Prototype', stage2Status: 'Completed',
+          stage3: 'Level Dev', stage3Status: 'In Progress',
+          stage4: 'Polish', stage4Status: 'Pending',
+          backToList: '← Back to Ideas List'
+        }
+      };
 
-  // Stars
-  for (let i = 0; i < 150; i++) {
-    const x = Math.random() * W;
-    const y = Math.random() * H;
-    const r = Math.random() * 1.5 + 0.3;
-    const alpha = Math.random() * 0.8 + 0.2;
-    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-  }
+      var currentLang = localStorage.getItem('ycc-lang') || 'zh';
 
-  // Nebula glow
-  const nebulaGrad = ctx.createRadialGradient(150, 80, 20, 150, 80, 150);
-  nebulaGrad.addColorStop(0, 'rgba(139, 92, 246, 0.3)');
-  nebulaGrad.addColorStop(1, 'rgba(139, 92, 246, 0)');
-  ctx.fillStyle = nebulaGrad;
-  ctx.fillRect(0, 0, 300, 250);
-
-  const nebulaGrad2 = ctx.createRadialGradient(750, 280, 20, 750, 280, 140);
-  nebulaGrad2.addColorStop(0, 'rgba(6, 182, 212, 0.25)');
-  nebulaGrad2.addColorStop(1, 'rgba(6, 182, 212, 0)');
-  ctx.fillStyle = nebulaGrad2;
-  ctx.fillRect(600, 150, 300, 200);
-
-  // Grid lines (space map)
-  ctx.strokeStyle = 'rgba(6, 182, 212, 0.08)';
-  ctx.lineWidth = 1;
-  for (let x = 0; x < W; x += 40) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, H);
-    ctx.stroke();
-  }
-  for (let y = 0; y < H; y += 40) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(W, y);
-    ctx.stroke();
-  }
-
-  // Paths (enemy routes) - glowing energy paths
-  function drawPath(points, color) {
-    // Outer glow
-    ctx.strokeStyle = color + '40';
-    ctx.lineWidth = 28;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.stroke();
-
-    // Inner path
-    ctx.strokeStyle = color + '80';
-    ctx.lineWidth = 20;
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.stroke();
-
-    // Core line
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
-    ctx.setLineDash([10, 8]);
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
-
-  // Path 1 - top route
-  const path1 = [
-    { x: -10, y: 70 },
-    { x: 200, y: 70 },
-    { x: 200, y: 150 },
-    { x: 450, y: 150 },
-    { x: 450, y: 90 },
-    { x: 700, y: 90 },
-    { x: 700, y: 200 },
-    { x: 850, y: 200 }
-  ];
-  drawPath(path1, '#22d3ee');
-
-  // Path 2 - middle/bottom route
-  const path2 = [
-    { x: -10, y: 280 },
-    { x: 150, y: 280 },
-    { x: 150, y: 220 },
-    { x: 350, y: 220 },
-    { x: 350, y: 300 },
-    { x: 550, y: 300 },
-    { x: 550, y: 220 },
-    { x: 750, y: 220 },
-    { x: 750, y: 280 },
-    { x: 850, y: 280 }
-  ];
-  drawPath(path2, '#a78bfa');
-
-  // Base/core on the right
-  function drawBase(x, y) {
-    // Outer ring
-    ctx.strokeStyle = '#22d3ee';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(x, y, 35, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Glow
-    const baseGlow = ctx.createRadialGradient(x, y, 10, x, y, 45);
-    baseGlow.addColorStop(0, 'rgba(34, 211, 238, 0.5)');
-    baseGlow.addColorStop(1, 'rgba(34, 211, 238, 0)');
-    ctx.fillStyle = baseGlow;
-    ctx.beginPath();
-    ctx.arc(x, y, 45, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Inner hexagon
-    ctx.fillStyle = '#0e7490';
-    ctx.strokeStyle = '#22d3ee';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    for (let i = 0; i < 6; i++) {
-      const angle = (i * Math.PI * 2) / 6 - Math.PI / 2;
-      const px = x + Math.cos(angle) * 22;
-      const py = y + Math.sin(angle) * 22;
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // Core
-    ctx.fillStyle = '#22d3ee';
-    ctx.beginPath();
-    ctx.arc(x, y, 8, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(x - 2, y - 2, 3, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  drawBase(850, 140);
-  drawBase(850, 240);
-
-  // Defense towers
-  function drawTower(x, y, type) {
-    // Base platform
-    ctx.fillStyle = '#1e293b';
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(x, y, 18, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Tower body
-    if (type === 'laser') {
-      // Laser tower - cyan
-      ctx.fillStyle = '#0891b2';
-      ctx.fillRect(x - 6, y - 20, 12, 20);
-      ctx.fillStyle = '#22d3ee';
-      ctx.fillRect(x - 4, y - 22, 8, 4);
-      // Top emitter
-      ctx.fillStyle = '#67e8f9';
-      ctx.beginPath();
-      ctx.arc(x, y - 24, 5, 0, Math.PI * 2);
-      ctx.fill();
-      // Glow
-      ctx.fillStyle = 'rgba(34, 211, 238, 0.3)';
-      ctx.beginPath();
-      ctx.arc(x, y - 24, 10, 0, Math.PI * 2);
-      ctx.fill();
-    } else if (type === 'missile') {
-      // Missile tower - purple
-      ctx.fillStyle = '#7c3aed';
-      ctx.fillRect(x - 7, y - 18, 14, 18);
-      ctx.fillStyle = '#a78bfa';
-      // Missile silos
-      ctx.fillRect(x - 5, y - 24, 3, 8);
-      ctx.fillRect(x + 2, y - 24, 3, 8);
-      ctx.fillStyle = '#ddd6fe';
-      ctx.fillRect(x - 5, y - 26, 3, 3);
-      ctx.fillRect(x + 2, y - 26, 3, 3);
-    } else if (type === 'tesla') {
-      // Tesla tower - yellow/gold
-      ctx.fillStyle = '#b45309';
-      ctx.beginPath();
-      ctx.moveTo(x, y - 26);
-      ctx.lineTo(x - 10, y);
-      ctx.lineTo(x + 10, y);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#fbbf24';
-      ctx.beginPath();
-      ctx.arc(x, y - 26, 5, 0, Math.PI * 2);
-      ctx.fill();
-      // Electric arcs
-      ctx.strokeStyle = '#fef08a';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(x - 5, y - 28);
-      ctx.lineTo(x - 8, y - 20);
-      ctx.lineTo(x - 3, y - 16);
-      ctx.stroke();
-    }
-
-    // Range indicator (subtle)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    ctx.arc(x, y, 50, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
-
-  // Place towers along paths
-  drawTower(280, 110, 'laser');
-  drawTower(380, 180, 'missile');
-  drawTower(550, 120, 'tesla');
-  drawTower(650, 160, 'laser');
-  drawTower(250, 250, 'missile');
-  drawTower(450, 260, 'tesla');
-  drawTower(650, 250, 'laser');
-
-  // Enemies coming from left
-  function drawEnemy(x, y, type) {
-    if (type === 'scout') {
-      // Small scout ship - red triangle
-      ctx.fillStyle = '#ef4444';
-      ctx.strokeStyle = '#fca5a5';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(x + 10, y);
-      ctx.lineTo(x - 8, y - 7);
-      ctx.lineTo(x - 5, y);
-      ctx.lineTo(x - 8, y + 7);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      // Engine glow
-      ctx.fillStyle = '#fbbf24';
-      ctx.beginPath();
-      ctx.arc(x - 8, y, 2, 0, Math.PI * 2);
-      ctx.fill();
-    } else if (type === 'fighter') {
-      // Medium fighter
-      ctx.fillStyle = '#f97316';
-      ctx.strokeStyle = '#fdba74';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(x + 14, y);
-      ctx.lineTo(x, y - 10);
-      ctx.lineTo(x - 10, y - 5);
-      ctx.lineTo(x - 10, y + 5);
-      ctx.lineTo(x, y + 10);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      // Engine
-      ctx.fillStyle = '#fef08a';
-      ctx.fillRect(x - 13, y - 2, 4, 4);
-    } else if (type === 'boss') {
-      // Large boss ship
-      ctx.fillStyle = '#dc2626';
-      ctx.strokeStyle = '#fca5a5';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x + 20, y);
-      ctx.lineTo(x + 5, y - 14);
-      ctx.lineTo(x - 15, y - 10);
-      ctx.lineTo(x - 18, y);
-      ctx.lineTo(x - 15, y + 10);
-      ctx.lineTo(x + 5, y + 14);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      // Core
-      ctx.fillStyle = '#fbbf24';
-      ctx.beginPath();
-      ctx.arc(x + 2, y, 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  // Enemies on path 1
-  drawEnemy(80, 70, 'scout');
-  drawEnemy(160, 70, 'scout');
-  drawEnemy(300, 150, 'fighter');
-  drawEnemy(520, 90, 'scout');
-
-  // Enemies on path 2
-  drawEnemy(60, 280, 'fighter');
-  drawEnemy(250, 220, 'scout');
-  drawEnemy(450, 300, 'boss');
-  drawEnemy(650, 220, 'fighter');
-
-  // Laser beams from towers to enemies
-  function drawLaserBeam(fromX, fromY, toX, toY, color) {
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 10;
-    ctx.beginPath();
-    ctx.moveTo(fromX, fromY);
-    ctx.lineTo(toX, toY);
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-  }
-  drawLaserBeam(280, 86, 300, 150, '#22d3ee');
-  drawLaserBeam(650, 226, 650, 220, '#22d3ee');
-
-  // Floating card UI element (bottom-left)
-  function drawCard(x, y, icon, title, color) {
-    // Card shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.fillRect(x + 3, y + 3, 60, 80);
-
-    // Card bg
-    const cardGrad = ctx.createLinearGradient(x, y, x, y + 80);
-    cardGrad.addColorStop(0, '#1e293b');
-    cardGrad.addColorStop(1, '#0f172a');
-    ctx.fillStyle = cardGrad;
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(x, y, 60, 80, 6);
-    ctx.fill();
-    ctx.stroke();
-
-    // Icon area
-    ctx.fillStyle = color + '30';
-    ctx.fillRect(x + 10, y + 10, 40, 40);
-    ctx.fillStyle = color;
-    ctx.font = '24px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(icon, x + 30, y + 30);
-
-    // Name
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 10px sans-serif';
-    ctx.fillText(title, x + 30, y + 65);
-
-    // Cost
-    ctx.fillStyle = '#fbbf24';
-    ctx.font = 'bold 9px sans-serif';
-    ctx.fillText('◆ 50', x + 30, y + 75);
-  }
-  drawCard(20, H - 100, '⚡', '闪电塔', '#fbbf24');
-  drawCard(90, H - 100, '💎', '冰冻塔', '#22d3ee');
-  drawCard(160, H - 100, '🔥', '火焰塔', '#f97316');
-
-  // Resource bar (top)
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-  ctx.fillRect(10, 10, 180, 30);
-  ctx.strokeStyle = '#334155';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(10, 10, 180, 30);
-
-  // Gold icon
-  ctx.fillStyle = '#fbbf24';
-  ctx.font = '16px sans-serif';
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('◆', 22, 25);
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 13px sans-serif';
-  ctx.fillText('1,250', 42, 25);
-
-  // Wave indicator
-  ctx.fillStyle = '#f87171';
-  ctx.fillText('♥', 100, 25);
-  ctx.fillStyle = '#fff';
-  ctx.fillText('20', 118, 25);
-
-  // Wave number
-  ctx.fillStyle = '#22d3ee';
-  ctx.font = 'bold 12px sans-serif';
-  ctx.textAlign = 'right';
-  ctx.fillText('Wave 3/10', 180, 25);
-</script>
-
-<script>
-  const translations = {
-    zh: {
-      title: '星界防线 | Star Defense',
-      langToggle: 'EN',
-      back: '← 返回游戏创意',
-      gameTitle: '星界防线',
-      gameSubtitle: 'Star Defense',
-      statusBadge: '原型阶段',
-      introTitle: '游戏介绍',
-      introP1: '《星界防线》是一款创新的塔防 + 卡牌策略太空主题游戏。在浩瀚的宇宙边境，你将扮演星际防线指挥官，建造防御工事、部署防御塔、组合战术卡牌，抵御一波又一波的外星入侵者。',
-      introP2: '与传统塔防不同，游戏引入了自由建造系统——你可以在战场任意位置铺设防御路径，让敌人按照你设计的路线行进。配合丰富的卡牌系统，每张卡牌都代表一种战术技能或特殊效果，合理搭配可以打出令人惊艳的组合技。',
-      introP3: '游戏包含多种难度关卡和无尽模式，从新手指挥官到星际老兵都能找到适合自己的挑战。精美的太空场景、流畅的战斗特效和沉浸式的音效设计，将带你进入一个充满科幻感的防御战场。',
-      featuresTitle: '核心玩法',
-      featuresSubtitle: '塔防与卡牌的完美融合，重新定义策略游戏',
-      feat1Title: '自由建造防御线',
-      feat1Desc: '在战场上自由铺设路径和防御塔，设计专属于你的防御阵型，每局都有新玩法。',
-      feat2Title: '卡牌组合系统',
-      feat2Desc: '收集并组合战术卡牌，触发强大的连锁效果。上百张卡牌，无限种可能。',
-      feat3Title: '太空主题',
-      feat3Desc: '精美科幻画风，星云背景、行星要塞、激光特效，打造沉浸式太空战场体验。',
-      feat4Title: '多难度关卡',
-      feat4Desc: '从简单到地狱难度，丰富的关卡设计和无尽模式，挑战你的策略极限。',
-      techTitle: '技术栈',
-      timelineTitle: '开发进度',
-      tl1Label: '构思阶段',
-      tl1Desc: '核心玩法设计',
-      tl2Label: '原型阶段',
-      tl2Desc: '核心机制验证',
-      tl3Label: '开发中',
-      tl3Desc: '关卡与卡牌设计',
-      tl4Label: '待完成',
-      tl4Desc: '测试与发布',
-      ctaBtn: '← 返回创意列表'
-    },
-    en: {
-      title: 'Star Defense | 星界防线',
-      langToggle: '中文',
-      back: '← Back to Ideas',
-      gameTitle: 'Star Defense',
-      gameSubtitle: '星界防线',
-      statusBadge: 'Prototype',
-      introTitle: 'About the Game',
-      introP1: 'Star Defense is an innovative tower defense + card strategy space-themed game. At the edge of the vast universe, you take on the role of a Star Defense Commander, building fortifications, deploying towers, and combining tactical cards to fend off waves of alien invaders.',
-      introP2: 'Unlike traditional tower defense, the game introduces a free-building system - you can lay defense paths anywhere on the battlefield, letting enemies follow routes you design. Combined with a rich card system, each card represents a tactical skill or special effect.',
-      introP3: 'The game features multiple difficulty levels and an endless mode. From rookie commanders to galactic veterans, everyone can find a suitable challenge. Beautiful space scenes, smooth combat effects, and immersive sound design bring you into a sci-fi battlefield.',
-      featuresTitle: 'Core Gameplay',
-      featuresSubtitle: 'The perfect fusion of tower defense and card strategy, redefining strategy games',
-      feat1Title: 'Free Build Defense',
-      feat1Desc: 'Freely place paths and towers on the battlefield. Design your own defense formation. Every game plays differently.',
-      feat2Title: 'Card Combo System',
-      feat2Desc: 'Collect and combine tactical cards to trigger powerful chain effects. Hundreds of cards, infinite possibilities.',
-      feat3Title: 'Space Theme',
-      feat3Desc: 'Beautiful sci-fi art style with nebula backgrounds, planetary fortresses, and laser effects for an immersive experience.',
-      feat4Title: 'Multi-Difficulty Levels',
-      feat4Desc: 'From easy to hell difficulty, rich level design and endless mode challenge your strategic limits.',
-      techTitle: 'Tech Stack',
-      timelineTitle: 'Development Progress',
-      tl1Label: 'Concept',
-      tl1Desc: 'Core gameplay design',
-      tl2Label: 'Prototype',
-      tl2Desc: 'Core mechanics validation',
-      tl3Label: 'In Development',
-      tl3Desc: 'Level & card design',
-      tl4Label: 'To Do',
-      tl4Desc: 'Testing & release',
-      ctaBtn: '← Back to Ideas'
-    }
-  };
-
-  let currentLang = 'zh';
-
-  function toggleLang() {
-    currentLang = currentLang === 'zh' ? 'en' : 'zh';
-    applyLang(currentLang);
-    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
-  }
-
-  function applyLang(lang) {
-    const t = translations[lang];
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (t[key]) {
-        el.textContent = t[key];
+      function applyLang(lang) {
+        currentLang = lang;
+        localStorage.setItem('ycc-lang', lang);
+        var dict = i18n[lang];
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          var key = el.getAttribute('data-i18n');
+          if (dict[key]) el.innerHTML = dict[key];
+        });
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+        var cn = document.querySelector('.lang-toggle .lang-cn');
+        var en = document.querySelector('.lang-toggle .lang-en');
+        if (cn) cn.classList.toggle('active', lang === 'zh');
+        if (en) en.classList.toggle('active', lang === 'en');
       }
-    });
-    document.title = t.title;
-  }
-</script>
 
+      var toggle = document.getElementById('langToggle');
+      if (toggle) {
+        toggle.addEventListener('click', function () {
+          applyLang(currentLang === 'zh' ? 'en' : 'zh');
+        });
+      }
+
+      applyLang(currentLang);
+
+      /* ============ Hero Canvas Drawing — Cyber Ninja ============ */
+      function drawHero() {
+        var canvas = document.getElementById('heroCanvas');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var W = canvas.width, H = canvas.height;
+
+        // Background gradient (dark neon city, pink-purple tones)
+        var bg = ctx.createLinearGradient(0, 0, 0, H);
+        bg.addColorStop(0, '#0a0a1a');
+        bg.addColorStop(0.5, '#1a0a2e');
+        bg.addColorStop(1, '#2d0a3e');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // Distant atmospheric glow (magenta + purple)
+        var glow1 = ctx.createRadialGradient(W * 0.25, H * 0.4, 0, W * 0.25, H * 0.4, 280);
+        glow1.addColorStop(0, 'rgba(236, 72, 153, 0.28)');
+        glow1.addColorStop(1, 'rgba(236, 72, 153, 0)');
+        ctx.fillStyle = glow1;
+        ctx.fillRect(0, 0, W, H);
+
+        var glow2 = ctx.createRadialGradient(W * 0.78, H * 0.55, 0, W * 0.78, H * 0.55, 300);
+        glow2.addColorStop(0, 'rgba(168, 85, 247, 0.28)');
+        glow2.addColorStop(1, 'rgba(168, 85, 247, 0)');
+        ctx.fillStyle = glow2;
+        ctx.fillRect(0, 0, W, H);
+
+        // ===== Distant city skyline silhouettes =====
+        var skyline = [
+          [0, 95, 22, 35], [24, 85, 18, 45], [44, 100, 20, 30],
+          [66, 78, 24, 52], [92, 92, 16, 38], [110, 98, 22, 32],
+          [134, 80, 20, 50], [156, 95, 18, 35], [176, 85, 24, 45],
+          [202, 100, 20, 30], [224, 88, 22, 42], [248, 95, 20, 35],
+          [270, 82, 22, 48], [295, 96, 18, 34], [314, 86, 22, 44],
+          [338, 100, 18, 30], [358, 90, 24, 40], [384, 84, 18, 46],
+          [404, 96, 22, 34], [428, 80, 18, 50], [448, 92, 22, 38],
+          [472, 86, 18, 44], [492, 100, 24, 30], [518, 78, 20, 52],
+          [540, 94, 18, 36], [560, 88, 22, 42], [584, 98, 18, 32],
+          [604, 84, 22, 46], [628, 96, 18, 34], [648, 80, 24, 50],
+          [674, 90, 18, 40], [694, 98, 22, 32], [718, 86, 18, 44],
+          [738, 100, 24, 30], [764, 82, 20, 48], [786, 94, 18, 36],
+          [806, 88, 22, 42], [830, 96, 18, 34], [850, 80, 24, 50],
+          [876, 92, 18, 38], [896, 86, 22, 44], [920, 98, 18, 32],
+          [940, 84, 22, 46], [964, 96, 18, 34], [984, 80, 24, 50],
+          [1010, 90, 18, 40], [1030, 100, 22, 30], [1054, 86, 18, 44],
+          [1074, 94, 20, 36], [1096, 82, 24, 48]
+        ];
+        // darker back layer
+        ctx.fillStyle = '#1e1b4b';
+        skyline.forEach(function (b) {
+          ctx.fillRect(b[0], b[1] + 18, b[2], b[3]);
+        });
+        // closer lighter layer
+        ctx.fillStyle = '#27204a';
+        var nearSkyline = [
+          [10, 108, 26, 24], [40, 100, 20, 32], [64, 110, 24, 22],
+          [92, 96, 22, 36], [116, 106, 26, 26], [146, 100, 22, 32],
+          [170, 108, 24, 24], [198, 98, 20, 34], [222, 106, 26, 26],
+          [250, 100, 22, 32], [276, 110, 24, 22], [302, 96, 22, 36],
+          [326, 106, 26, 26], [354, 100, 22, 32], [380, 108, 24, 24],
+          [406, 98, 20, 34], [430, 106, 26, 26], [458, 100, 22, 32],
+          [482, 110, 24, 22], [508, 96, 22, 36], [534, 106, 26, 26],
+          [562, 100, 22, 32], [586, 108, 24, 24], [612, 98, 20, 34],
+          [636, 106, 26, 26], [664, 100, 22, 32], [688, 110, 24, 22],
+          [714, 96, 22, 36], [740, 106, 26, 26], [768, 100, 22, 32],
+          [792, 108, 24, 24], [818, 98, 20, 34], [842, 106, 26, 26],
+          [870, 100, 22, 32], [894, 110, 24, 22], [920, 96, 22, 36],
+          [946, 106, 26, 26], [974, 100, 22, 32], [998, 108, 24, 24],
+          [1024, 98, 20, 34], [1048, 106, 26, 26], [1076, 100, 22, 32],
+          [1100, 110, 20, 22]
+        ];
+        nearSkyline.forEach(function (b) {
+          ctx.fillRect(b[0], b[1], b[2], b[3]);
+        });
+
+        // ===== Neon windows (pink + cyan dots) =====
+        var winPink = [[30, 96], [70, 92], [120, 110], [180, 100], [230, 104],
+          [276, 100], [330, 108], [390, 100], [450, 110], [510, 102],
+          [560, 104], [620, 100], [690, 102], [750, 110], [810, 100],
+          [870, 104], [940, 102], [1000, 110], [1060, 100]];
+        winPink.forEach(function (w) {
+          ctx.fillStyle = 'rgba(236, 72, 153, 0.85)';
+          ctx.fillRect(w[0], w[1], 2, 2);
+        });
+        var winCyan = [[50, 112], [140, 104], [200, 110], [260, 108], [340, 112],
+          [420, 108], [480, 110], [540, 112], [660, 108], [720, 110],
+          [830, 112], [900, 108], [980, 110], [1080, 112]];
+        winCyan.forEach(function (w) {
+          ctx.fillStyle = 'rgba(34, 211, 238, 0.75)';
+          ctx.fillRect(w[0], w[1], 2, 2);
+        });
+        var winWhite = [[100, 100], [300, 110], [500, 104], [700, 100], [950, 104]];
+        winWhite.forEach(function (w) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+          ctx.fillRect(w[0], w[1], 1.5, 1.5);
+        });
+
+        // ===== Neon horizon glow line =====
+        var hgrad = ctx.createLinearGradient(0, 0, W, 0);
+        hgrad.addColorStop(0, 'rgba(236, 72, 153, 0)');
+        hgrad.addColorStop(0.3, 'rgba(236, 72, 153, 0.9)');
+        hgrad.addColorStop(0.5, 'rgba(249, 168, 212, 1)');
+        hgrad.addColorStop(0.7, 'rgba(168, 85, 247, 0.9)');
+        hgrad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+        ctx.fillStyle = hgrad;
+        ctx.fillRect(0, 130, W, 3);
+        // bright thin line
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.fillRect(0, 131, W, 1);
+        // soft glow above horizon
+        var hglow = ctx.createLinearGradient(0, 110, 0, 140);
+        hglow.addColorStop(0, 'rgba(236, 72, 153, 0)');
+        hglow.addColorStop(1, 'rgba(236, 72, 153, 0.25)');
+        ctx.fillStyle = hglow;
+        ctx.fillRect(0, 110, W, 30);
+
+        // ===== Left wall (vertical) =====
+        var lwX = 40, lwW = 26;
+        var lwGrad = ctx.createLinearGradient(lwX, 0, lwX + lwW, 0);
+        lwGrad.addColorStop(0, '#1a0a2e');
+        lwGrad.addColorStop(1, '#0a0a1a');
+        ctx.fillStyle = lwGrad;
+        ctx.fillRect(lwX, 0, lwW, H);
+        // left wall neon edge (right side, pink)
+        ctx.fillStyle = '#ec4899';
+        ctx.fillRect(lwX + lwW - 2, 0, 2, H);
+        // edge glow
+        var lwEdge = ctx.createLinearGradient(lwX + lwW, 0, lwX + lwW + 40, 0);
+        lwEdge.addColorStop(0, 'rgba(236, 72, 153, 0.5)');
+        lwEdge.addColorStop(1, 'rgba(236, 72, 153, 0)');
+        ctx.fillStyle = lwEdge;
+        ctx.fillRect(lwX + lwW, 0, 40, H);
+        // wall texture lines
+        ctx.strokeStyle = 'rgba(236, 72, 153, 0.25)';
+        ctx.lineWidth = 0.6;
+        for (var wy = 30; wy < H; wy += 40) {
+          ctx.beginPath();
+          ctx.moveTo(lwX + 4, wy);
+          ctx.lineTo(lwX + lwW - 4, wy);
+          ctx.stroke();
+        }
+
+        // ===== Right wall (vertical) =====
+        var rwX = W - 66, rwW = 26;
+        var rwGrad = ctx.createLinearGradient(rwX, 0, rwX + rwW, 0);
+        rwGrad.addColorStop(0, '#0a0a1a');
+        rwGrad.addColorStop(1, '#1a0a2e');
+        ctx.fillStyle = rwGrad;
+        ctx.fillRect(rwX, 0, rwW, H);
+        // right wall neon edge (left side, purple)
+        ctx.fillStyle = '#a855f7';
+        ctx.fillRect(rwX, 0, 2, H);
+        // edge glow
+        var rwEdge = ctx.createLinearGradient(rwX - 40, 0, rwX, 0);
+        rwEdge.addColorStop(0, 'rgba(168, 85, 247, 0)');
+        rwEdge.addColorStop(1, 'rgba(168, 85, 247, 0.5)');
+        ctx.fillStyle = rwEdge;
+        ctx.fillRect(rwX - 40, 0, 40, H);
+        // wall texture lines
+        ctx.strokeStyle = 'rgba(168, 85, 247, 0.25)';
+        ctx.lineWidth = 0.6;
+        for (var wy2 = 50; wy2 < H; wy2 += 40) {
+          ctx.beginPath();
+          ctx.moveTo(rwX + 4, wy2);
+          ctx.lineTo(rwX + rwW - 4, wy2);
+          ctx.stroke();
+        }
+
+        // ===== Speed lines (horizontal dashed, behind ninja) =====
+        ctx.strokeStyle = 'rgba(236, 72, 153, 0.55)';
+        ctx.lineWidth = 1.1;
+        var speedLines = [70, 92, 114, 136, 158, 200, 222, 244, 266, 288];
+        speedLines.forEach(function (sy, i) {
+          var len = 60 + (i % 3) * 30;
+          ctx.beginPath();
+          ctx.setLineDash([4, 6]);
+          ctx.moveTo(lwX + lwW + 30, sy);
+          ctx.lineTo(lwX + lwW + 30 + len, sy);
+          ctx.stroke();
+        });
+        ctx.setLineDash([]);
+
+        // ===== Afterimage trails (ghost ninjas, semi-transparent, trailing left/behind) =====
+        function drawNinja(cx, cy, opts) {
+          opts = opts || {};
+          var alpha = opts.alpha != null ? opts.alpha : 1;
+          var tint = opts.tint || { body: '#0f172a', edge: '#ec4899', visor: '#22d3ee', blade: '#67e8f9', scarf: '#a855f7' };
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          // motion glow halo
+          if (opts.glow) {
+            var halo = ctx.createRadialGradient(cx + 7, cy + 12, 0, cx + 7, cy + 12, 40);
+            halo.addColorStop(0, opts.glow);
+            halo.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = halo;
+            ctx.beginPath();
+            ctx.arc(cx + 7, cy + 12, 40, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          // scarf trail (behind, to the left)
+          ctx.strokeStyle = tint.scarf;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(cx - 2, cy + 10);
+          ctx.quadraticCurveTo(cx - 16, cy + 14, cx - 26, cy + 22);
+          ctx.stroke();
+          ctx.strokeStyle = 'rgba(236, 72, 153, 0.6)';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(cx - 2, cy + 10);
+          ctx.quadraticCurveTo(cx - 20, cy + 12, cx - 32, cy + 18);
+          ctx.stroke();
+          // body
+          ctx.fillStyle = tint.body;
+          ctx.strokeStyle = tint.edge;
+          ctx.lineWidth = 1;
+          ctx.fillRect(cx, cy + 6, 14, 16);
+          ctx.strokeRect(cx, cy + 6, 14, 16);
+          // head
+          ctx.fillRect(cx + 2, cy - 2, 10, 10);
+          ctx.strokeRect(cx + 2, cy - 2, 10, 10);
+          // eye visor (glowing cyan)
+          ctx.fillStyle = tint.visor;
+          ctx.fillRect(cx + 3, cy + 1, 8, 2);
+          ctx.fillStyle = '#67e8f9';
+          ctx.fillRect(cx + 3, cy + 1, 8, 1);
+          // arm reaching forward (right)
+          ctx.fillStyle = tint.body;
+          ctx.strokeStyle = tint.edge;
+          ctx.lineWidth = 0.8;
+          ctx.fillRect(cx + 14, cy + 10, 12, 3);
+          ctx.strokeRect(cx + 14, cy + 10, 12, 3);
+          // katana blade (forward, glowing)
+          ctx.fillStyle = tint.blade;
+          ctx.fillRect(cx + 26, cy + 8, 22, 1.5);
+          // blade glow
+          var bglow = ctx.createLinearGradient(cx + 26, cy + 8, cx + 48, cy + 8);
+          bglow.addColorStop(0, 'rgba(103, 232, 249, 0.6)');
+          bglow.addColorStop(1, 'rgba(103, 232, 249, 0)');
+          ctx.fillStyle = bglow;
+          ctx.fillRect(cx + 26, cy + 6, 22, 6);
+          // legs
+          ctx.fillStyle = tint.body;
+          ctx.strokeStyle = tint.edge;
+          ctx.lineWidth = 0.6;
+          ctx.fillRect(cx + 1, cy + 22, 5, 10);
+          ctx.strokeRect(cx + 1, cy + 22, 5, 10);
+          ctx.fillRect(cx + 8, cy + 22, 5, 10);
+          ctx.strokeRect(cx + 8, cy + 22, 5, 10);
+          ctx.restore();
+        }
+
+        // Afterimage ghosts (fading, pink-tinted)
+        drawNinja(220, 180, { alpha: 0.22, glow: 'rgba(249, 168, 212, 0.35)' });
+        drawNinja(280, 160, { alpha: 0.32, glow: 'rgba(236, 72, 153, 0.4)' });
+        drawNinja(340, 145, { alpha: 0.45, glow: 'rgba(236, 72, 153, 0.5)' });
+
+        // ===== Main ninja (mid-air, jumping rightward) =====
+        drawNinja(420, 135, { alpha: 1, glow: 'rgba(236, 72, 153, 0.55)' });
+        // extra bright core visor glow
+        ctx.save();
+        var vglow = ctx.createRadialGradient(427, 137, 0, 427, 137, 16);
+        vglow.addColorStop(0, 'rgba(34, 211, 238, 0.9)');
+        vglow.addColorStop(1, 'rgba(34, 211, 238, 0)');
+        ctx.fillStyle = vglow;
+        ctx.beginPath();
+        ctx.arc(427, 137, 16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // ===== Neon spark particles =====
+        var sparks = [
+          [380, 120, 1.6, '#22d3ee'], [470, 110, 1.3, '#ec4899'],
+          [500, 160, 1.4, '#a855f7'], [360, 200, 1.1, '#ec4899'],
+          [520, 140, 1.2, '#67e8f9'], [440, 90, 1.0, '#f0abfc'],
+          [560, 180, 1.3, '#22d3ee'], [320, 130, 0.9, '#f9a8d4']
+        ];
+        sparks.forEach(function (s) {
+          ctx.beginPath();
+          ctx.arc(s[0], s[1], s[2], 0, Math.PI * 2);
+          ctx.fillStyle = s[3];
+          ctx.fill();
+        });
+
+        // ===== Labels =====
+        ctx.save();
+        ctx.font = '700 12px Inter, sans-serif';
+        ctx.fillStyle = 'rgba(249, 168, 212, 0.9)';
+        ctx.fillText('CYBER NINJA', 470, 80);
+        ctx.font = '600 10px Inter, sans-serif';
+        ctx.fillStyle = 'rgba(103, 232, 249, 0.75)';
+        ctx.fillText('TIME DILATION ACTIVE', 470, 96);
+        ctx.fillStyle = 'rgba(236, 72, 153, 0.6)';
+        ctx.font = '600 10px Inter, sans-serif';
+        ctx.fillText('WALL', lwX + 3, 30);
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.6)';
+        ctx.fillText('WALL', rwX + 3, 30);
+        ctx.restore();
+
+        // ===== Vignette =====
+        var vig = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, W * 0.7);
+        vig.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        vig.addColorStop(1, 'rgba(10, 10, 26, 0.5)');
+        ctx.fillStyle = vig;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      drawHero();
+    })();
+  </script>
 </body>
 </html>
