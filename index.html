@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Research Lab — 创意·设计·探索</title>
     <meta name="description" content="面向创意与技术的开放研究平台：AI 探索、创意设计、数据洞察、全栈开发、交互体验、硬件创新与游戏实验。" />
-  <link rel="stylesheet" href="css/style.css?v=8.2" />
+  <link rel="stylesheet" href="css/style.css?v=8.3" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
@@ -948,6 +948,165 @@
           </div>
           <div class="idea-arrow">→</div>
         </a>
+
+        <!-- 特色展示：视频概念演示平台 -->
+        <a href="https://ycc1999122.github.io/web-video-player/" target="_blank" rel="noopener" class="idea-card tilt-card category-card idea-card-featured">
+          <div class="idea-thumb">
+            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="vvpBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#0f172a"/>
+                  <stop offset="50%" stop-color="#1e3a8a"/>
+                  <stop offset="100%" stop-color="#1e1b4b"/>
+                </linearGradient>
+                <linearGradient id="vvpGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="rgba(59,130,246,0.5)"/>
+                  <stop offset="100%" stop-color="rgba(139,92,246,0.3)"/>
+                </linearGradient>
+                <radialGradient id="vvpParticle" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.9)"/>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                </radialGradient>
+              </defs>
+
+              <!-- 背景 -->
+              <rect width="320" height="180" fill="url(#vvpBgGrad)"/>
+
+              <!-- 顶部彩虹流光条 -->
+              <rect x="0" y="0" width="320" height="2" fill="url(#vvpGlow)"/>
+              <rect x="0" y="0" width="320" height="2.5">
+                <stop offset="0%" stop-color="#3b82f6"/>
+                <stop offset="33%" stop-color="#8b5cf6"/>
+                <stop offset="66%" stop-color="#ec4899"/>
+                <stop offset="100%" stop-color="#3b82f6"/>
+              </rect>
+
+              <!-- 粒子点 -->
+              <circle cx="30" cy="30" r="1.5" fill="url(#vvpParticle)"/>
+              <circle cx="290" cy="40" r="2" fill="url(#vvpParticle)"/>
+              <circle cx="50" cy="70" r="1" fill="url(#vvpParticle)"/>
+              <circle cx="270" cy="100" r="1.5" fill="url(#vvpParticle)"/>
+              <circle cx="100" cy="130" r="1" fill="url(#vvpParticle)"/>
+              <circle cx="200" cy="20" r="1.2" fill="url(#vvpParticle)"/>
+              <circle cx="240" cy="150" r="1" fill="url(#vvpParticle)"/>
+
+              <!-- 中央视频窗口 -->
+              <g transform="translate(80, 25)">
+                <!-- 视频外框光晕 -->
+                <rect x="-4" y="-4" width="168" height="98" rx="8" fill="url(#vvpGlow)" opacity="0.5"/>
+                <!-- 视频主体 -->
+                <rect x="0" y="0" width="160" height="90" rx="6" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+                <!-- 视频内容（模拟 AR 角色）-->
+                <circle cx="80" cy="42" r="14" fill="rgba(139,92,246,0.4)" stroke="rgba(167,139,250,0.8)" stroke-width="1"/>
+                <circle cx="74" cy="38" r="2" fill="#c4b5fd"/>
+                <circle cx="86" cy="38" r="2" fill="#c4b5fd"/>
+                <path d="M72,48 Q80,54 88,48" stroke="#c4b5fd" stroke-width="1.5" fill="none"/>
+                <!-- 模拟手挥动 -->
+                <line x1="68" y1="42" x2="58" y2="32" stroke="#a5f3fc" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="56" cy="30" r="2" fill="#a5f3fc"/>
+
+                <!-- 进度条 -->
+                <rect x="6" y="78" width="148" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+                <rect x="6" y="78" width="56" height="3" rx="1.5" fill="#3b82f6"/>
+                <circle cx="62" cy="79.5" r="2.5" fill="#fff"/>
+
+                <!-- 购物车图标（右上角脉冲）-->
+                <g transform="translate(132, 8)">
+                  <circle cx="10" cy="10" r="9" fill="rgba(59,130,246,0.85)" stroke="rgba(255,255,255,0.4)" stroke-width="1">
+                    <animate attributeName="r" values="9;10;9" dur="2s" repeatCount="indefinite"/>
+                  </circle>
+                  <path d="M6,10 C6,7 8,5 10,5 C12,5 14,7 14,10 L12,10 L12,11 L8,11 L8,10 Z" fill="#fff" transform="translate(-1,-1)"/>
+                </g>
+
+                <!-- 弹幕（右侧滚动文字）-->
+                <text x="20" y="20" font-family="monospace" font-size="7" fill="#60a5fa" opacity="0.7">666</text>
+                <text x="100" y="14" font-family="monospace" font-size="7" fill="#f472b6" opacity="0.7">前排</text>
+                <text x="50" y="68" font-family="monospace" font-size="7" fill="#facc15" opacity="0.7">BGM好听</text>
+              </g>
+
+              <!-- 左侧声纹波形（功能2）-->
+              <g transform="translate(14, 50)">
+                <rect x="0" y="0" width="50" height="60" rx="4" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <!-- 波形柱 -->
+                <rect x="4" y="28" width="2" height="4" fill="#60a5fa"/>
+                <rect x="8" y="24" width="2" height="12" fill="#60a5fa"/>
+                <rect x="12" y="20" width="2" height="20" fill="#60a5fa"/>
+                <rect x="16" y="6" width="2" height="48" fill="#ef4444"/>
+                <rect x="20" y="2" width="2" height="56" fill="#ef4444"/>
+                <rect x="24" y="18" width="2" height="24" fill="#60a5fa"/>
+                <rect x="28" y="22" width="2" height="16" fill="rgba(96,165,250,0.4)"/>
+                <rect x="32" y="26" width="2" height="8" fill="rgba(96,165,250,0.4)"/>
+                <rect x="36" y="28" width="2" height="4" fill="rgba(96,165,250,0.4)"/>
+                <rect x="40" y="26" width="2" height="8" fill="rgba(96,165,250,0.4)"/>
+                <rect x="44" y="24" width="2" height="12" fill="rgba(96,165,250,0.4)"/>
+                <!-- 预警三角 -->
+                <polygon points="16,4 20,4 18,0" fill="#ef4444"/>
+                <polygon points="20,0 24,0 22,-4" fill="#ef4444"/>
+                <!-- 标签 -->
+                <text x="25" y="56" text-anchor="middle" font-family="monospace" font-size="5" fill="rgba(255,255,255,0.5)">WAVE</text>
+              </g>
+
+              <!-- 右侧 AI 关键词云（功能3）-->
+              <g transform="translate(260, 50)">
+                <rect x="-50" y="0" width="50" height="60" rx="4" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <!-- 关键词标签 -->
+                <rect x="-46" y="6" width="14" height="5" rx="2.5" fill="rgba(59,130,246,0.4)"/>
+                <text x="-39" y="10" text-anchor="middle" font-family="monospace" font-size="4" fill="#93c5fd">挥手</text>
+                <rect x="-30" y="6" width="18" height="5" rx="2.5" fill="rgba(139,92,246,0.4)"/>
+                <text x="-21" y="10" text-anchor="middle" font-family="monospace" font-size="4" fill="#c4b5fd">AR角色</text>
+                <rect x="-46" y="14" width="20" height="5" rx="2.5" fill="rgba(236,72,153,0.4)"/>
+                <text x="-36" y="18" text-anchor="middle" font-family="monospace" font-size="4" fill="#f9a8d4">虚拟形象</text>
+                <rect x="-24" y="14" width="16" height="5" rx="2.5" fill="rgba(74,222,128,0.4)"/>
+                <text x="-16" y="18" text-anchor="middle" font-family="monospace" font-size="4" fill="#86efac">动画</text>
+                <rect x="-46" y="22" width="12" height="5" rx="2.5" fill="rgba(250,204,21,0.4)"/>
+                <text x="-40" y="26" text-anchor="middle" font-family="monospace" font-size="4" fill="#fcd34d">问候</text>
+                <rect x="-32" y="22" width="22" height="5" rx="2.5" fill="rgba(96,165,250,0.4)"/>
+                <text x="-21" y="26" text-anchor="middle" font-family="monospace" font-size="4" fill="#93c5fd">蓝色背景</text>
+                <rect x="-46" y="30" width="42" height="5" rx="2.5" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.5)" stroke-width="0.5"/>
+                <text x="-25" y="34" text-anchor="middle" font-family="monospace" font-size="4" fill="#c4b5fd">搜索视频内容...</text>
+                <!-- 搜索图标 -->
+                <circle cx="-8" cy="32" r="3" fill="none" stroke="#3b82f6" stroke-width="0.8"/>
+                <line x1="-6" y1="34" x2="-3" y2="37" stroke="#3b82f6" stroke-width="0.8"/>
+                <text x="-25" y="56" text-anchor="middle" font-family="monospace" font-size="5" fill="rgba(255,255,255,0.5)">AI SEARCH</text>
+              </g>
+
+              <!-- 三大功能编号 -->
+              <g transform="translate(160, 130)">
+                <circle cx="0" cy="10" r="8" fill="rgba(59,130,246,0.3)" stroke="#3b82f6" stroke-width="1"/>
+                <text x="0" y="13" text-anchor="middle" font-family="monospace" font-size="8" fill="#93c5fd" font-weight="700">01</text>
+                <line x1="10" y1="10" x2="20" y2="10" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="2,2"/>
+                <circle cx="30" cy="10" r="8" fill="rgba(139,92,246,0.3)" stroke="#8b5cf6" stroke-width="1"/>
+                <text x="30" y="13" text-anchor="middle" font-family="monospace" font-size="8" fill="#c4b5fd" font-weight="700">02</text>
+                <line x1="40" y1="10" x2="50" y2="10" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="2,2"/>
+                <circle cx="60" cy="10" r="8" fill="rgba(236,72,153,0.3)" stroke="#ec4899" stroke-width="1"/>
+                <text x="60" y="13" text-anchor="middle" font-family="monospace" font-size="8" fill="#f9a8d4" font-weight="700">03</text>
+              </g>
+
+              <!-- DEMO 徽章 -->
+              <rect x="240" y="6" width="36" height="14" rx="3" fill="rgba(59,130,246,0.85)"/>
+              <text x="258" y="15" text-anchor="middle" font-family="monospace" font-size="8" fill="#fff" font-weight="700">CONCEPT</text>
+            </svg>
+            <div class="idea-thumb-overlay">
+              <span class="idea-thumb-badge">DEMO</span>
+              <span class="idea-thumb-cta">查看演示 →</span>
+            </div>
+          </div>
+          <div class="idea-category-icon">🎬</div>
+          <div class="idea-header">
+            <span class="idea-status done">✅ 已部署</span>
+            <span class="idea-category">特色展示 / FEATURED</span>
+          </div>
+          <h3 class="idea-title">视频概念演示平台</h3>
+          <p class="idea-desc">
+            把播放器变成视频交互新可能的展示舞台 —— 三大创新概念：拖拽即识别的视频购物车、看见声音形状的声纹预警、
+            从标签到内容的 AI 视频搜索。暂停拖购物车到画面物体上即弹出商品卡片，进度条上方红色标记音量骤增点，
+            AI 把整段视频"读"成可搜索的关键词云。这是概念演示，不是普通播放器。
+          </p>
+          <div class="idea-tags">
+            <span>视频购物车</span><span>声纹预警</span><span>AI 内容搜索</span><span>字幕 + 弹幕</span>
+          </div>
+          <div class="idea-arrow">→</div>
+        </a>
       </div>
     </div>
   </section>
@@ -1273,6 +1432,6 @@
     </div>
   </div>
 
-  <script src="js/main.js?v=8.2"></script>
+  <script src="js/main.js?v=8.3"></script>
 </body>
 </html>
