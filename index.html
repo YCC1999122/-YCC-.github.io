@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Research Lab — 创意·设计·探索</title>
     <meta name="description" content="面向创意与技术的开放研究平台：AI 探索、创意设计、数据洞察、全栈开发、交互体验、硬件创新与游戏实验。" />
-  <link rel="stylesheet" href="css/style.css?v=8.3" />
+  <link rel="stylesheet" href="css/style.css?v=8.4" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
@@ -1107,6 +1107,199 @@
           </div>
           <div class="idea-arrow">→</div>
         </a>
+
+        <!-- 特色展示：Photo Jumper 照片跳跳乐 -->
+        <a href="https://ycc1999122.github.io/photo-jumper/" target="_blank" rel="noopener" class="idea-card tilt-card category-card idea-card-featured">
+          <div class="idea-thumb">
+            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="pjBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#0c4a6e"/>
+                  <stop offset="50%" stop-color="#1e40af"/>
+                  <stop offset="100%" stop-color="#312e81"/>
+                </linearGradient>
+                <linearGradient id="pjGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="rgba(59,130,246,0.5)"/>
+                  <stop offset="100%" stop-color="rgba(16,185,129,0.3)"/>
+                </linearGradient>
+                <linearGradient id="pjPhotoGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#fbbf24"/>
+                  <stop offset="33%" stop-color="#f97316"/>
+                  <stop offset="66%" stop-color="#3b82f6"/>
+                  <stop offset="100%" stop-color="#1e3a8a"/>
+                </linearGradient>
+                <radialGradient id="pjParticle" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.9)"/>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                </radialGradient>
+                <linearGradient id="pjStepGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="rgba(96,165,250,0.9)"/>
+                  <stop offset="100%" stop-color="rgba(59,130,246,0.6)"/>
+                </linearGradient>
+              </defs>
+
+              <!-- 背景 -->
+              <rect width="320" height="180" fill="url(#pjBgGrad)"/>
+
+              <!-- 粒子点 -->
+              <circle cx="20" cy="20" r="1.5" fill="url(#pjParticle)"/>
+              <circle cx="300" cy="35" r="2" fill="url(#pjParticle)"/>
+              <circle cx="40" cy="160" r="1" fill="url(#pjParticle)"/>
+              <circle cx="290" cy="150" r="1.5" fill="url(#pjParticle)"/>
+              <circle cx="150" cy="15" r="1.2" fill="url(#pjParticle)"/>
+              <circle cx="260" cy="170" r="1" fill="url(#pjParticle)"/>
+
+              <!-- 地面（透视线条） -->
+              <g opacity="0.4">
+                <line x1="0" y1="170" x2="320" y2="170" stroke="#64748b" stroke-width="1"/>
+                <line x1="120" y1="160" x2="200" y2="160" stroke="#64748b" stroke-width="0.5" stroke-dasharray="3,3"/>
+                <line x1="100" y1="168" x2="220" y2="168" stroke="#64748b" stroke-width="0.5" stroke-dasharray="3,3"/>
+              </g>
+
+              <!-- 中央：竖直照片 + 亮度凸起台阶 -->
+              <g transform="translate(100, 15)">
+                <!-- 照片画框 -->
+                <rect x="-3" y="-3" width="126" height="146" rx="6" fill="url(#pjGlow)" opacity="0.4"/>
+                <rect x="0" y="0" width="120" height="140" rx="4" fill="rgba(15,23,42,0.6)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+                <!-- 照片内容（模拟人物照片） -->
+                <rect x="0" y="0" width="120" height="140" rx="4" fill="url(#pjPhotoGrad)" opacity="0.35"/>
+
+                <!-- 人物轮廓（模拟照片中的内容） -->
+                <g opacity="0.5" transform="translate(60, 70)">
+                  <!-- 头 -->
+                  <circle cx="0" cy="-30" r="12" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+                  <!-- 身体 -->
+                  <path d="M-10,-18 Q-14,0 -10,25 L10,25 Q14,0 10,-18 Z" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                  <!-- 肩膀 -->
+                  <path d="M-18,-15 L-10,-18 L10,-18 L18,-15" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" fill="none"/>
+                </g>
+
+                <!-- 亮度凸起台阶（Z轴方向凸出，模拟3D效果） -->
+                <!-- 台阶1（底部，最亮区域） -->
+                <rect x="10" y="115" width="100" height="8" rx="2" fill="url(#pjStepGrad)" opacity="0.9"/>
+                <rect x="10" y="115" width="100" height="3" rx="2" fill="rgba(147,197,253,0.6)"/>
+                <!-- 台阶2 -->
+                <rect x="20" y="88" width="70" height="6" rx="2" fill="url(#pjStepGrad)" opacity="0.8"/>
+                <rect x="20" y="88" width="70" height="2.5" rx="2" fill="rgba(147,197,253,0.5)"/>
+                <!-- 台阶3 -->
+                <rect x="35" y="62" width="50" height="5" rx="2" fill="url(#pjStepGrad)" opacity="0.75"/>
+                <rect x="35" y="62" width="50" height="2" rx="2" fill="rgba(147,197,253,0.45)"/>
+                <!-- 台阶4 -->
+                <rect x="45" y="38" width="35" height="4" rx="2" fill="url(#pjStepGrad)" opacity="0.7"/>
+                <!-- 台阶5（顶部，较小） -->
+                <rect x="55" y="18" width="15" height="3" rx="1.5" fill="url(#pjStepGrad)" opacity="0.65"/>
+
+                <!-- 黄色攀爬点标记 -->
+                <circle cx="30" cy="119" r="2.5" fill="#fbbf24" opacity="0.9"/>
+                <circle cx="30" cy="119" r="1" fill="#fef3c7"/>
+                <circle cx="55" cy="91" r="2.5" fill="#fbbf24" opacity="0.9"/>
+                <circle cx="55" cy="91" r="1" fill="#fef3c7"/>
+                <circle cx="57" cy="65" r="2" fill="#fbbf24" opacity="0.85"/>
+                <circle cx="62" cy="40" r="2" fill="#fbbf24" opacity="0.8"/>
+                <circle cx="62" cy="20" r="2" fill="#fbbf24" opacity="0.75"/>
+
+                <!-- 星星（顶部目标） -->
+                <g transform="translate(62, 8)">
+                  <path d="M0,-5 L1.5,-1.5 L5,-1.5 L2,1 L3,5 L0,2.5 L-3,5 L-2,1 L-5,-1.5 L-1.5,-1.5 Z" fill="#fbbf24" stroke="#f59e0b" stroke-width="0.5">
+                    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite"/>
+                  </path>
+                </g>
+              </g>
+
+              <!-- 蓝色小人角色（左侧地面上，准备跳跃） -->
+              <g transform="translate(35, 165)">
+                <!-- 影子 -->
+                <ellipse cx="0" cy="2" rx="8" ry="2" fill="rgba(0,0,0,0.3)"/>
+                <!-- 身体 -->
+                <rect x="-4" y="-12" width="8" height="14" rx="4" fill="#3b82f6"/>
+                <!-- 头 -->
+                <circle cx="0" cy="-16" r="5" fill="#93c5fd"/>
+                <!-- 眼睛 -->
+                <circle cx="-1.5" cy="-17" r="0.8" fill="#1e293b"/>
+                <circle cx="1.5" cy="-17" r="0.8" fill="#1e293b"/>
+                <!-- 天线 -->
+                <line x1="0" y1="-21" x2="0" y2="-26" stroke="#1e293b" stroke-width="1"/>
+                <circle cx="0" cy="-27" r="1.5" fill="#fbbf24"/>
+                <!-- 手臂 -->
+                <line x1="-4" y1="-8" x2="-8" y2="-4" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+                <line x1="4" y1="-8" x2="8" y2="-4" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+                <!-- 腿 -->
+                <line x1="-2" y1="2" x2="-3" y2="6" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+                <line x1="2" y1="2" x2="3" y2="6" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+              </g>
+
+              <!-- 跳跃轨迹虚线（从小人指向第一个台阶） -->
+              <path d="M35,153 Q60,130 90,125" stroke="rgba(96,165,250,0.6)" stroke-width="1.5" stroke-dasharray="3,3" fill="none">
+                <animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.5s" repeatCount="indefinite"/>
+              </path>
+
+              <!-- 跳跃箭头标记 -->
+              <g transform="translate(65, 135)" opacity="0.7">
+                <path d="M0,0 L8,-4 L6,0 L8,4 Z" fill="#60a5fa">
+                  <animateTransform attributeName="transform" type="translate" from="0,0" to="8,-8" dur="1.5s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.5s" repeatCount="indefinite"/>
+                </path>
+              </g>
+
+              <!-- 左上角：亮度→高度图图示 -->
+              <g transform="translate(8, 8)" opacity="0.85">
+                <rect x="0" y="0" width="44" height="22" rx="3" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+                <!-- 亮度条 -->
+                <rect x="4" y="4" width="6" height="14" rx="1" fill="rgba(255,255,255,0.2)"/>
+                <rect x="4" y="10" width="6" height="8" rx="1" fill="#fbbf24"/>
+                <rect x="12" y="6" width="6" height="12" rx="1" fill="rgba(255,255,255,0.2)"/>
+                <rect x="12" y="8" width="6" height="10" rx="1" fill="#f97316"/>
+                <rect x="20" y="2" width="6" height="16" rx="1" fill="rgba(255,255,255,0.2)"/>
+                <rect x="20" y="3" width="6" height="15" rx="1" fill="#3b82f6"/>
+                <!-- 箭头 -->
+                <path d="M30,11 L34,11 M32,9 L34,11 L32,13" stroke="rgba(255,255,255,0.6)" stroke-width="0.8" fill="none"/>
+                <!-- 3D 台阶图标 -->
+                <rect x="36" y="8" width="6" height="3" rx="1" fill="rgba(96,165,250,0.8)"/>
+                <rect x="36" y="11" width="6" height="2" rx="1" fill="rgba(59,130,246,0.6)"/>
+                <text x="22" y="20" text-anchor="middle" font-family="monospace" font-size="4" fill="rgba(255,255,255,0.5)">BRIGHT→3D</text>
+              </g>
+
+              <!-- 右上角控制键提示 -->
+              <g transform="translate(265, 8)" opacity="0.85">
+                <rect x="0" y="0" width="48" height="20" rx="3" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+                <rect x="3" y="3" width="10" height="5" rx="1.5" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                <text x="8" y="7" text-anchor="middle" font-family="monospace" font-size="5" fill="#93c5fd" font-weight="700">A</text>
+                <rect x="15" y="3" width="10" height="5" rx="1.5" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                <text x="20" y="7" text-anchor="middle" font-family="monospace" font-size="5" fill="#93c5fd" font-weight="700">D</text>
+                <rect x="27" y="3" width="18" height="5" rx="1.5" fill="rgba(59,130,246,0.4)" stroke="rgba(59,130,246,0.8)" stroke-width="0.5"/>
+                <text x="36" y="7" text-anchor="middle" font-family="monospace" font-size="4.5" fill="#93c5fd" font-weight="700">SPACE</text>
+                <text x="24" y="14" text-anchor="middle" font-family="monospace" font-size="4" fill="rgba(255,255,255,0.5)">MOVE + JUMP</text>
+              </g>
+
+              <!-- 右下角 DEMO 徽章 -->
+              <rect x="270" y="155" width="42" height="14" rx="3" fill="rgba(16,185,129,0.85)"/>
+              <text x="291" y="164" text-anchor="middle" font-family="monospace" font-size="8" fill="#fff" font-weight="700">PLAY</text>
+
+              <!-- 顶部光带 -->
+              <rect x="0" y="0" width="320" height="2" fill="rgba(59,130,246,0.6)"/>
+            </svg>
+            <div class="idea-thumb-overlay">
+              <span class="idea-thumb-badge">PLAY</span>
+              <span class="idea-thumb-cta">开始游戏 →</span>
+            </div>
+          </div>
+          <div class="idea-category-icon">🎮</div>
+          <div class="idea-header">
+            <span class="idea-status done">✅ 已部署</span>
+            <span class="idea-category">特色展示 / FEATURED</span>
+          </div>
+          <h3 class="idea-title">Photo Jumper · 照片跳跳乐</h3>
+          <p class="idea-desc">
+            上传一张照片，AI 把它竖立成 3D 攀爬墙 —— 照片中亮的地方凸出形成台阶，暗的地方凹进去。
+            控制蓝色小人从侧面起跳，踩着照片中人物轮廓的凸起一路跳到顶部拿到星星。
+            COCO-SSD 模型识别画面物体，亮度高度图生成可攀爬地形，每张照片都是独一无二的关卡。
+          </p>
+          <div class="idea-tags">
+            <span>2D→3D 重建</span><span>亮度高度图</span><span>COCO-SSD 识别</span><span>Three.js WebGL</span>
+          </div>
+          <div class="idea-arrow">→</div>
+        </a>
       </div>
     </div>
   </section>
@@ -1432,6 +1625,6 @@
     </div>
   </div>
 
-  <script src="js/main.js?v=8.3"></script>
+  <script src="js/main.js?v=8.4"></script>
 </body>
 </html>
