@@ -620,8 +620,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const filter = btn.getAttribute('data-filter');
 
       projectCards.forEach(card => {
-        const type = card.getAttribute('data-type');
-        if (filter === 'all' || filter === type) {
+        const categories = (card.getAttribute('data-category') || '').split(' ');
+        if (filter === 'all' || categories.includes(filter)) {
           card.classList.remove('hidden');
           card.style.animation = 'fadeInUp 0.5s ease both';
         } else {
@@ -1091,7 +1091,12 @@ document.addEventListener('DOMContentLoaded', function () {
       { text: 'RAG 检索', size: 'md', category: 'ai' },
       { text: '多模态', size: 'md', category: 'ai' },
       { text: 'Prompt 工程', size: 'md', category: 'ai' },
-      { text: '模型微调', size: 'sm', category: 'ai' },
+      { text: '模型微调', size: 'md', category: 'ai' },
+      { text: 'LoRA', size: 'lg', category: 'ai' },
+      { text: 'Stable Diffusion', size: 'md', category: 'ai' },
+      { text: 'DreamBooth', size: 'sm', category: 'ai' },
+      { text: '文本生成图像', size: 'sm', category: 'ai' },
+      { text: 'ControlNet', size: 'sm', category: 'ai' },
       { text: '语义理解', size: 'sm', category: 'ai' },
       { text: '图像生成', size: 'sm', category: 'ai' },
       { text: '语音识别', size: 'sm', category: 'ai' },
