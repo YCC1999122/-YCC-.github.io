@@ -889,6 +889,81 @@
           </div>
         </article>
 
+        <!-- 项目 7：雷达三维展示（ycc-radar-showcase） -->
+        <article class="project-card tilt-card" data-category="web design">
+          <a href="https://ycc1999122.github.io/ycc-radar-showcase/radar-showcase.html" target="_blank" rel="noopener" class="project-visual pv-2">
+            <div class="pv-thumb">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="radarGrad3" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="rgba(6,182,212,0.05)" />
+                    <stop offset="100%" stop-color="rgba(6,182,212,0.2)" />
+                  </radialGradient>
+                  <linearGradient id="sweepGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(6,182,212,0)" />
+                    <stop offset="100%" stop-color="rgba(6,182,212,0.6)" />
+                  </linearGradient>
+                </defs>
+                <!-- 雷达圆盘 -->
+                <circle cx="160" cy="105" r="70" fill="url(#radarGrad3)" stroke="rgba(6,182,212,0.4)" stroke-width="1.5" />
+                <circle cx="160" cy="105" r="50" fill="none" stroke="rgba(6,182,212,0.25)" stroke-width="1" />
+                <circle cx="160" cy="105" r="28" fill="none" stroke="rgba(6,182,212,0.2)" stroke-width="1" />
+                <!-- 十字线 -->
+                <line x1="160" y1="35" x2="160" y2="175" stroke="rgba(6,182,212,0.2)" stroke-width="1" />
+                <line x1="90" y1="105" x2="230" y2="105" stroke="rgba(6,182,212,0.2)" stroke-width="1" />
+                <!-- 扫描扇区 -->
+                <path d="M160,105 L160,35 A70,70 0 0,1 220,75 Z" fill="url(#sweepGrad3)" opacity="0.7" />
+                <line x1="160" y1="105" x2="220" y2="75" stroke="rgba(6,182,212,0.8)" stroke-width="1.5" />
+                <!-- 目标点 -->
+                <circle cx="195" cy="80" r="3" fill="#06b6d4">
+                  <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="135" cy="130" r="2.5" fill="#06b6d4" opacity="0.8">
+                  <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="185" cy="125" r="2" fill="#22d3ee" opacity="0.9" />
+                <!-- 中心点 -->
+                <circle cx="160" cy="105" r="3" fill="#06b6d4" />
+                <!-- 方位标记 -->
+                <text x="160" y="30" text-anchor="middle" fill="rgba(6,182,212,0.5)" font-family="monospace" font-size="8">N</text>
+                <text x="235" y="108" text-anchor="middle" fill="rgba(6,182,212,0.5)" font-family="monospace" font-size="8">E</text>
+                <text x="160" y="185" text-anchor="middle" fill="rgba(6,182,212,0.5)" font-family="monospace" font-size="8">S</text>
+                <text x="85" y="108" text-anchor="middle" fill="rgba(6,182,212,0.5)" font-family="monospace" font-size="8">W</text>
+                <!-- 底部模型剪影 -->
+                <g transform="translate(235, 145)" opacity="0.6">
+                  <polygon points="0,25 15,0 30,25" fill="rgba(6,182,212,0.3)" stroke="rgba(6,182,212,0.6)" stroke-width="1" />
+                  <rect x="11" y="25" width="8" height="15" fill="rgba(6,182,212,0.2)" stroke="rgba(6,182,212,0.5)" stroke-width="1" />
+                  <ellipse cx="15" cy="40" rx="12" ry="3" fill="none" stroke="rgba(6,182,212,0.4)" stroke-width="1" />
+                </g>
+                <!-- 角标 -->
+                <rect x="15" y="15" width="55" height="18" rx="3" fill="rgba(6,182,212,0.8)" />
+                <text x="42" y="27" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">3D RADAR</text>
+              </svg>
+            </div>
+            <div class="pv-label">
+              <span class="pv-label-tag">Web × 3D</span>
+              <span class="pv-label-name">雷达三维展示</span>
+            </div>
+            <div class="pv-overlay">
+              <span class="pv-view-btn">在线预览 →</span>
+            </div>
+          </a>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-type">3D 可视化</span>
+              <span class="project-date">2025</span>
+            </div>
+            <h3 class="project-title">雷达三维展示</h3>
+            <p class="project-desc">基于 Three.js 的雷达三维模型交互展示页，支持模型旋转缩放与视角切换，呈现雷达设备的立体结构与工作状态。</p>
+            <div class="project-stack">
+              <span>Three.js</span><span>WebGL</span><span>3D 模型</span><span>交互展示</span>
+            </div>
+            <div class="project-highlight">
+              <span>🌐 在线体验</span>
+            </div>
+          </div>
+        </article>
+
       </div>
 
       <div class="more-projects">
@@ -1817,6 +1892,6 @@
     </div>
   </div>
 
-  <script src="js/main.js?v=8.8"></script>
+  <script src="js/main.js?v=8.9"></script>
 </body>
 </html>
