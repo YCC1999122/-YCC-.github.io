@@ -1572,6 +1572,28 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
+/* 大尺寸项目卡片 - 跨两列 */
+.project-card-large {
+  grid-column: span 2;
+}
+.project-card-large .project-visual {
+  height: 320px;
+}
+.project-card-large .pv-thumb svg {
+  height: 100%;
+}
+.project-card-large .project-body {
+  padding: 28px 32px;
+}
+.project-card-large .project-title {
+  font-size: 1.5rem;
+}
+.project-card-large .project-desc {
+  font-size: 1rem;
+  line-height: 1.8;
+  max-width: 100%;
+}
+
 .project-visual {
   position: relative;
   height: 220px;
