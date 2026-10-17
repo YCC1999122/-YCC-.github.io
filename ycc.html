@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YCC · 个人感想</title>
+  <meta name="description" content="YCC 的个人感想：关于学习、创造与这个站点背后的一些想法。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f8f9fc;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --primary: #8b5cf6;
+      --accent: #e879f9;
+      --border: rgba(0, 0, 0, 0.08);
+      --font-cn: 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-cn);
+      color: var(--text);
+      background-color: var(--bg);
+      /* 6px fine grid, 0.3px line */
+      background-image:
+        linear-gradient(rgba(100, 116, 139, 0.05) 0.3px, transparent 0.3px),
+        linear-gradient(90deg, rgba(100, 116, 139, 0.05) 0.3px, transparent 0.3px);
+      background-size: 6px 6px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.9;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 680px;
+      padding: 64px 28px 80px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(8px);
+      transition: all 0.25s ease;
+    }
+
+    .back-link:hover {
+      color: var(--primary);
+      border-color: rgba(139, 92, 246, 0.35);
+      transform: translateX(-3px);
+    }
+
+    header {
+      margin: 56px 0 40px;
+    }
+
+    .page-mark {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--primary);
+      opacity: 0.8;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      line-height: 1.4;
+    }
+
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    article {
+      display: flex;
+      flex-direction: column;
+      gap: 34px;
+    }
+
+    .thought {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 26px 28px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .thought:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(100, 116, 139, 0.12);
+    }
+
+    .thought h2 {
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .thought h2::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      flex-shrink: 0;
+    }
+
+    .thought p {
+      font-size: 14.5px;
+      color: #475569;
+      font-weight: 300;
+    }
+
+    .thought p + p {
+      margin-top: 10px;
+    }
+
+    footer {
+      margin-top: 64px;
+      text-align: center;
+    }
+
+    .sign {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3.5px;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    .sign-line {
+      width: 42px;
+      height: 1.5px;
+      margin: 0 auto 16px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 26px; }
+      .page { padding: 48px 20px 64px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a href="index.html" class="back-link">← BACK</a>
+
+    <header>
+      <div class="page-mark">// NOTES FROM YCC</div>
+      <h1>一些<em>个人感想</em></h1>
+      <p class="subtitle">关于这个站点、学习方式，以及为什么持续做东西。</p>
+    </header>
+
+    <article>
+      <section class="thought">
+        <h2>关于这个站点</h2>
+        <p>这里更像一个开放的实验记录：做过的项目、正在琢磨的想法、读过的笔记，都放在同一个地方。它不追求完整或正式，重要的是把思考过程留下来——很多想法当时看来零散，过段时间再回头看，往往能连成一条线。</p>
+      </section>
+
+      <section class="thought">
+        <h2>关于学习</h2>
+        <p>我越来越觉得，围绕一个具体目标去学一门技能、花上几个月才勉强够用，这种方式越来越难跟上现在的节奏。更好的方式也许是：把每门技术收敛成可以快速过一遍的小项目——语法全貌加上工程上真实的结构，先快速上手、熟悉，再在真正需要时深入。</p>
+        <p>AI 的发展让"获取知识"变得越来越快，差距更多体现在能不能快速把一整套知识组织起来、用起来。全面而能快速切换的人，会比单点很深但难以迁移的人更适应往后的环境。这也是我做 Skill Tour 那个仓库的原因。</p>
+      </section>
+
+      <section class="thought">
+        <h2>关于做东西</h2>
+        <p>想法不值钱，原型才值钱。一个粗糙但能跑起来的东西，带来的反馈远超一份完美的设想。所以这里的大多数项目都是先做出最小可用的形态，再慢慢迭代——能交互、能体验，讨论才有意义。</p>
+      </section>
+
+      <section class="thought">
+        <h2>关于交流</h2>
+        <p>如果你对某个项目有自己的理解，或者正在做类似的事情，欢迎通过主页的联系方式找我聊。想法在碰撞中才会变得更清晰。</p>
+      </section>
+    </article>
+
+    <footer>
+      <div class="sign-line"></div>
+      <span class="sign">YCC</span>
+    </footer>
+  </div>
+</body>
+</html>

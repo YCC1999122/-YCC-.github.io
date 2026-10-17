@@ -2846,6 +2846,37 @@ body {
   letter-spacing: 0.5px;
 }
 
+/* ===== BYCC 隐藏标签入口（伪装为底部水印） ===== */
+.byc-tag {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 34px;
+}
+
+.byc-tag-link {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 3.5px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 5px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0.45;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.byc-tag-link:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
 .help-modal-body {
   display: flex;
   flex-direction: column;
