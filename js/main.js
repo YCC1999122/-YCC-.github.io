@@ -1103,6 +1103,9 @@ document.addEventListener('DOMContentLoaded', function () {
       { text: '机器翻译', size: 'sm', category: 'ai' },
       { text: '风格迁移', size: 'sm', category: 'ai' },
       { text: '目标检测', size: 'sm', category: 'ai' },
+      { text: '图像拼接', size: 'sm', category: 'ai' },
+      { text: '全景视觉', size: 'sm', category: 'ai' },
+      { text: 'OpenCV', size: 'sm', category: 'ai' },
 
       // —— 算法 / 数据 ——
       { text: '算法设计', size: 'lg', category: 'algo' },
