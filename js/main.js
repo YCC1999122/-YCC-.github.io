@@ -1140,6 +1140,8 @@ document.addEventListener('DOMContentLoaded', function () {
       { text: '云原生', size: 'sm', category: 'dev' },
       { text: 'DevOps', size: 'sm', category: 'dev' },
       { text: '开源', size: 'sm', category: 'dev' },
+      { text: '相机控制', size: 'sm', category: 'dev' },
+      { text: '影像处理', size: 'sm', category: 'dev' },
       { text: '性能优化', size: 'sm', category: 'dev' },
       { text: '工程化', size: 'sm', category: 'dev' },
       { text: 'API 设计', size: 'sm', category: 'dev' },
@@ -1171,6 +1173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // —— 生活 / 兴趣 ——
       { text: '摄影', size: 'lg', category: 'life' },
+      { text: 'Nikon', size: 'sm', category: 'life' },
       { text: '旅行', size: 'lg', category: 'life' },
       { text: '乒乓球', size: 'md', category: 'life' },
       { text: '羽毛球', size: 'md', category: 'life' },
