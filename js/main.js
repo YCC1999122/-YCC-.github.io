@@ -1105,6 +1105,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // 16c. 右侧悬挂伙伴（随滚动下坠）
   // ==========================================
   const hangBuddies = document.querySelectorAll('.hang-buddy');
+  const buddyAudio = document.getElementById('bgMusic');
 
   function updateHangBuddies() {
     if (!hangBuddies.length) return;
@@ -1117,10 +1118,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const char = buddy.querySelector('.hang-char');
       const charH = char.offsetHeight || 80;
       const startY = parseFloat(buddy.dataset.start || 30);
-      const endY = vh - charH - 24; // settle near viewport bottom
+      const endY = vh - charH - 12; // land on the floor at page bottom
       const y = startY + p * (endY - startY);
-
-      buddy.style.transform = `translateY(${y}px)`;
+      // rope grows down from viewport top; char sits at the rope end
       rope.style.height = y + 'px';
     });
   }
@@ -1129,6 +1129,44 @@ document.addEventListener('DOMContentLoaded', function () {
     updateHangBuddies();
     window.addEventListener('scroll', updateHangBuddies, { passive: true });
     window.addEventListener('resize', updateHangBuddies);
+
+    // pendulum sway: gentle base swing + energy bursts from mouse / music / hover
+    const swayStates = [];
+    hangBuddies.forEach((buddy, i) => {
+      swayStates.push({
+        char: buddy.querySelector('.hang-char'),
+        phase: i * 1.9,
+        speed: 1.8 - i * 0.25,
+        energy: 0,
+      });
+    });
+
+    let lastMX = null, lastMY = null;
+    document.addEventListener('mousemove', (e) => {
+      if (lastMX !== null) {
+        const dist = Math.hypot(e.clientX - lastMX, e.clientY - lastMY);
+        const boost = Math.min(dist * 0.006, 0.35);
+        swayStates.forEach((s) => { s.energy = Math.min(1, s.energy + boost); });
+      }
+      lastMX = e.clientX; lastMY = e.clientY;
+    }, { passive: true });
+
+    swayStates.forEach((s) => {
+      s.char.addEventListener('mouseenter', () => { s.energy = 1; });
+    });
+
+    (function buddySwayLoop(now) {
+      const t = (now || 0) / 1000;
+      const musicOn = buddyAudio && !buddyAudio.paused && !buddyAudio.ended;
+      swayStates.forEach((s) => {
+        s.energy *= 0.975;
+        if (musicOn) s.energy = Math.max(s.energy, 0.55);
+        const amp = 3.5 + s.energy * 11;
+        const angle = Math.sin(t * s.speed + s.phase) * amp;
+        s.char.style.transform = 'rotate(' + angle.toFixed(2) + 'deg)';
+      });
+      requestAnimationFrame(buddySwayLoop);
+    })();
   }
 
   // ==========================================
