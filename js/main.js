@@ -1069,6 +1069,39 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // ==========================================
+  // 16b. Skill Tour 项目导读弹窗
+  // ==========================================
+  const skillTourCard = document.getElementById('skillTourCard');
+  const skillTourModal = document.getElementById('skillTourModal');
+  const skillTourClose = document.getElementById('skillTourClose');
+  const skillTourOverlay = document.getElementById('skillTourOverlay');
+
+  function openSkillTourModal() {
+    if (skillTourModal) {
+      skillTourModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeSkillTourModal() {
+    if (skillTourModal) {
+      skillTourModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (skillTourCard) skillTourCard.addEventListener('click', openSkillTourModal);
+  if (skillTourClose) skillTourClose.addEventListener('click', closeSkillTourModal);
+  if (skillTourOverlay) skillTourOverlay.addEventListener('click', closeSkillTourModal);
+
+  // ESC 关闭
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && skillTourModal?.classList.contains('active')) {
+      closeSkillTourModal();
+    }
+  });
+
+  // ==========================================
   // 17. 左侧悬浮飘动标签
   // ==========================================
   const tagsCanvas = document.getElementById('floatTagsCanvas');
@@ -1173,6 +1206,9 @@ document.addEventListener('DOMContentLoaded', function () {
       { text: '技术展望', size: 'sm', category: 'research' },
       { text: '原型设计', size: 'sm', category: 'research' },
       { text: '创意实现', size: 'lg', category: 'research' },
+      { text: 'Skill Tour', size: 'md', category: 'research' },
+      { text: '全栈学习', size: 'md', category: 'research' },
+      { text: '快速上手', size: 'sm', category: 'research' },
       { text: '开源贡献', size: 'sm', category: 'research' },
       { text: '技术写作', size: 'sm', category: 'research' },
       { text: '知识沉淀', size: 'sm', category: 'research' },
