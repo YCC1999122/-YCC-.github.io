@@ -1102,6 +1102,36 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // ==========================================
+  // 16c. 右侧悬挂伙伴（随滚动下坠）
+  // ==========================================
+  const hangBuddies = document.querySelectorAll('.hang-buddy');
+
+  function updateHangBuddies() {
+    if (!hangBuddies.length) return;
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const p = docH > 0 ? Math.min(window.scrollY / docH, 1) : 0;
+    const vh = window.innerHeight;
+
+    hangBuddies.forEach((buddy) => {
+      const rope = buddy.querySelector('.hang-rope');
+      const char = buddy.querySelector('.hang-char');
+      const charH = char.offsetHeight || 80;
+      const startY = parseFloat(buddy.dataset.start || 30);
+      const endY = vh - charH - 24; // settle near viewport bottom
+      const y = startY + p * (endY - startY);
+
+      buddy.style.transform = `translateY(${y}px)`;
+      rope.style.height = y + 'px';
+    });
+  }
+
+  if (hangBuddies.length) {
+    updateHangBuddies();
+    window.addEventListener('scroll', updateHangBuddies, { passive: true });
+    window.addEventListener('resize', updateHangBuddies);
+  }
+
+  // ==========================================
   // 17. 左侧悬浮飘动标签
   // ==========================================
   const tagsCanvas = document.getElementById('floatTagsCanvas');

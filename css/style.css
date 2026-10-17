@@ -2877,6 +2877,86 @@ body {
   transform: translateY(-1px);
 }
 
+/* ===== 右侧悬挂伙伴（随滚动下坠） ===== */
+.hang-buddies {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hang-buddy {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform;
+}
+
+.hang-rope {
+  width: 2px;
+  height: 0;
+  background: linear-gradient(180deg, rgba(100, 116, 139, 0.15), rgba(100, 116, 139, 0.45));
+  border-radius: 1px;
+  position: relative;
+}
+
+.hang-rope::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(100, 116, 139, 0.4);
+}
+
+.hang-char {
+  width: 56px;
+  margin-top: -1px;
+  pointer-events: auto;
+  cursor: pointer;
+  transform-origin: top center;
+  animation: hangSway 3.4s ease-in-out infinite alternate;
+  filter: drop-shadow(0 4px 8px rgba(100, 116, 139, 0.25));
+  transition: filter 0.3s ease;
+}
+
+.hang-buddy:nth-child(2) .hang-char {
+  width: 52px;
+  animation-duration: 2.9s;
+  animation-delay: -1.2s;
+}
+
+.hang-char:hover {
+  animation: hangSwayFast 0.9s ease-in-out infinite alternate;
+  filter: drop-shadow(0 6px 14px rgba(139, 92, 246, 0.35));
+}
+
+.hang-char svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes hangSway {
+  from { transform: rotate(-4deg); }
+  to   { transform: rotate(4deg); }
+}
+
+@keyframes hangSwayFast {
+  from { transform: rotate(-10deg); }
+  to   { transform: rotate(10deg); }
+}
+
+@media (max-width: 1024px) {
+  .hang-buddies { display: none; }
+}
+
 .help-modal-body {
   display: flex;
   flex-direction: column;
