@@ -2927,7 +2927,7 @@ body {
 }
 
 .hang-buddy:nth-child(2) .hang-char {
-  width: 52px;
+  width: 64px;
   animation-duration: 2.9s;
   animation-delay: -1.2s;
 }
@@ -2937,7 +2937,8 @@ body {
   filter: drop-shadow(0 6px 14px rgba(139, 92, 246, 0.35));
 }
 
-.hang-char svg {
+.hang-char svg,
+.hang-char img {
   display: block;
   width: 100%;
   height: auto;
