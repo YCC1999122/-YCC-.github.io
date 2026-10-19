@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Research Lab — 创意·设计·探索</title>
     <meta name="description" content="面向创意与技术的开放研究平台：AI 探索、创意设计、数据洞察、全栈开发、交互体验、硬件创新与游戏实验。" />
-  <link rel="stylesheet" href="css/style.css?v=8.9" />
+  <link rel="stylesheet" href="css/style.css?v=9.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
@@ -373,6 +373,147 @@
       </div>
 
       <div class="projects-grid" id="projectsGrid">
+
+        <!-- 项目 0：WatchWorld 宇宙观测台 · 地月系统 -->
+        <article class="project-card tilt-card project-card-large" data-category="web design">
+          <a href="https://ycc1999122.github.io/ycc-watchworld-cosmos-observatory/models/earth-moon/index.html" target="_blank" rel="noopener" class="project-visual pv-13">
+            <div class="pv-thumb">
+              <svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <radialGradient id="earthGrad" cx="40%" cy="40%" r="60%">
+                    <stop offset="0%" stop-color="rgba(96,165,250,0.9)" />
+                    <stop offset="60%" stop-color="rgba(37,99,235,0.6)" />
+                    <stop offset="100%" stop-color="rgba(30,58,138,0.3)" />
+                  </radialGradient>
+                  <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="rgba(251,191,36,0.85)" />
+                    <stop offset="50%" stop-color="rgba(245,158,11,0.25)" />
+                    <stop offset="100%" stop-color="rgba(245,158,11,0)" />
+                  </radialGradient>
+                  <radialGradient id="cosmosGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="rgba(167,139,250,0.25)" />
+                    <stop offset="100%" stop-color="rgba(167,139,250,0)" />
+                  </radialGradient>
+                  <linearGradient id="panelGrad13" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(96,165,250,0.14)" />
+                    <stop offset="100%" stop-color="rgba(96,165,250,0.02)" />
+                  </linearGradient>
+                </defs>
+                <!-- 背景星点 -->
+                <circle cx="60" cy="40" r="1.2" fill="rgba(226,232,240,0.6)" />
+                <circle cx="300" cy="30" r="1" fill="rgba(226,232,240,0.5)" />
+                <circle cx="520" cy="50" r="1.3" fill="rgba(226,232,240,0.6)" />
+                <circle cx="590" cy="120" r="1" fill="rgba(226,232,240,0.4)" />
+                <circle cx="480" cy="290" r="1.2" fill="rgba(226,232,240,0.5)" />
+                <circle cx="80" cy="300" r="1" fill="rgba(226,232,240,0.45)" />
+                <circle cx="350" cy="300" r="1.1" fill="rgba(226,232,240,0.5)" />
+                <circle cx="620" cy="260" r="1" fill="rgba(226,232,240,0.4)" />
+                <circle cx="250" cy="80" r="1.5" fill="rgba(196,181,253,0.7)">
+                  <animate attributeName="opacity" values="1;0.2;1" dur="2.4s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="560" cy="200" r="1.4" fill="rgba(186,230,253,0.7)">
+                  <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <!-- 左侧数据面板 -->
+                <rect x="18" y="24" width="168" height="272" rx="8" fill="url(#panelGrad13)" stroke="rgba(96,165,250,0.3)" stroke-width="1" />
+                <text x="32" y="48" fill="rgba(147,197,253,0.95)" font-family="monospace" font-size="12" font-weight="bold">WATCHWORLD</text>
+                <text x="32" y="62" fill="rgba(147,197,253,0.55)" font-family="monospace" font-size="8">MODEL 01 · SCALE 1:1</text>
+                <line x1="32" y1="70" x2="172" y2="70" stroke="rgba(96,165,250,0.3)" stroke-width="1" />
+                <text x="32" y="92" fill="rgba(148,163,184,0.8)" font-family="monospace" font-size="9">月地距离</text>
+                <text x="172" y="92" text-anchor="end" fill="rgba(147,197,253,1)" font-family="monospace" font-size="9">405,181 km</text>
+                <text x="32" y="112" fill="rgba(148,163,184,0.8)" font-family="monospace" font-size="9">轨道偏心率</text>
+                <text x="172" y="112" text-anchor="end" fill="rgba(147,197,253,1)" font-family="monospace" font-size="9">0.0549</text>
+                <text x="32" y="132" fill="rgba(148,163,184,0.8)" font-family="monospace" font-size="9">月相</text>
+                <text x="172" y="132" text-anchor="end" fill="#fbbf24" font-family="monospace" font-size="9">亏凸月 92%</text>
+                <text x="32" y="152" fill="rgba(148,163,184,0.8)" font-family="monospace" font-size="9">地球自转</text>
+                <text x="172" y="152" text-anchor="end" fill="rgba(147,197,253,1)" font-family="monospace" font-size="9">14 圈</text>
+                <text x="32" y="172" fill="rgba(148,163,184,0.8)" font-family="monospace" font-size="9">参考系</text>
+                <text x="172" y="172" text-anchor="end" fill="rgba(147,197,253,1)" font-family="monospace" font-size="9">地心</text>
+                <!-- 面板底部多尺度列表 -->
+                <line x1="32" y1="184" x2="172" y2="184" stroke="rgba(96,165,250,0.3)" stroke-width="1" />
+                <text x="32" y="202" fill="#60a5fa" font-family="monospace" font-size="8">▸ 地月系统 ●</text>
+                <text x="32" y="218" fill="rgba(148,163,184,0.6)" font-family="monospace" font-size="8">▸ 太阳系模拟</text>
+                <text x="32" y="234" fill="rgba(148,163,184,0.6)" font-family="monospace" font-size="8">▸ 地表观测</text>
+                <text x="32" y="250" fill="rgba(148,163,184,0.6)" font-family="monospace" font-size="8">▸ 银河系模拟</text>
+                <text x="32" y="266" fill="rgba(148,163,184,0.6)" font-family="monospace" font-size="8">▸ 超星系团 · 宇宙网</text>
+                <!-- 中央：太阳光 -->
+                <circle cx="585" cy="160" r="70" fill="url(#sunGlow)" />
+                <line x1="585" y1="160" x2="430" y2="160" stroke="rgba(251,191,36,0.25)" stroke-width="1" stroke-dasharray="5,4" />
+                <!-- 中央：月球椭圆轨道 -->
+                <ellipse cx="330" cy="160" rx="105" ry="92" fill="none" stroke="rgba(147,197,253,0.35)" stroke-width="1.2" stroke-dasharray="6,4" />
+                <!-- 地球 -->
+                <circle cx="330" cy="160" r="34" fill="url(#earthGrad)" stroke="rgba(147,197,253,0.7)" stroke-width="1.5" />
+                <path d="M312,150 Q322,142 334,148 Q344,154 340,164" fill="none" stroke="rgba(134,239,172,0.55)" stroke-width="2" />
+                <path d="M320,176 Q332,170 342,178" fill="none" stroke="rgba(134,239,172,0.4)" stroke-width="1.8" />
+                <circle cx="330" cy="160" r="40" fill="url(#cosmosGlow)" />
+                <!-- 月球 + 公转动画 -->
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" from="0 330 160" to="360 330 160" dur="12s" repeatCount="indefinite" />
+                  <circle cx="435" cy="160" r="9" fill="rgba(203,213,225,0.9)" stroke="rgba(148,163,184,0.8)" stroke-width="1" />
+                  <circle cx="432" cy="157" r="2" fill="rgba(100,116,139,0.5)" />
+                  <circle cx="438" cy="163" r="1.5" fill="rgba(100,116,139,0.4)" />
+                  <text x="435" y="180" text-anchor="middle" fill="rgba(203,213,225,0.6)" font-family="monospace" font-size="7">MOON</text>
+                </g>
+                <!-- 右侧：多尺度缩略图标 -->
+                <g transform="translate(500, 36)" opacity="0.9">
+                  <!-- 太阳系 -->
+                  <circle cx="30" cy="20" r="4" fill="#fbbf24" />
+                  <ellipse cx="30" cy="20" rx="14" ry="5" fill="none" stroke="rgba(251,191,36,0.45)" stroke-width="0.8" />
+                  <ellipse cx="30" cy="20" rx="24" ry="9" fill="none" stroke="rgba(251,191,36,0.3)" stroke-width="0.8" />
+                  <circle cx="44" cy="20" r="1.5" fill="#94a3b8" />
+                  <circle cx="54" cy="20" r="2" fill="#60a5fa" />
+                  <text x="30" y="42" text-anchor="middle" fill="rgba(251,191,36,0.65)" font-family="monospace" font-size="7">SOLAR</text>
+                  <!-- 银河系 -->
+                  <path d="M6,72 Q30,58 54,72 M14,80 Q30,70 46,80" fill="none" stroke="rgba(167,139,250,0.6)" stroke-width="1" />
+                  <circle cx="30" cy="72" r="2.5" fill="#c4b5fd" />
+                  <text x="30" y="94" text-anchor="middle" fill="rgba(167,139,250,0.65)" font-family="monospace" font-size="7">GALAXY</text>
+                  <!-- 宇宙网 -->
+                  <line x1="10" y1="118" x2="30" y2="110" stroke="rgba(56,189,248,0.4)" stroke-width="0.8" />
+                  <line x1="30" y1="110" x2="50" y2="120" stroke="rgba(56,189,248,0.4)" stroke-width="0.8" />
+                  <line x1="10" y1="118" x2="22" y2="132" stroke="rgba(56,189,248,0.4)" stroke-width="0.8" />
+                  <line x1="50" y1="120" x2="38" y2="132" stroke="rgba(56,189,248,0.4)" stroke-width="0.8" />
+                  <line x1="22" y1="132" x2="38" y2="132" stroke="rgba(56,189,248,0.4)" stroke-width="0.8" />
+                  <circle cx="10" cy="118" r="2" fill="#38bdf8" />
+                  <circle cx="30" cy="110" r="2.5" fill="#7dd3fc" />
+                  <circle cx="50" cy="120" r="2" fill="#38bdf8" />
+                  <circle cx="22" cy="132" r="1.8" fill="#0ea5e9" />
+                  <circle cx="38" cy="132" r="1.8" fill="#0ea5e9" />
+                  <text x="30" y="148" text-anchor="middle" fill="rgba(56,189,248,0.65)" font-family="monospace" font-size="7">COSMIC WEB</text>
+                </g>
+                <!-- 角标 -->
+                <rect x="18" y="6" width="62" height="15" rx="3" fill="rgba(59,130,246,0.9)" />
+                <text x="49" y="16" text-anchor="middle" fill="white" font-family="monospace" font-size="8" font-weight="bold">COSMOS</text>
+                <!-- 底部状态栏 -->
+                <rect x="196" y="300" width="426" height="14" rx="3" fill="rgba(96,165,250,0.06)" stroke="rgba(96,165,250,0.2)" stroke-width="0.5" />
+                <text x="206" y="311" fill="rgba(147,197,253,0.7)" font-family="monospace" font-size="9">● SIMULATION RUNNING</text>
+                <text x="400" y="311" fill="rgba(147,197,253,0.7)" font-family="monospace" font-size="9">KEPLER ORBIT SOLVER</text>
+                <text x="612" y="311" text-anchor="end" fill="rgba(147,197,253,0.7)" font-family="monospace" font-size="9">1:1 REAL SCALE</text>
+              </svg>
+            </div>
+            <div class="pv-label">
+              <span class="pv-label-tag">Web × 天文模拟</span>
+              <span class="pv-label-name">WatchWorld 宇宙观测台</span>
+            </div>
+            <div class="pv-overlay">
+              <span class="pv-view-btn">在线预览 →</span>
+            </div>
+          </a>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-type">天文可视化 · 多尺度模拟</span>
+              <span class="project-date">2025</span>
+            </div>
+            <h3 class="project-title">WatchWorld 宇宙观测台</h3>
+            <p class="project-desc">多尺度宇宙观测平台，覆盖地月系统、太阳系、地表观测、银河系、超星系团到宇宙网六个层级。1:1 真实比例，轨道由开普勒方程实时求解，月相、太阳方位等由真实几何位置计算，支持自由视角与多档位时间流速。</p>
+            <div class="project-stack">
+              <span>Three.js</span><span>开普勒轨道</span><span>1:1 真实比例</span><span>多尺度模拟</span><span>天文数据</span>
+            </div>
+            <div class="project-highlight">
+              <span>🌌 在线体验</span>
+              <span>⭐ 六个尺度层级</span>
+            </div>
+          </div>
+        </article>
 
         <!-- 项目 1：LoRA 模型微调工具 -->
         <article class="project-card tilt-card" data-category="ai tool">

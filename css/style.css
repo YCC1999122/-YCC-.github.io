@@ -1661,6 +1661,7 @@ body {
 .pv-7 { background: linear-gradient(135deg, #1e1b4b 0%, #6d28d9 40%, #0891b2 100%); }
 .pv-8 { background: linear-gradient(135deg, #051008 0%, #0a2a14 40%, #0d4d22 100%); }
 .pv-12 { background: linear-gradient(135deg, #0b1026 0%, #241a52 45%, #0e4a63 100%); }
+.pv-13 { background: linear-gradient(135deg, #020617 0%, #1e1b4b 40%, #0c2d48 75%, #78350f 100%); }
 
 .pv-overlay {
   position: absolute;
