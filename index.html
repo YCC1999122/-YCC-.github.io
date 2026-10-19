@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creative Research Lab — 创意·设计·探索</title>
     <meta name="description" content="面向创意与技术的开放研究平台：AI 探索、创意设计、数据洞察、全栈开发、交互体验、硬件创新与游戏实验。" />
-  <link rel="stylesheet" href="css/style.css?v=8.8" />
+  <link rel="stylesheet" href="css/style.css?v=8.9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Orbitron:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
@@ -1227,6 +1227,107 @@
             </div>
             <div class="project-highlight">
               <span>👁 全景视觉</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 项目 11：Particleverse 粒子宇宙 -->
+        <article class="project-card tilt-card" data-category="web design">
+          <a href="https://ycc1999122.github.io/ycc-particleverse/" target="_blank" rel="noopener" class="project-visual pv-12">
+            <div class="pv-thumb">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="coreGlow12" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="rgba(167,139,250,0.7)" />
+                    <stop offset="45%" stop-color="rgba(99,102,241,0.26)" />
+                    <stop offset="100%" stop-color="rgba(56,189,248,0)" />
+                  </radialGradient>
+                  <linearGradient id="linkGrad12" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(129,140,248,0.55)" />
+                    <stop offset="100%" stop-color="rgba(56,189,248,0.15)" />
+                  </linearGradient>
+                  <linearGradient id="swirlGrad12" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="rgba(56,189,248,0)" />
+                    <stop offset="50%" stop-color="rgba(167,139,250,0.6)" />
+                    <stop offset="100%" stop-color="rgba(129,140,248,0)" />
+                  </linearGradient>
+                </defs>
+                <!-- 轨道环 -->
+                <ellipse cx="160" cy="100" rx="118" ry="42" fill="none" stroke="rgba(129,140,248,0.18)" stroke-width="1" transform="rotate(-18 160 100)" />
+                <!-- 核心光晕 -->
+                <circle cx="160" cy="100" r="86" fill="url(#coreGlow12)" />
+                <circle cx="160" cy="100" r="46" fill="none" stroke="rgba(167,139,250,0.35)" stroke-width="1" />
+                <circle cx="160" cy="100" r="26" fill="none" stroke="rgba(167,139,250,0.6)" stroke-width="1" />
+                <!-- 螺旋粒子臂 -->
+                <path d="M160,100 C150,70 112,62 88,78 C60,96 68,138 98,150" fill="none" stroke="url(#swirlGrad12)" stroke-width="1.4" stroke-dasharray="3,4" />
+                <path d="M160,100 C170,130 208,138 232,122 C260,104 252,62 222,50" fill="none" stroke="url(#swirlGrad12)" stroke-width="1.4" stroke-dasharray="3,4" />
+                <!-- 粒子星座连线 -->
+                <polyline points="52,52 96,34 148,58 186,40 244,64 268,104 232,146 178,168 120,152 74,124 52,52" fill="none" stroke="url(#linkGrad12)" stroke-width="0.9" />
+                <!-- 粒子点 -->
+                <circle cx="52" cy="52" r="2.4" fill="#a78bfa" />
+                <circle cx="96" cy="34" r="1.8" fill="#38bdf8" />
+                <circle cx="148" cy="58" r="2.2" fill="#818cf8" />
+                <circle cx="186" cy="40" r="1.6" fill="#c4b5fd" />
+                <circle cx="244" cy="64" r="2.6" fill="#38bdf8" />
+                <circle cx="268" cy="104" r="1.9" fill="#a78bfa" />
+                <circle cx="232" cy="146" r="2.2" fill="#818cf8" />
+                <circle cx="178" cy="168" r="1.7" fill="#38bdf8" />
+                <circle cx="120" cy="152" r="2.4" fill="#c4b5fd" />
+                <circle cx="74" cy="124" r="1.8" fill="#a78bfa" />
+                <!-- 闪烁粒子 -->
+                <circle cx="118" cy="92" r="2" fill="#f0abfc">
+                  <animate attributeName="opacity" values="1;0.25;1" dur="2.1s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="204" cy="112" r="2.4" fill="#7dd3fc">
+                  <animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="160" cy="52" r="1.6" fill="#c4b5fd">
+                  <animate attributeName="opacity" values="0.6;0.15;0.6" dur="2.6s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="136" cy="134" r="1.8" fill="#a5b4fc">
+                  <animate attributeName="opacity" values="0.2;0.9;0.2" dur="2.3s" repeatCount="indefinite" />
+                </circle>
+                <!-- 漫游粒子 -->
+                <circle r="1.8" fill="#e0e7ff">
+                  <animateMotion dur="7s" repeatCount="indefinite" path="M60,150 C110,120 150,170 200,130 C240,100 260,70 280,50" />
+                </circle>
+                <circle r="1.4" fill="#bae6fd">
+                  <animateMotion dur="9s" repeatCount="indefinite" path="M280,150 C230,170 180,120 140,150 C100,178 70,150 40,120" />
+                </circle>
+                <!-- 核心呼吸光点 -->
+                <circle cx="160" cy="100" r="5" fill="#ddd6fe">
+                  <animate attributeName="r" values="4;7;4" dur="3s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.9;0.5;0.9" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <!-- 角标 -->
+                <rect x="15" y="15" width="68" height="18" rx="3" fill="rgba(99,102,241,0.85)" />
+                <text x="49" y="27" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">PARTICLES</text>
+                <!-- HUD 数据 -->
+                <text x="305" y="188" text-anchor="end" fill="rgba(165,180,252,0.65)" font-family="monospace" font-size="9">2,048 PTS · 60 FPS</text>
+                <line x1="30" y1="180" x2="80" y2="180" stroke="rgba(129,140,248,0.25)" stroke-width="1" />
+              </svg>
+            </div>
+            <div class="pv-label">
+              <span class="pv-label-tag">Web × 粒子可视化</span>
+              <span class="pv-label-name">Particleverse 粒子宇宙</span>
+            </div>
+            <div class="pv-overlay">
+              <span class="pv-view-btn">在线预览 →</span>
+            </div>
+          </a>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-type">Web 可视化 · 交互体验</span>
+              <span class="project-date">2025</span>
+            </div>
+            <h3 class="project-title">Particleverse 粒子宇宙</h3>
+            <p class="project-desc">基于粒子系统的交互式视觉网页。以大量光点在空间中运动、聚散与连线，配合鼠标交互与实时渲染，构建可探索的粒子星云空间。</p>
+            <div class="project-stack">
+              <span>粒子系统</span><span>Canvas</span><span>实时渲染</span><span>交互式动画</span><span>视觉特效</span>
+            </div>
+            <div class="project-highlight">
+              <span>🌌 在线体验</span>
+              <span>✨ 粒子特效</span>
             </div>
           </div>
         </article>
