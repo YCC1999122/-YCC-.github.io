@@ -1663,6 +1663,9 @@ body {
 .pv-12 { background: linear-gradient(135deg, #0b1026 0%, #241a52 45%, #0e4a63 100%); }
 .pv-13 { background: linear-gradient(135deg, #020617 0%, #1e1b4b 40%, #0c2d48 75%, #78350f 100%); }
 .pv-14 { background: linear-gradient(135deg, #03121c 0%, #0b2f3f 45%, #0d4d33 100%); }
+.pv-15 { background: linear-gradient(135deg, #0a0f1c 0%, #1c2536 45%, #3a2a12 100%); }
+.pv-16 { background: linear-gradient(135deg, #0d1030 0%, #1b2a63 50%, #2a1a52 100%); }
+.pv-17 { background: linear-gradient(135deg, #04141c 0%, #0b2f3a 45%, #2a2410 100%); }
 
 .pv-overlay {
   position: absolute;
