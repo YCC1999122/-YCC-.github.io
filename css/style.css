@@ -1662,6 +1662,7 @@ body {
 .pv-8 { background: linear-gradient(135deg, #051008 0%, #0a2a14 40%, #0d4d22 100%); }
 .pv-12 { background: linear-gradient(135deg, #0b1026 0%, #241a52 45%, #0e4a63 100%); }
 .pv-13 { background: linear-gradient(135deg, #020617 0%, #1e1b4b 40%, #0c2d48 75%, #78350f 100%); }
+.pv-14 { background: linear-gradient(135deg, #03121c 0%, #0b2f3f 45%, #0d4d33 100%); }
 
 .pv-overlay {
   position: absolute;
@@ -1746,6 +1747,13 @@ body {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* 展示完整介绍内容的卡片 */
+.project-desc.full {
+  display: block;
+  -webkit-line-clamp: none;
+  overflow: visible;
 }
 
 .project-stack {

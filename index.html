@@ -515,6 +515,128 @@
           </div>
         </article>
 
+        <!-- 项目 1：YCC · UAV 无人机训练模拟器 -->
+        <article class="project-card tilt-card" data-category="web tool">
+          <a href="https://ycc1999122.github.io/ycc-uav-simulator/" target="_blank" rel="noopener" class="project-visual pv-14">
+            <div class="pv-thumb">
+              <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="uavArmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(34,211,238,0.85)" />
+                    <stop offset="100%" stop-color="rgba(16,185,129,0.45)" />
+                  </linearGradient>
+                  <linearGradient id="uavBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(34,211,238,0.28)" />
+                    <stop offset="100%" stop-color="rgba(16,185,129,0.16)" />
+                  </linearGradient>
+                  <radialGradient id="uavHudGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="rgba(34,211,238,0.26)" />
+                    <stop offset="100%" stop-color="rgba(34,211,238,0)" />
+                  </radialGradient>
+                </defs>
+
+                <!-- 训练场地平线 -->
+                <path d="M0,168 L58,152 L104,163 L150,147 L206,160 L258,145 L320,164" fill="none" stroke="rgba(16,185,129,0.22)" stroke-width="1.2" />
+                <line x1="0" y1="168" x2="320" y2="168" stroke="rgba(16,185,129,0.12)" stroke-width="1" />
+
+                <!-- 预设航线 -->
+                <path d="M24,158 C84,120 126,150 174,112 C212,82 246,104 288,72" fill="none" stroke="rgba(34,211,238,0.35)" stroke-width="1.2" stroke-dasharray="4,5" />
+
+                <!-- 飞控光晕 -->
+                <circle cx="160" cy="82" r="64" fill="url(#uavHudGlow)" />
+
+                <!-- 四轴机臂 -->
+                <line x1="160" y1="82" x2="108" y2="42" stroke="url(#uavArmGrad)" stroke-width="4" stroke-linecap="round" />
+                <line x1="160" y1="82" x2="212" y2="42" stroke="url(#uavArmGrad)" stroke-width="4" stroke-linecap="round" />
+                <line x1="160" y1="82" x2="108" y2="122" stroke="url(#uavArmGrad)" stroke-width="4" stroke-linecap="round" />
+                <line x1="160" y1="82" x2="212" y2="122" stroke="url(#uavArmGrad)" stroke-width="4" stroke-linecap="round" />
+
+                <!-- 螺旋桨（旋转） -->
+                <g fill="none" stroke="rgba(34,211,238,0.5)" stroke-width="1.4">
+                  <circle cx="108" cy="42" r="19" stroke-dasharray="6,7">
+                    <animateTransform attributeName="transform" type="rotate" from="0 108 42" to="360 108 42" dur="1.6s" repeatCount="indefinite" />
+                  </circle>
+                  <circle cx="212" cy="42" r="19" stroke-dasharray="6,7">
+                    <animateTransform attributeName="transform" type="rotate" from="0 212 42" to="360 212 42" dur="1.6s" repeatCount="indefinite" />
+                  </circle>
+                  <circle cx="108" cy="122" r="19" stroke-dasharray="6,7">
+                    <animateTransform attributeName="transform" type="rotate" from="0 108 122" to="360 108 122" dur="1.6s" repeatCount="indefinite" />
+                  </circle>
+                  <circle cx="212" cy="122" r="19" stroke-dasharray="6,7">
+                    <animateTransform attributeName="transform" type="rotate" from="0 212 122" to="360 212 122" dur="1.6s" repeatCount="indefinite" />
+                  </circle>
+                </g>
+
+                <!-- 电机 -->
+                <circle cx="108" cy="42" r="6" fill="rgba(34,211,238,0.3)" stroke="rgba(34,211,238,0.7)" stroke-width="1.4" />
+                <circle cx="212" cy="42" r="6" fill="rgba(34,211,238,0.3)" stroke="rgba(34,211,238,0.7)" stroke-width="1.4" />
+                <circle cx="108" cy="122" r="6" fill="rgba(16,185,129,0.3)" stroke="rgba(16,185,129,0.7)" stroke-width="1.4" />
+                <circle cx="212" cy="122" r="6" fill="rgba(16,185,129,0.3)" stroke="rgba(16,185,129,0.7)" stroke-width="1.4" />
+
+                <!-- 机身 -->
+                <rect x="142" y="64" width="36" height="36" rx="9" fill="url(#uavBodyGrad)" stroke="rgba(34,211,238,0.6)" stroke-width="1.6" transform="rotate(45 160 82)" />
+
+                <!-- 云台相机 -->
+                <circle cx="160" cy="82" r="10" fill="rgba(3,14,22,0.7)" stroke="rgba(34,211,238,0.75)" stroke-width="1.6" />
+                <circle cx="160" cy="82" r="4.5" fill="rgba(34,211,238,0.5)">
+                  <animate attributeName="opacity" values="0.9;0.35;0.9" dur="2.2s" repeatCount="indefinite" />
+                </circle>
+
+                <!-- 地面目标识别框 -->
+                <g>
+                  <rect x="240" y="138" width="26" height="18" fill="none" stroke="rgba(248,113,113,0.8)" stroke-width="1.4" />
+                  <line x1="253" y1="132" x2="253" y2="162" stroke="rgba(248,113,113,0.45)" stroke-width="1" />
+                  <line x1="234" y1="147" x2="272" y2="147" stroke="rgba(248,113,113,0.45)" stroke-width="1" />
+                  <circle cx="253" cy="147" r="10" fill="none" stroke="rgba(248,113,113,0.5)" stroke-width="1" />
+                  <circle cx="253" cy="147" r="2.5" fill="#f87171">
+                    <animate attributeName="opacity" values="1;0.25;1" dur="1.5s" repeatCount="indefinite" />
+                  </circle>
+                </g>
+
+                <!-- 高度刻度 -->
+                <line x1="300" y1="60" x2="300" y2="132" stroke="rgba(34,211,238,0.35)" stroke-width="1" />
+                <line x1="293" y1="60" x2="300" y2="60" stroke="rgba(34,211,238,0.45)" stroke-width="1" />
+                <line x1="295" y1="78" x2="300" y2="78" stroke="rgba(34,211,238,0.28)" stroke-width="1" />
+                <line x1="293" y1="96" x2="300" y2="96" stroke="rgba(34,211,238,0.45)" stroke-width="1" />
+                <line x1="295" y1="114" x2="300" y2="114" stroke="rgba(34,211,238,0.28)" stroke-width="1" />
+                <line x1="293" y1="132" x2="300" y2="132" stroke="rgba(34,211,238,0.45)" stroke-width="1" />
+
+                <!-- 角标 -->
+                <rect x="15" y="15" width="62" height="18" rx="3" fill="rgba(16,185,129,0.85)" />
+                <text x="46" y="27" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">UAV SIM</text>
+
+                <!-- HUD 数据 -->
+                <text x="18" y="192" fill="rgba(34,211,238,0.75)" font-family="monospace" font-size="8">FPV 85km/h · VTOL HOVER</text>
+                <text x="302" y="192" text-anchor="end" fill="rgba(52,211,153,0.75)" font-family="monospace" font-size="8">BATT 16.8V · GPS 100%</text>
+                <text x="302" y="50" text-anchor="end" fill="rgba(34,211,238,0.55)" font-family="monospace" font-size="8">ALT 120m</text>
+              </svg>
+            </div>
+            <div class="pv-label">
+              <span class="pv-label-tag">Web × 飞行模拟</span>
+              <span class="pv-label-name">UAV 无人机训练模拟器</span>
+            </div>
+            <div class="pv-overlay">
+              <span class="pv-view-btn">在线体验 →</span>
+            </div>
+          </a>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-type">WebGL 飞行模拟 · 训练系统</span>
+              <span class="project-date">2025</span>
+            </div>
+            <h3 class="project-title">YCC · UAV 训练模拟器</h3>
+            <p class="project-desc full">基于 WebGL 构建的第一人称无人机飞行训练模拟器。在 2000m 起伏地形训练场中，可驾驶 5 寸 FPV 穿越机与垂起侦察机（MAV）两种机型，分别对应手动油门的高速机动手感与定高悬停的稳定平台手感，并支持 ACRO / ANGLE 双姿态模式切换。除飞行操作本身，还包含弹药投放、榴弹直射、标记烟雾、地图引导与信号干扰模拟等训练科目；配合 FPV / 追踪视角、前视与垂直下视摄像头、鱼眼 · 广角 · 标准三档镜头模拟，以及可缩放战术地图与目标标记，构成从起飞、巡航、识别到打击的完整训练闭环。键鼠与双摇杆手柄均可操作，机载航电面板实时反馈姿态、链路、电量与坐标信息。</p>
+            <div class="project-stack">
+              <span>WebGL</span><span>飞控物理</span><span>FPV 视角</span><span>多机型</span><span>战术地图</span><span>键鼠/手柄</span>
+            </div>
+            <div class="project-highlight">
+              <span>🛸 在线体验</span>
+              <span>🕹 两种机型可切换</span>
+              <span>🗺 地图引导与标记</span>
+            </div>
+          </div>
+        </article>
+
         <!-- 项目 1：LoRA 模型微调工具 -->
         <article class="project-card tilt-card" data-category="ai tool">
           <a href="https://github.com/YCC1999122/lora-finetune-web-tool" target="_blank" rel="noopener" class="project-visual pv-7">
